@@ -422,13 +422,13 @@
                         </div>
                     </div>
     
-                    <!-- Mark Lists Tab (Fixes Problem #1: Visible on Admin Side with Full Privileges) -->
+                    <!-- Mark Lists Tab -->
                     <div id="adminTabReports" class="tab-content space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists</h3>
-                                    <p class="text-sm text-slate-500">Supervisory View: Admins can inspect and open any grading desk.</p>
+                                    <p class="text-sm text-slate-500">Supervisory View: Admins can inspect and audit grading desks (Read-Only).</p>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -658,7 +658,7 @@
                 </div>
             </div>
     
-            <!-- MARK LIST DETAILS MODAL (Fixes Problems #2, #3, #4) -->
+            <!-- MARK LIST DETAILS MODAL -->
             <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
                 <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
                     <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
@@ -670,6 +670,7 @@
                     </div>
     
                     <div class="p-6 flex-1 overflow-y-auto space-y-6">
+                        <!-- Assessment Weighting Section (Hidden / Disabled for Admin) -->
                         <div id="assessmentSectionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
@@ -678,10 +679,8 @@
                                 </h4>
                                 <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Manage Assessments</span>
                             </div>
-                            <!-- Fixes Problem #2: Assessment chips now feature a delete button -->
                             <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3"></div>
                             
-                            <!-- Fixes Problem #3: Max assessment score limited to 100 -->
                             <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
@@ -1214,7 +1213,6 @@
             renderAdminSubjectsTable();
         }
     
-        // Fixes Problem #1: Admin view for all mark lists
         function renderAdminMarkLists() {
             const tbody = document.getElementById('adminMarkListsTableBody');
             tbody.innerHTML = appState.markLists.map(ml => {
@@ -1227,7 +1225,7 @@
                         <td class="py-3 px-4 text-slate-600">${appState.students.filter(s => s.class_id === ml.class_id).length} students</td>
                         <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${ml.reported ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${ml.reported ? 'Submitted' : 'Draft'}</span></td>
                         <td class="py-3 px-4 text-right">
-                            <button onclick="openMarkListModal('${ml.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition">Open Desk</button>
+                            <button onclick="openMarkListModal('${ml.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition">Audit Desk</button>
                         </td>
                     </tr>
                 `;
@@ -1260,6 +1258,24 @@
             if (!ml) return;
     
             document.getElementById('modalMarkListTitle').textContent = `${ml.subject_name} (${ml.teacher_name})`;
+            
+            const isAdmin = appState.currentUser.role === 'admin';
+            
+            // Hide assessment weight creation tools and submit report buttons for admin
+            const assessSection = document.getElementById('assessmentSectionContainer');
+            const modalReportBtn = document.getElementById('modalReportBtn');
+            const modalReportStatusBadge = document.getElementById('modalReportStatusBadge');
+            
+            if (isAdmin) {
+                assessSection.querySelector('form').classList.add('hidden');
+                modalReportBtn.classList.add('hidden');
+                modalReportStatusBadge.textContent = ml.reported ? "Audited / Submitted" : "Draft Status (Read-Only)";
+            } else {
+                assessSection.querySelector('form').classList.remove('hidden');
+                modalReportBtn.classList.remove('hidden');
+                modalReportBtn.textContent = ml.reported ? "Revert to Draft" : "Submit Report";
+            }
+    
             renderAssessmentChips(ml);
             renderModalStudents();
             document.getElementById('markListDetailModal').classList.remove('hidden');
@@ -1269,19 +1285,20 @@
             document.getElementById('markListDetailModal').classList.add('hidden');
         }
     
-        // Fixes Problem #2: Render assessment chips with delete icon
         function renderAssessmentChips(ml) {
             const container = document.getElementById('assessmentsChipsContainer');
+            const isAdmin = appState.currentUser.role === 'admin';
+            
             container.innerHTML = (ml.assessments || []).map(a => `
                 <div class="bg-white border rounded-lg px-3.5 py-1 text-xs font-semibold flex items-center space-x-2 shadow-sm">
                     <span>${a.title} (${a.maxMark} pts)</span>
-                    <button type="button" onclick="deleteAssessment('${a.id}')" class="text-red-500 hover:text-red-700 ml-1"><i class="fa-solid fa-xmark"></i></button>
+                    ${!isAdmin ? `<button type="button" onclick="deleteAssessment('${a.id}')" class="text-red-500 hover:text-red-700 ml-1"><i class="fa-solid fa-xmark"></i></button>` : ''}
                 </div>
             `).join('');
         }
     
-        // Fixes Problem #2: Delete individual assessment function
         async function deleteAssessment(assessId) {
+            if (appState.currentUser.role === 'admin') return;
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             
@@ -1305,9 +1322,9 @@
             renderModalStudents();
         }
     
-        // Fixes Problem #3: Limit maximum assessment score to 100
         async function handleAddAssessment(e) {
             e.preventDefault();
+            if (appState.currentUser.role === 'admin') return;
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             const title = document.getElementById('newAssessTitle').value.trim();
@@ -1336,6 +1353,7 @@
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             const students = appState.students.filter(s => s.class_id === ml.class_id);
+            const isAdmin = appState.currentUser.role === 'admin';
     
             const headerTr = document.getElementById('modalStudentsTableHeader');
             headerTr.innerHTML = `
@@ -1353,6 +1371,13 @@
     
                 let inputsHtml = (ml.assessments || []).map(a => {
                     const val = stRecord.marks[a.id] !== undefined ? stRecord.marks[a.id] : '';
+                    if (isAdmin) {
+                        return `
+                            <td class="py-2.5 px-3 border-r border-slate-100 text-center font-semibold text-slate-700 bg-slate-50">
+                                ${val !== '' ? val : '-'}
+                            </td>
+                        `;
+                    }
                     return `
                         <td class="py-2.5 px-3 border-r border-slate-100 text-center">
                             <input type="number" min="0" max="${a.maxMark}" value="${val}" onchange="updateStudentMark('${st.id}', '${a.id}', this.value)" class="w-16 text-center border rounded-lg py-1 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500">
@@ -1372,8 +1397,8 @@
             }).join('');
         }
     
-        // Fixes Problem #4: Enforce max allowed score limit on student score inputs
         async function updateStudentMark(studentId, assessId, val) {
+            if (appState.currentUser.role === 'admin') return;
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             
@@ -1422,6 +1447,7 @@
         }
     
         async function toggleReportMarkList() {
+            if (appState.currentUser.role === 'admin') return;
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             ml.reported = !ml.reported;
@@ -1446,7 +1472,7 @@
         }
     
         function generateStudentReportCard() {
-            const classId = document.getElementById('reportCardClassSelect').value;
+            const classId = document.getElementById('reportCardClassSelect',).value;
             const studentId = document.getElementById('reportCardStudentSelect').value;
             const container = document.getElementById('reportCardContainer');
             const emptyState = document.getElementById('reportCardEmpty');
@@ -1514,6 +1540,7 @@
     
         window.onload = loadAppData;
     </script>
+
  
 </body>
 </html>
