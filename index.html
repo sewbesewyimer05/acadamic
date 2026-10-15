@@ -707,7 +707,7 @@
         
         // Configuration Constants
         try {
-            if (window.supabase && SUPABASE_URL !== 'https://ycecgudcwtitgbvcbkfd.supabase.co') {
+            if (window.supabase && SUPABASE_URL) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 useCloudDb = true;
             }
