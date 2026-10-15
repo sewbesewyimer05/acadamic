@@ -1298,6 +1298,7 @@
         //     }
         //     document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
         // }
+        
         function renderAssessmentChips(ml) {
             const container = document.getElementById('assessmentsChipsContainer');
             container.innerHTML = '';
@@ -1321,6 +1322,39 @@
             }
             document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
         }
+        
+        async function deleteAssessmentCategory(assId) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+        
+            // Prevent deleting if it's the last remaining assessment
+            if (ml.assessments && ml.assessments.length <= 1) {
+                alert("You must keep at least one assessment category.");
+                return;
+            }
+        
+            if (confirm("Are you sure you want to delete this assessment category? Associated scores for this category will be cleared.")) {
+                // Filter out the assessment
+                ml.assessments = ml.assessments.filter(a => a.id !== assId);
+        
+                // Optional: Clean up score values for this assessment from student grades
+                if (ml.grades) {
+                    Object.keys(ml.grades).forEach(studentId => {
+                        if (ml.grades[studentId].marks && ml.grades[studentId].marks[assId] !== undefined) {
+                            delete ml.grades[studentId].marks[assId];
+                        }
+                    });
+                }
+        
+                // Save updated mark list to Supabase / LocalStorage
+                await saveEntity('mark_lists', ml);
+        
+                // Refresh UI
+                renderAssessmentChips(ml);
+                renderModalStudents();
+            }
+        }
+        
         async function handleAddAssessment(e) {
             e.preventDefault();
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
