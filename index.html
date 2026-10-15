@@ -1222,7 +1222,11 @@
         }
 
         async function handleAssignTeacher(e) {
-            e.preventDefault();
+            // 1. Prevent default form submission reload
+            if (e && typeof e.preventDefault === 'function') {
+                e.preventDefault();
+            }
+        
             const classId = document.getElementById('assignClassSelect').value;
             const subjectId = document.getElementById('assignSubjectSelect').value;
             const teacherId = document.getElementById('assignTeacherSelect').value;
@@ -1232,7 +1236,11 @@
                 return;
             }
         
-            // Check if this class and subject already has a teacher assigned
+            // 2. Enforce single teacher per class subject
+            if (!appState.teachingAssignments) {
+                appState.teachingAssignments = [];
+            }
+        
             const existingAssignment = appState.teachingAssignments.find(
                 a => a.class_id === classId && a.subject_id === subjectId
             );
@@ -1241,7 +1249,7 @@
                 const confirmOverwrite = confirm(`This subject already has a teacher assigned (${existingAssignment.teacher_name}). Do you want to reassign it to the new teacher?`);
                 if (!confirmOverwrite) return;
                 
-                // Remove or update existing assignment
+                // Remove existing assignment locally
                 appState.teachingAssignments = appState.teachingAssignments.filter(a => a.id !== existingAssignment.id);
             }
         
@@ -1259,13 +1267,25 @@
             };
         
             appState.teachingAssignments.push(newAssignment);
-            await saveEntity('teaching_assignments', newAssignment);
+        
+            try {
+                // Save to Supabase / LocalStorage securely
+                await saveEntity('teaching_assignments', newAssignment);
+            } catch (err) {
+                console.error("Error saving teaching assignment:", err);
+            }
             
-            // Refresh assignments view
-            renderTeachingAssignments();
-            e.target.reset();
+            // Refresh assignments view safely without redirecting
+            if (typeof renderTeachingAssignments === 'function') {
+                renderTeachingAssignments();
+            }
+        
+            // Reset form fields if it's a form element
+            if (e && e.target && typeof e.target.reset === 'function') {
+                e.target.reset();
+            }
         }
-
+        
         function renderAdminSubjectsTable() {
             const selectTeacher = document.getElementById('assignTeacherSelect');
             const selectSub = document.getElementById('assignSubjectSelect');
