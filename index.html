@@ -1359,15 +1359,43 @@
             e.preventDefault();
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
+        
             const title = document.getElementById('newAssessTitle').value.trim();
             const maxMark = parseFloat(document.getElementById('newAssessMax').value) || 10;
+            
             if (!ml.assessments) ml.assessments = [];
+        
+            // Calculate current total points/weight
+            const currentTotal = ml.assessments.reduce((sum, ass) => sum + Number(ass.maxMark || 0), 0);
+            
+            // Check if adding this assessment exceeds the 100 max mark limit
+            if (currentTotal + maxMark > 100) {
+                alert(`Cannot add assessment. Total maximum marks cannot exceed 100. Current total is ${currentTotal}, and adding ${maxMark} would make it ${currentTotal + maxMark}.`);
+                return;
+            }
+        
+            // Add the new assessment if within limits
             ml.assessments.push({ id: 'a_' + Date.now(), title, maxMark });
+            
             await saveEntity('mark_lists', ml);
             renderAssessmentChips(ml);
             renderModalStudents();
             e.target.reset();
         }
+        
+        // async function handleAddAssessment(e) {
+        //     e.preventDefault();
+        //     const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+        //     if (!ml) return;
+        //     const title = document.getElementById('newAssessTitle').value.trim();
+        //     const maxMark = parseFloat(document.getElementById('newAssessMax').value) || 10;
+        //     if (!ml.assessments) ml.assessments = [];
+        //     ml.assessments.push({ id: 'a_' + Date.now(), title, maxMark });
+        //     await saveEntity('mark_lists', ml);
+        //     renderAssessmentChips(ml);
+        //     renderModalStudents();
+        //     e.target.reset();
+        // }
 
         async function updateAssessmentScore(studentId, assId, val, maxMark) {
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
