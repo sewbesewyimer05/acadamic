@@ -1649,7 +1649,31 @@
             });
             const avg = classMarkLists.length > 0 ? (total / classMarkLists.length).toFixed(1) : 0;
             document.getElementById('rcOverallAverage').textContent = `${avg} / 100 (${getLetterGrade(avg)})`;
-            document.getElementById('rcClassRank').textContent = '#1';
+
+            // --- DYNAMIC RANK CALCULATION ---
+            // 1. Get all students belonging to this class
+            const studentsInClass = appState.students.filter(s => s.class_id === classId);
+            
+            // 2. Compute total score for every student in the class
+            const studentTotals = studentsInClass.map(stu => {
+                let stuTotal = 0;
+                classMarkLists.forEach(ml => {
+                    const sScore = calculateStudentScore(stu.id, ml);
+                    stuTotal += sScore.mark;
+                });
+                return { id: stu.id, total: stuTotal };
+            });
+
+            // 3. Sort students by total score descending (highest first)
+            studentTotals.sort((a, b) => b.total - a.total);
+
+            // 4. Find the rank (index + 1) of the target student
+            const rankIndex = studentTotals.findIndex(s => s.id === studentId);
+            const classRank = rankIndex !== -1 ? rankIndex + 1 : 1;
+
+            // 5. Display the calculated rank
+            document.getElementById('rcClassRank').textContent = `#${classRank}`;
+            // ---------------------------------
 
             container.classList.remove('hidden');
             emptyState.classList.add('hidden');
