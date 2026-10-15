@@ -34,11 +34,10 @@
             #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
         }
     </style>
-</head>
-<body class="h-full bg-slate-50 text-slate-800 antialiased flex flex-col">
-
+    
+    
     <div id="app" class="min-h-full flex flex-col">
-
+    
         <!-- Navigation / Header Bar -->
         <header id="mainHeader" class="bg-indigo-900 text-white shadow-md hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -63,10 +62,11 @@
                 </div>
             </div>
         </header>
-
+    
         <!-- Main Content Viewport -->
         <main class="flex-1 flex flex-col">
-
+    
+            <!-- Login View -->
             <div id="loginView" class="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 p-4">
                 <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden p-8 border border-indigo-100">
                     <div class="text-center mb-8">
@@ -76,13 +76,13 @@
                         <h2 class="text-2xl font-bold text-slate-900">Academic Portal Login</h2>
                         <p class="text-sm text-slate-500 mt-1">Supabase PostgreSQL Gateway (.pro.et)</p>
                     </div>
-
+    
                     <!-- Role Selector Tabs -->
                     <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
                         <button type="button" onclick="switchLoginRole('admin')" id="loginRoleAdmin" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">General Admin</button>
                         <button type="button" onclick="switchLoginRole('teacher')" id="loginRoleTeacher" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Teacher Portal</button>
                     </div>
-
+    
                     <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
                         <input type="hidden" id="selectedRole" value="admin">
                         
@@ -93,7 +93,7 @@
                                 <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="admin">
                             </div>
                         </div>
-
+    
                         <div>
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
                             <div class="relative">
@@ -101,56 +101,39 @@
                                 <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="admin123">
                             </div>
                         </div>
-
+    
                         <div id="loginError" class="hidden text-red-500 text-xs bg-red-50 p-3 rounded-xl border border-red-100 flex items-center space-x-2">
                             <i class="fa-solid fa-circle-exclamation"></i>
                             <span id="loginErrorText">Invalid credentials. Please verify your Supabase connection.</span>
                         </div>
-
+    
                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center space-x-2">
                             <span>Sign In to Cloud Database</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </form>
-
-                    <div class="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
-                        <p>Supabase PostgreSQL Live Synchronization Active</p>
-                    </div>
                 </div>
             </div>
-
+    
+            <!-- Admin Dashboard -->
             <div id="adminDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
-                <!-- Admin Sub-nav Header -->
                 <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
                     <div class="flex items-center space-x-2">
                         <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Department Head Control Panel</span>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="switchAdminTab('overview')" id="adminTabBtnOverview" class="px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition">
-                            <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard Analytics
-                        </button>
-                        <button onclick="switchAdminTab('teachers')" id="adminTabBtnTeachers" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty Accounts
-                        </button>
-                        <button onclick="switchAdminTab('classes')" id="adminTabBtnClasses" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-school-flag mr-1.5"></i> Classes & Students
-                        </button>
-                        <button onclick="switchAdminTab('subjects')" id="adminTabBtnSubjects" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-book-bookmark mr-1.5"></i> Subjects & Assignments
-                        </button>
-                        <button onclick="switchAdminTab('reports')" id="adminTabBtnReports" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-folder-open mr-1.5"></i> Mark Lists
-                        </button>
-                        <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                            <i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export
-                        </button>
+                        <button onclick="switchAdminTab('overview')" id="adminTabBtnOverview" class="px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition"><i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard Analytics</button>
+                        <button onclick="switchAdminTab('teachers')" id="adminTabBtnTeachers" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty Accounts</button>
+                        <button onclick="switchAdminTab('classes')" id="adminTabBtnClasses" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-school-flag mr-1.5"></i> Classes & Students</button>
+                        <button onclick="switchAdminTab('subjects')" id="adminTabBtnSubjects" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-book-bookmark mr-1.5"></i> Subjects & Assignments</button>
+                        <button onclick="switchAdminTab('reports')" id="adminTabBtnReports" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-folder-open mr-1.5"></i> Mark Lists</button>
+                        <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export</button>
                     </div>
                 </div>
-
-                <!-- Admin Tab Contents -->
+    
                 <div class="flex-1 max-w-7xl w-full mx-auto p-6">
-
-                    <!-- Tab 0: Live Aggregated Database Analytics -->
+    
+                    <!-- Overview Tab -->
                     <div id="adminTabOverview" class="tab-content active space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
@@ -182,31 +165,26 @@
                                 </div>
                             </div>
                         </div>
-
+    
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <h3 class="text-lg font-bold text-slate-900 mb-2">Supabase Cloud Database Status</h3>
-                            <p class="text-sm text-slate-500 mb-4">PostgreSQL Rules (`ON DELETE CASCADE`) active. Deleting student records automatically clears associated grade rows in Supabase.</p>
+                            <p class="text-sm text-slate-500 mb-4">PostgreSQL Rules (`ON DELETE CASCADE`) active.</p>
                             <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between">
                                 <div class="flex items-center space-x-3">
                                     <span id="syncIndicator" class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
                                     <span class="text-sm font-semibold text-slate-700" id="syncStatusText">Connected to Supabase PostgreSQL (.pro.et)</span>
                                 </div>
-                                <button onclick="exportDatabaseCSV()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
-                                    <i class="fa-solid fa-file-csv"></i>
-                                    <span>Export Master .CSV Spreadsheet</span>
-                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tab 1: Faculty Accounts -->
+    
+                    <!-- Faculty Accounts Tab -->
                     <div id="adminTabTeachers" class="tab-content space-y-6">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Create / Password Reset Teacher Form -->
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
                                 <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                     <i class="fa-solid fa-user-plus text-indigo-600"></i>
-                                    <span>Faculty Account & Password Reset</span>
+                                    <span>Register New Faculty</span>
                                 </h3>
                                 <form onsubmit="handleCreateTeacher(event)" class="space-y-4">
                                     <div>
@@ -223,7 +201,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                                        <input type="text" id="newTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Cloud database password">
+                                        <input type="text" id="newTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
                                     </div>
                                     <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
                                         <i class="fa-solid fa-check"></i>
@@ -231,13 +209,12 @@
                                     </button>
                                 </form>
                             </div>
-
-                            <!-- Teachers List -->
+    
                             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
                                         <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
-                                        <span>Active Faculty Accounts</span>
+                                        <span>Active Faculty Accounts & Credentials</span>
                                     </h3>
                                     <span id="teacherCountBadge" class="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-full text-xs">0 Teachers</span>
                                 </div>
@@ -245,10 +222,11 @@
                                     <table class="w-full text-left border-collapse">
                                         <thead>
                                             <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                <th class="py-3 px-4">ID</th>
                                                 <th class="py-3 px-4">Name</th>
                                                 <th class="py-3 px-4">Department</th>
                                                 <th class="py-3 px-4">Username</th>
-                                                <th class="py-3 px-4">Cloud Sync</th>
+                                                <th class="py-3 px-4">Password</th>
                                                 <th class="py-3 px-4 text-right">Actions</th>
                                             </tr>
                                         </thead>
@@ -258,8 +236,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tab 2: Classes & Students Management -->
+    
+                    <!-- Classes & Students Tab -->
                     <div id="adminTabClasses" class="tab-content space-y-6">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div class="space-y-6">
@@ -279,11 +257,11 @@
                                         </button>
                                     </form>
                                 </div>
-
+    
                                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                                     <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                         <i class="fa-solid fa-user-plus text-emerald-600"></i>
-                                        <span>Student Registry (Cascade Ready)</span>
+                                        <span>Student Registry</span>
                                     </h3>
                                     <form onsubmit="handleRegisterStudent(event)" class="space-y-4">
                                         <div>
@@ -311,43 +289,67 @@
                                         </div>
                                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-emerald-100 flex items-center justify-center space-x-2">
                                             <i class="fa-solid fa-user-check"></i>
-                                            <span>Insert Student in Supabase</span>
+                                            <span>Insert Student</span>
                                         </button>
                                     </form>
                                 </div>
                             </div>
-
-                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-                                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-                                    <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
-                                        <i class="fa-solid fa-users text-indigo-600"></i>
-                                        <span>Master Student Directory</span>
+    
+                            <div class="lg:col-span-2 space-y-6">
+                                <!-- Classes List Card -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                                        <i class="fa-solid fa-school-flag text-indigo-600"></i>
+                                        <span>Manage Classes</span>
                                     </h3>
-                                    <div class="flex items-center space-x-3">
-                                        <label class="text-xs font-bold uppercase text-slate-400">Filter:</label>
-                                        <select id="adminRosterClassFilter" onchange="renderAdminRosterTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <option value="">All Classes</option>
-                                        </select>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                    <th class="py-2 px-3">ID</th>
+                                                    <th class="py-2 px-3">Class Title</th>
+                                                    <th class="py-2 px-3 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="adminClassesTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                        </table>
                                     </div>
                                 </div>
-                                <div class="overflow-x-auto flex-1">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                                <th class="py-3 px-4">ID</th>
-                                                <th class="py-3 px-4">Name</th>
-                                                <th class="py-3 px-4">Class</th>
-                                                <th class="py-3 px-4">Age/Gender</th>
-                                                <th class="py-3 px-4 text-right">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="adminRosterTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
-                                    </table>
+    
+                                <!-- Students Directory Card -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                                        <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                            <i class="fa-solid fa-users text-indigo-600"></i>
+                                            <span>Master Student Directory</span>
+                                        </h3>
+                                        <div class="flex items-center space-x-3">
+                                            <label class="text-xs font-bold uppercase text-slate-400">Filter:</label>
+                                            <select id="adminRosterClassFilter" onchange="renderAdminRosterTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">All Classes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="overflow-x-auto flex-1">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                    <th class="py-3 px-4">ID</th>
+                                                    <th class="py-3 px-4">Name</th>
+                                                    <th class="py-3 px-4">Class</th>
+                                                    <th class="py-3 px-4">Age/Gender</th>
+                                                    <th class="py-3 px-4 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="adminRosterTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+    
+                    <!-- Subjects & Assignments Tab -->
                     <div id="adminTabSubjects" class="tab-content space-y-6">
                         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                             <div class="space-y-6">
@@ -367,14 +369,13 @@
                                         </button>
                                     </form>
                                 </div>
-
+    
                                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                                     <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                         <i class="fa-solid fa-link text-indigo-600"></i>
-                                        <span>Assign Class Subject</span>
+                                        <span>Assign Class Subject (Exclusive Teacher Enforcement)</span>
                                     </h3>
-                                    
-                                    <form onsubmit="handleAssignTeacher(event)" class="space-y-4">
+                                    <form onsubmit="handleAssignTeacherSubject(event)" class="space-y-4">
                                         <div>
                                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Teacher</label>
                                             <select id="assignTeacherSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -400,7 +401,7 @@
                                     </form>
                                 </div>
                             </div>
-
+    
                             <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
                                 <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                     <i class="fa-solid fa-list-check text-indigo-600"></i>
@@ -422,8 +423,8 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tab 4: Mark Lists -->
+    
+                    <!-- Mark Lists Tab -->
                     <div id="adminTabReports" class="tab-content space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
@@ -431,13 +432,7 @@
                                     <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists</h3>
                                     <p class="text-sm text-slate-500">Read-Only Gatekeeper View for Department Head.</p>
                                 </div>
-                                <div class="flex items-center space-x-3">
-                                    <select id="adminFilterTeacher" onchange="renderAdminMarkLists()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <option value="">All Teachers</option>
-                                    </select>
-                                </div>
                             </div>
-
                             <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
@@ -455,14 +450,14 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Tab 5: Report Cards & Transcripts -->
+    
+                    <!-- Report Cards Tab -->
                     <div id="adminTabCard" class="tab-content space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900">Official Transcript & Report Card Generator</h3>
-                                    <p class="text-sm text-slate-500">Borderless, print-ready document view designed for official stamps and director signatures.</p>
+                                    <p class="text-sm text-slate-500">Borderless, print-ready document view with dynamic class rank calculations.</p>
                                 </div>
                                 <div class="flex flex-wrap items-center gap-3">
                                     <div>
@@ -479,7 +474,7 @@
                                     </div>
                                 </div>
                             </div>
-
+    
                             <!-- Report Card Preview Box -->
                             <div id="reportCardContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm hidden">
                                 <div id="printableReportCard" class="space-y-6 bg-white p-4 border border-slate-100 rounded-xl">
@@ -498,7 +493,7 @@
                                             <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Record</span>
                                         </div>
                                     </div>
-
+    
                                     <div class="grid grid-cols-2 md:grid-cols-5 gap-4 bg-slate-50 p-4 rounded-xl text-sm border border-slate-200">
                                         <div>
                                             <span class="block text-xs font-semibold text-slate-400 uppercase">Student Name</span>
@@ -521,7 +516,7 @@
                                             <span class="font-black text-indigo-700 text-lg" id="rcClassRank">-</span>
                                         </div>
                                     </div>
-
+    
                                     <div>
                                         <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">Subject Breakdown</h4>
                                         <table class="w-full text-left border-collapse border border-slate-300 rounded-xl overflow-hidden min-w-full">
@@ -537,20 +532,8 @@
                                             <tbody id="rcMarksTableBody" class="divide-y divide-slate-200 text-sm"></tbody>
                                         </table>
                                     </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-slate-200">
-                                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                            <h5 class="font-bold text-xs uppercase text-slate-400 mb-1">Department Head Remarks</h5>
-                                            <p class="text-sm font-medium text-slate-700">Official academic transcript reviewed and verified.</p>
-                                        </div>
-                                        <div class="flex flex-col justify-end text-right">
-                                            <div class="border-b border-slate-400 w-48 ml-auto mb-2"></div>
-                                            <p class="font-bold text-sm text-slate-900">Director Signature</p>
-                                            <p class="text-xs text-slate-500">Official Stamp Area</p>
-                                        </div>
-                                    </div>
                                 </div>
-
+    
                                 <div class="mt-8 flex justify-end space-x-3 pt-6 border-t border-slate-100">
                                     <button onclick="downloadStudentReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-md shadow-indigo-100 transition flex items-center space-x-2">
                                         <i class="fa-solid fa-file-pdf"></i>
@@ -558,17 +541,17 @@
                                     </button>
                                 </div>
                             </div>
-
+    
                             <div id="reportCardEmpty" class="text-center py-12 text-slate-400">
                                 <i class="fa-solid fa-id-card text-4xl mb-3 text-slate-300"></i>
                                 <p class="text-base font-medium">Select a class and student from dropdowns above to generate transcript.</p>
                             </div>
                         </div>
                     </div>
-
+    
                 </div>
             </div>
-
+    
             <!-- Teacher Dashboard -->
             <div id="teacherDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
                 <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
@@ -576,7 +559,7 @@
                         <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Instructor Grading Desk</span>
                     </div>
                 </div>
-
+    
                 <div class="flex-1 max-w-7xl w-full mx-auto p-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
                         <div class="flex items-center justify-between mb-4">
@@ -585,7 +568,6 @@
                                     <i class="fa-solid fa-clipboard-list text-emerald-600"></i>
                                     <span>My Assigned Class Mark Lists</span>
                                 </h3>
-                                <p class="text-xs text-slate-500">Quizzes (20 pts), Mid-Term (30 pts), Final Exam (50 pts) weight configurations active.</p>
                             </div>
                             <span id="teacherMarkListCount" class="bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full text-xs">0 Mark Lists</span>
                         </div>
@@ -606,35 +588,99 @@
                     </div>
                 </div>
             </div>
-
+    
+            <!-- EDIT STUDENT PROFILE MODAL (Admin No Score Access) -->
+            <div id="editStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-user-pen text-indigo-600"></i>
+                        <span>Edit Student Profile</span>
+                    </h3>
+                    <form onsubmit="saveStudentProfileChanges(event)" class="space-y-4">
+                        <input type="hidden" id="editStudentId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                            <input type="text" id="editStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Age</label>
+                                <input type="number" id="editStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Gender</label>
+                                <select id="editStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assigned Class</label>
+                            <select id="editStudentClass" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                        </div>
+                        <div class="flex justify-end space-x-2 pt-2">
+                            <button type="button" onclick="document.getElementById('editStudentModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    
+            <!-- EDIT TEACHER CREDENTIALS MODAL -->
+            <div id="editTeacherModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-key text-indigo-600"></i>
+                        <span>Edit Faculty Credentials</span>
+                    </h3>
+                    <form onsubmit="saveTeacherCredentials(event)" class="space-y-4">
+                        <input type="hidden" id="editTeacherId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                            <input type="text" id="editTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Department</label>
+                            <input type="text" id="editTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
+                            <input type="text" id="editTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                            <input type="text" id="editTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex justify-end space-x-2 pt-2">
+                            <button type="button" onclick="document.getElementById('editTeacherModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Update Credentials</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    
             <!-- MARK LIST DETAILS MODAL -->
             <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
                 <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
                     <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
                         <div>
-                            <div class="flex items-center space-x-2">
-                                <span id="modalSubjectBadge" class="bg-indigo-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 inline-block">Subject</span>
-                                <span id="modalReadOnlyNotice" class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 hidden"><i class="fa-solid fa-eye mr-1"></i> Read Only (Admin View)</span>
-                            </div>
+                            <span id="modalSubjectBadge" class="bg-indigo-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 inline-block">Subject</span>
                             <h3 id="modalMarkListTitle" class="text-xl font-bold">Mark List</h3>
                         </div>
-                        <button onclick="closeMarkListModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition">
-                            <i class="fa-solid fa-xmark text-xl"></i>
-                        </button>
+                        <button onclick="closeMarkListModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition"><i class="fa-solid fa-xmark text-xl"></i></button>
                     </div>
-
+    
                     <div class="p-6 flex-1 overflow-y-auto space-y-6">
                         <div id="assessmentSectionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                             <div class="flex items-center justify-between mb-3">
                                 <h4 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
                                     <i class="fa-solid fa-sliders text-emerald-600"></i>
-                                    <span>Continuous Assessment Score Weighting (Quizzes/Mid/Final)</span>
+                                    <span>Continuous Assessment Score Weighting</span>
                                 </h4>
                                 <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Total: 100 Points</span>
                             </div>
-
                             <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3"></div>
-
                             <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
@@ -651,15 +697,7 @@
                                 </div>
                             </form>
                         </div>
-
-                        <!-- Dynamic Student Search Filter -->
-                        <div class="flex items-center space-x-3">
-                            <div class="relative flex-1">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
-                                <input type="text" id="studentSearchFilter" oninput="renderModalStudents()" placeholder="Quick search student name..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                            </div>
-                        </div>
-
+    
                         <div class="overflow-x-auto border border-slate-200 rounded-xl">
                             <table class="w-full text-left border-collapse">
                                 <thead>
@@ -669,75 +707,19 @@
                             </table>
                         </div>
                     </div>
-
+    
                     <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
                         <span id="modalReportStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700">Draft</span>
                         <div class="flex items-center space-x-3">
-                            <button onclick="downloadMarkListPDF()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Download PDF</button>
                             <button id="modalReportBtn" onclick="toggleReportMarkList()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Submit Report</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Edit Student Modal -->
-            <div id="editStudentModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
-                <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Edit Student Profile</h3>
-                    <form onsubmit="saveStudentProfileChanges(event)">
-                        <input type="hidden" id="editStudentId">
-                        
-                        <div class="mb-3">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name</label>
-                            <input type="text" id="editStudentName" required class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-            
-                        <div class="mb-3">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Age</label>
-                            <input type="number" id="editStudentAge" required class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-            
-                        <div class="mb-3">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Gender</label>
-                            <select id="editStudentGender" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
-                        </div>
-            
-                        <div class="mb-4">
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Assigned Class</label>
-                            <select id="editStudentClass" class="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-            
-                        <div class="flex justify-end space-x-2">
-                            <button type="button" onclick="document.getElementById('editStudentModal').classList.add('hidden')" class="px-4 py-2 bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg hover:bg-slate-300">Cancel</button>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700">Save Changes</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            
-            <!-- Printable Hidden Mark List -->
-            <div id="printableMarkListArea" class="hidden p-8 bg-white text-slate-800">
-                <h2 class="text-2xl font-bold" id="pdfMlTitle">Mark List</h2>
-                <table class="w-full text-left border-collapse border border-slate-300 mt-4">
-                    <thead>
-                        <tr class="bg-slate-100 text-xs font-bold uppercase text-slate-700">
-                            <th class="border p-2">No.</th>
-                            <th class="border p-2">Student Name</th>
-                            <th class="border p-2">Total (100)</th>
-                            <th class="border p-2">Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pdfMlTableBody" class="text-sm"></tbody>
-                </table>
-            </div>
-
+    
         </main>
     </div>
-
+    
     <script>
         const SUPABASE_URL = 'https://ycecgudcwtitgbvcbkfd.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InljZWNndWRjd3RpdGdidmNia2ZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNzA1ODAsImV4cCI6MjEwNzY0NjU4MH0.NkcFFvqvr5n3MJuVvHC0tTvn97iMdv_xitMcZSdfTm8';
@@ -745,7 +727,6 @@
         let supabaseClient = null;
         let useCloudDb = false;
         
-        // Configuration Constants
         try {
             if (window.supabase && SUPABASE_URL) {
                 supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -754,8 +735,7 @@
         } catch (e) {
             console.log("Supabase client running in standalone fallback mode.");
         }
-
-        // Global State Management
+    
         let appState = {
             currentUser: null,
             classes: [],
@@ -766,7 +746,7 @@
             markLists: [],
             activeMarkListId: null
         };
-
+    
         async function loadAppData() {
             if (useCloudDb && supabaseClient) {
                 try {
@@ -778,7 +758,7 @@
                         supabaseClient.from('teaching_assignments').select('*'),
                         supabaseClient.from('mark_lists').select('*')
                     ]);
-
+    
                     if (!resClasses.error) appState.classes = resClasses.data || [];
                     if (!resSubjects.error) appState.subjects = resSubjects.data || [];
                     if (!resTeachers.error) appState.teachers = resTeachers.data || [];
@@ -794,88 +774,60 @@
                     console.error("Cloud fetch error, falling back to local storage.", err);
                 }
             }
-
-            // Fallback to localStorage seed data if cloud credentials are unconfigured
-            const saved = localStorage.getItem('academic_sims_state_v3');
+    
+            const saved = localStorage.getItem('academic_sims_state_v4');
             if (saved) {
                 try { appState = JSON.parse(saved); } catch (e) {}
             } else {
                 appState.classes = [
-                    { id: 'c1', name: 'Grade 1' },
-                    { id: 'c2', name: 'Grade 2' }
+                    { id: 'CLS-001', name: 'Grade 1' },
+                    { id: 'CLS-002', name: 'Grade 2' }
                 ];
                 appState.subjects = [
                     { id: 'sub1', name: 'English' },
-                    { id: 'sub2', name: 'Math' },
-                    { id: 'sub3', name: 'Sport' }
+                    { id: 'sub2', name: 'Math' }
                 ];
                 appState.teachers = [
-                    { id: 't1', name: 'Dr. Alan Turing', subject: 'Science', username: 'aturing', password: 'password123' },
-                    { id: 't2', name: 'Prof. Marie Curie', subject: 'Math', username: 'mcurie', password: 'password123' }
+                    { id: 'TCH-001', name: 'Dr. Alan Turing', subject: 'Science', username: 'aturing', password: 'password123' },
+                    { id: 'TCH-002', name: 'Prof. Marie Curie', subject: 'Math', username: 'mcurie', password: 'password123' }
                 ];
                 appState.students = [
-                    { id: 's1', class_id: 'c1', name: 'Solomon Abebe', age: 7, gender: 'Male' },
-                    { id: 's2', class_id: 'c1', name: 'Bethelhem Tadesse', age: 7, gender: 'Female' },
-                    { id: 's3', class_id: 'c2', name: 'Dawit Yohannes', age: 8, gender: 'Male' }
+                    { id: 'STU-001', class_id: 'CLS-001', name: 'Solomon Abebe', age: 7, gender: 'Male' },
+                    { id: 'STU-002', class_id: 'CLS-001', name: 'Bethelhem Tadesse', age: 7, gender: 'Female' }
                 ];
                 appState.teachingAssignments = [
-                    { id: 'ta1', class_id: 'c1', subject_id: 'sub1', subject_name: 'English', teacher_id: 't1', teacher_name: 'Dr. Alan Turing' },
-                    { id: 'ta2', class_id: 'c1', subject_id: 'sub2', subject_name: 'Math', teacher_id: 't2', teacher_name: 'Prof. Marie Curie' }
-                ];
-                appState.markLists = [
-                    {
-                        id: 'ml_c1_sub1',
-                        assignment_id: 'ta1',
-                        class_id: 'c1',
-                        subject_name: 'English',
-                        teacher_id: 't1',
-                        teacher_name: 'Dr. Alan Turing',
-                        reported: true,
-                        assessments: [
-                            { id: 'a1', title: 'Quiz (20)', maxMark: 20 },
-                            { id: 'a2', title: 'Midterm (30)', maxMark: 30 },
-                            { id: 'a3', title: 'Final (50)', maxMark: 50 }
-                        ],
-                        grades: {
-                            's1': { marks: { a1: 18, a2: 28, a3: 46 }, customGrade: 'A+' },
-                            's2': { marks: { a1: 15, a2: 23, a3: 40 }, customGrade: 'B+' }
-                        }
-                    }
+                    { id: 'ta1', class_id: 'CLS-001', subject_id: 'sub2', subject_name: 'Math', teacher_id: 'TCH-002', teacher_name: 'Prof. Marie Curie' }
                 ];
             }
-            document.getElementById('syncIndicator').className = "w-3 h-3 bg-amber-500 rounded-full";
-            document.getElementById('syncStatusText').textContent = "Running in Local Storage Standalone Mode";
             checkAuthView();
         }
-
-        async function saveEntity(table, record, idField = 'id') {
+    
+        async function saveEntity(table, record) {
             if (useCloudDb && supabaseClient) {
-                try {
-                    await supabaseClient.from(table).upsert(record);
-                } catch (e) {
-                    console.error("Supabase write error:", e);
-                }
+                try { await supabaseClient.from(table).upsert(record); } catch (e) { console.error(e); }
             }
-            localStorage.setItem('academic_sims_state_v3', JSON.stringify(appState));
+            localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
-
+    
         async function deleteEntity(table, idValue, idField = 'id') {
             if (useCloudDb && supabaseClient) {
-                try {
-                    await supabaseClient.from(table).delete().eq(idField, idValue);
-                } catch (e) {
-                    console.error("Supabase delete error:", e);
-                }
+                try { await supabaseClient.from(table).delete().eq(idField, idValue); } catch (e) { console.error(e); }
             }
-            localStorage.setItem('academic_sims_state_v3', JSON.stringify(appState));
+            localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
-
+    
+        // Sequential ID Generator (Requirement #5)
+        function generateSequentialId(prefix, existingList) {
+            const count = existingList.length + 1;
+            return `${prefix}-${String(count).padStart(3, '0')}`;
+        }
+    
         function checkAuthView() {
             const loginView = document.getElementById('loginView');
             const mainHeader = document.getElementById('mainHeader');
             const adminDashboard = document.getElementById('adminDashboard');
             const teacherDashboard = document.getElementById('teacherDashboard');
-
+    
             if (!appState.currentUser) {
                 loginView.classList.remove('hidden');
                 mainHeader.classList.add('hidden');
@@ -883,12 +835,11 @@
                 teacherDashboard.classList.add('hidden');
                 return;
             }
-
+    
             loginView.classList.add('hidden');
             mainHeader.classList.remove('hidden');
             document.getElementById('headerUserName').textContent = appState.currentUser.name;
-
-            // Granular Cross-Portal Security Routing
+    
             if (appState.currentUser.role === 'admin') {
                 document.getElementById('headerUserRole').textContent = 'Administrator';
                 document.getElementById('headerRoleBadge').textContent = 'Department Head Portal';
@@ -897,6 +848,7 @@
                 renderAdminOverviewStats();
                 renderAdminTeachers();
                 renderAdminClassesDropdowns();
+                renderAdminClassesTable();
                 renderAdminRosterTable();
                 renderAdminSubjectsTable();
                 renderAdminMarkLists();
@@ -909,31 +861,25 @@
                 renderTeacherMarkLists();
             }
         }
-
+    
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
-            const btnAdmin = document.getElementById('loginRoleAdmin');
-            const btnTeacher = document.getElementById('loginRoleTeacher');
             if (role === 'admin') {
-                btnAdmin.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
-                btnTeacher.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 transition";
                 document.getElementById('loginUsername').value = 'admin';
                 document.getElementById('loginPassword').value = 'admin123';
             } else {
-                btnTeacher.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
-                btnAdmin.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 transition";
                 document.getElementById('loginUsername').value = 'aturing';
                 document.getElementById('loginPassword').value = 'password123';
             }
         }
-
+    
         async function handleLogin(e) {
             e.preventDefault();
             const role = document.getElementById('selectedRole').value;
             const u = document.getElementById('loginUsername').value.trim();
             const p = document.getElementById('loginPassword').value.trim();
             const errorDiv = document.getElementById('loginError');
-
+    
             if (role === 'admin') {
                 if (u === 'admin' && p === 'admin123') {
                     appState.currentUser = { id: 'admin', name: 'Department Head', role: 'admin' };
@@ -944,10 +890,6 @@
                 }
             } else {
                 let teacher = appState.teachers.find(t => t.username === u && t.password === p);
-                if (!teacher && useCloudDb && supabaseClient) {
-                    const { data } = await supabaseClient.from('teachers').select('*').eq('username', u).eq('password', p).single();
-                    if (data) teacher = data;
-                }
                 if (teacher) {
                     appState.currentUser = { id: teacher.id, name: teacher.name, role: 'teacher' };
                     errorDiv.classList.add('hidden');
@@ -957,708 +899,529 @@
                 }
             }
         }
-
+    
         function logout() {
-            if (supabaseClient && supabaseClient.auth) {
-                supabaseClient.auth.signOut();
-            }
             appState.currentUser = null;
             checkAuthView();
         }
-
-        function renderAdminOverviewStats() {
-            document.getElementById('statFacultyCount').textContent = appState.teachers.length;
-            document.getElementById('statStudentCount').textContent = appState.students.length;
-            document.getElementById('statClassCount').textContent = appState.classes.length;
-
-            let topName = 'None';
-            let topAvg = -1;
-            appState.students.forEach(st => {
-                let total = 0, count = 0;
-                appState.markLists.forEach(ml => {
-                    const scoreObj = calculateStudentScore(st.id, ml);
-                    total += scoreObj.mark;
-                    count++;
-                });
-                const avg = count > 0 ? total / count : 0;
-                if (avg > topAvg) {
-                    topAvg = avg;
-                    topName = `${st.name} (${avg.toFixed(1)})`;
-                }
-            });
-            document.getElementById('statTopStudent').textContent = topName;
-        }
-
+    
         function switchAdminTab(tabName) {
             document.querySelectorAll('#adminDashboard .tab-content').forEach(el => el.classList.remove('active'));
             ['Overview', 'Teachers', 'Classes', 'Subjects', 'Reports', 'Card'].forEach(t => {
                 const btn = document.getElementById(`adminTabBtn${t}`);
                 if (btn) btn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
             });
-
-            const activeBtn = document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
-            if (activeBtn) activeBtn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
-
-            if (tabName === 'overview') {
-                document.getElementById('adminTabOverview').classList.add('active');
-                renderAdminOverviewStats();
-            } else if (tabName === 'teachers') {
-                document.getElementById('adminTabTeachers').classList.add('active');
-                renderAdminTeachers();
-            } else if (tabName === 'classes') {
-                document.getElementById('adminTabClasses').classList.add('active');
-                renderAdminClassesDropdowns();
-                renderAdminRosterTable();
-            } else if (tabName === 'subjects') {
-                document.getElementById('adminTabSubjects').classList.add('active');
-                renderAdminSubjectsTable();
-            } else if (tabName === 'reports') {
-                document.getElementById('adminTabReports').classList.add('active');
-                renderAdminMarkLists();
-            } else if (tabName === 'card') {
-                document.getElementById('adminTabCard').classList.add('active');
-                populateReportCardDropdowns();
-            }
+            document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
+            document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
         }
-
+    
+        // --- REQUIREMENT #1: Exclusive Teacher Subject Assignment ---
+        async function handleAssignTeacherSubject(e) {
+            e.preventDefault();
+            const teacherId = document.getElementById('assignTeacherSelect').value;
+            const classId = document.getElementById('assignClassSelect').value;
+            const subjectId = document.getElementById('assignSubjectSelect').value;
+    
+            // Check if this class + subject already has another teacher assigned
+            const existingAssignment = appState.teachingAssignments.find(a => a.class_id === classId && a.subject_id === subjectId);
+            if (existingAssignment) {
+                alert(`Conflict: This subject in this class is already assigned to ${existingAssignment.teacher_name}. Please reassign or delete the existing assignment first.`);
+                return;
+            }
+    
+            const tch = appState.teachers.find(t => t.id === teacherId);
+            const sub = appState.subjects.find(s => s.id === subjectId);
+            const cls = appState.classes.find(c => c.id === classId);
+    
+            const newAssignment = {
+                id: 'ta_' + Date.now(),
+                class_id: classId,
+                subject_id: subjectId,
+                subject_name: sub.name,
+                teacher_id: teacherId,
+                teacher_name: tch.name
+            };
+    
+            appState.teachingAssignments.push(newAssignment);
+            await saveEntity('teaching_assignments', newAssignment);
+    
+            // Automatically provision a Mark List for this assignment
+            const newMarkList = {
+                id: `ml_${classId}_${subjectId}`,
+                assignment_id: newAssignment.id,
+                class_id: classId,
+                subject_name: sub.name,
+                teacher_id: teacherId,
+                teacher_name: tch.name,
+                reported: false,
+                assessments: [
+                    { id: 'a1', title: 'Quiz', maxMark: 20 },
+                    { id: 'a2', title: 'Mid-Term', maxMark: 30 },
+                    { id: 'a3', title: 'Final Exam', maxMark: 50 }
+                ],
+                grades: {}
+            };
+            appState.markLists.push(newMarkList);
+            await saveEntity('mark_lists', newMarkList);
+    
+            renderAdminSubjectsTable();
+            alert(`Successfully assigned ${sub.name} in ${cls.name} exclusively to ${tch.name}!`);
+        }
+    
+        // --- REQUIREMENT #2 & #6 & #3 & #4 & #5 Handlers ---
+    
         async function handleCreateTeacher(e) {
-            const tbody = document.getElementById('teachersTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = '';
-        
-            appState.teachers.forEach(t => {
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50">
-                        <td class="px-4 py-3 font-medium text-slate-800">${t.name}</td>
-                        <td class="px-4 py-3 text-slate-600">${t.subject}</td>
-                        <td class="px-4 py-3 text-slate-600 font-mono text-xs">${t.username}</td>
-                        <td class="px-4 py-3 text-slate-600 font-mono text-xs">••••••••</td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            <button onclick="openEditTeacherModal('${t.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold"><i class="fa-solid fa-pen"></i> Edit</button>
-                            <button onclick="deleteTeacherAccount('${t.id}')" class="text-red-600 hover:text-red-800 text-xs font-semibold"><i class="fa-solid fa-trash"></i> Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            e.preventDefault();
+            const newId = generateSequentialId('TCH', appState.teachers);
+            const teacher = {
+                id: newId,
+                name: document.getElementById('newTeacherName').value.trim(),
+                subject: document.getElementById('newTeacherSubject').value.trim(),
+                username: document.getElementById('newTeacherUsername').value.trim(),
+                password: document.getElementById('newTeacherPassword').value.trim()
+            };
+            appState.teachers.push(teacher);
+            await saveEntity('teachers', teacher);
+            renderAdminTeachers();
+            e.target.reset();
         }
-        
-        async function deleteTeacherAccount(teacherId) {
-            if (confirm("Are you sure you want to delete this teacher account?")) {
-                appState.teachers = appState.teachers.filter(t => t.id !== teacherId);
-                await deleteEntity('teachers', teacherId);
-                renderTeachersTable();
+    
+        function openEditTeacherModal(id) {
+            const t = appState.teachers.find(x => x.id === id);
+            if (!t) return;
+            document.getElementById('editTeacherId').value = t.id;
+            document.getElementById('editTeacherName').value = t.name;
+            document.getElementById('editTeacherSubject').value = t.subject;
+            document.getElementById('editTeacherUsername').value = t.username;
+            document.getElementById('editTeacherPassword').value = t.password;
+            document.getElementById('editTeacherModal').classList.remove('hidden');
+        }
+    
+        async function saveTeacherCredentials(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTeacherId').value;
+            const t = appState.teachers.find(x => x.id === id);
+            if (!t) return;
+            t.name = document.getElementById('editTeacherName').value.trim();
+            t.subject = document.getElementById('editTeacherSubject').value.trim();
+            t.username = document.getElementById('editTeacherUsername').value.trim();
+            t.password = document.getElementById('editTeacherPassword').value.trim();
+            await saveEntity('teachers', t);
+            renderAdminTeachers();
+            document.getElementById('editTeacherModal').classList.add('hidden');
+        }
+    
+        async function deleteTeacher(id) {
+            if (confirm("Delete this faculty account?")) {
+                appState.teachers = appState.teachers.filter(t => t.id !== id);
+                await deleteEntity('teachers', id);
+                renderAdminTeachers();
             }
         }
-
-        function renderAdminTeachers() {
-            const tbody = document.getElementById('adminTeachersTableBody');
-            tbody.innerHTML = '';
-            document.getElementById('teacherCountBadge').textContent = `${appState.teachers.length} Teachers`;
-            appState.teachers.forEach(t => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-semibold text-slate-900">${t.name}</td>
-                    <td class="py-3 px-4 text-slate-600">${t.subject}</td>
-                    <td class="py-3 px-4 font-mono text-indigo-600">${t.username}</td>
-                    <td class="py-3 px-4"><span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full text-xs">Synced</span></td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="deleteTeacher('${t.id}')" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
+    
         async function handleCreateClass(e) {
             e.preventDefault();
-            const name = document.getElementById('newClassName').value.trim();
-            const newC = { id: 'c_' + Date.now(), name };
-            appState.classes.push(newC);
-            await saveEntity('classes', newC);
+            const newId = generateSequentialId('CLS', appState.classes);
+            const cls = { id: newId, name: document.getElementById('newClassName').value.trim() };
+            appState.classes.push(cls);
+            await saveEntity('classes', cls);
             renderAdminClassesDropdowns();
+            renderAdminClassesTable();
             e.target.reset();
         }
-
-        async function handleRegisterStudent(e) {
-            e.preventDefault();
-            const class_id = document.getElementById('regStudentClassSelect').value;
-            const name = document.getElementById('regStudentName').value.trim();
-            const age = parseInt(document.getElementById('regStudentAge').value) || 7;
-            const gender = document.getElementById('regStudentGender').value;
-
-            const newS = { id: 's_' + Date.now(), class_id, name, age, gender };
-            appState.students.push(newS);
-            await saveEntity('students', newS);
-            renderAdminRosterTable();
-            populateReportCardDropdowns();
-            e.target.reset();
-        }
-
-        async function deleteStudent(studentId) {
-            if (confirm('Permanently delete student? Supabase foreign keys (ON DELETE CASCADE) will clear all associated grade rows automatically.')) {
-                appState.students = appState.students.filter(s => s.id !== studentId);
-                appState.markLists.forEach(ml => {
-                    if (ml.grades && ml.grades[studentId]) {
-                        delete ml.grades[studentId];
-                    }
-                });
-                await deleteEntity('students', studentId);
-                renderAdminRosterTable();
-                populateReportCardDropdowns();
-                renderAdminOverviewStats();
+    
+        // Requirement #6: Edit Class Title
+        async function editClassTitle(clsId) {
+            const cls = appState.classes.find(c => c.id === clsId);
+            if (!cls) return;
+            const newTitle = prompt("Enter new class title:", cls.name);
+            if (newTitle && newTitle.trim() !== "") {
+                cls.name = newTitle.trim();
+                await saveEntity('classes', cls);
+                renderAdminClassesTable();
+                renderAdminClassesDropdowns();
             }
         }
-
+    
+        async function handleRegisterStudent(e) {
+            e.preventDefault();
+            const newId = generateSequentialId('STU', appState.students);
+            const student = {
+                id: newId,
+                class_id: document.getElementById('regStudentClassSelect').value,
+                name: document.getElementById('regStudentName').value.trim(),
+                age: parseInt(document.getElementById('regStudentAge').value),
+                gender: document.getElementById('regStudentGender').value
+            };
+            appState.students.push(student);
+            await saveEntity('students', student);
+            renderAdminRosterTable();
+            e.target.reset();
+        }
+    
+        // Requirement #4: Admin Edit Student Information (No Score Access)
         function openEditStudentModal(studentId) {
             const student = appState.students.find(s => s.id === studentId);
             if (!student) return;
-        
-            // Populate class dropdown options first
             const classSelect = document.getElementById('editStudentClass');
             classSelect.innerHTML = appState.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        
-            // Populate modal form fields
+    
             document.getElementById('editStudentId').value = student.id;
             document.getElementById('editStudentName').value = student.name;
             document.getElementById('editStudentAge').value = student.age;
             document.getElementById('editStudentGender').value = student.gender;
             classSelect.value = student.class_id;
-        
-            // Show modal
+    
             document.getElementById('editStudentModal').classList.remove('hidden');
         }
-        
+    
         async function saveStudentProfileChanges(e) {
             e.preventDefault();
             const id = document.getElementById('editStudentId').value;
             const student = appState.students.find(s => s.id === id);
             if (!student) return;
-        
+    
             student.name = document.getElementById('editStudentName').value.trim();
-            student.age = parseInt(document.getElementById('editStudentAge').value) || student.age;
+            student.age = parseInt(document.getElementById('editStudentAge').value);
             student.gender = document.getElementById('editStudentGender').value;
             student.class_id = document.getElementById('editStudentClass').value;
-        
-            // Save changes to Supabase / LocalStorage
+    
             await saveEntity('students', student);
-            
-            // Refresh table and close modal
             renderAdminRosterTable();
             document.getElementById('editStudentModal').classList.add('hidden');
         }
-        
-        function renderAdminClassesDropdowns() {
-            const selectReg = document.getElementById('regStudentClassSelect');
-            const selectFilter = document.getElementById('adminRosterClassFilter');
-            const selectAssign = document.getElementById('assignClassSelect');
-            selectReg.innerHTML = '<option value="">-- Choose Class --</option>';
-            selectFilter.innerHTML = '<option value="">All Classes</option>';
-            selectAssign.innerHTML = '<option value="">-- Choose Class --</option>';
-
-            appState.classes.forEach(c => {
-                selectReg.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-                selectFilter.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-                selectAssign.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-            });
+    
+        async function deleteStudent(studentId) {
+            if (confirm("Delete student? Associated grades in Supabase will be cleared via ON DELETE CASCADE.")) {
+                appState.students = appState.students.filter(s => s.id !== studentId);
+                await deleteEntity('students', studentId);
+                renderAdminRosterTable();
+            }
         }
-
+    
+        async function handleCreateSubject(e) {
+            e.preventDefault();
+            const sub = { id: 'sub_' + Date.now(), name: document.getElementById('newSubjectName').value.trim() };
+            appState.subjects.push(sub);
+            await saveEntity('subjects', sub);
+            renderAdminClassesDropdowns();
+            e.target.reset();
+        }
+    
+        // --- Rendering Helpers ---
+        function renderAdminTeachers() {
+            const tbody = document.getElementById('adminTeachersTableBody');
+            tbody.innerHTML = appState.teachers.map(t => `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="py-3 px-4 font-mono text-xs text-indigo-600 font-bold">${t.id}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-800">${t.name}</td>
+                    <td class="py-3 px-4 text-slate-600">${t.subject}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-700">${t.username}</td>
+                    <td class="py-3 px-4 font-mono text-xs text-slate-700">••••••••</td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="openEditTeacherModal('${t.id}')" class="text-indigo-600 hover:text-indigo-900 font-semibold text-xs"><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button onclick="deleteTeacher('${t.id}')" class="text-red-600 hover:text-red-900 font-semibold text-xs"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('teacherCountBadge').textContent = `${appState.teachers.length} Teachers`;
+        }
+    
+        function renderAdminClassesTable() {
+            const tbody = document.getElementById('adminClassesTableBody');
+            tbody.innerHTML = appState.classes.map(c => `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="py-2.5 px-3 font-mono text-xs text-indigo-600 font-bold">${c.id}</td>
+                    <td class="py-2.5 px-3 font-semibold text-slate-800">${c.name}</td>
+                    <td class="py-2.5 px-3 text-right">
+                        <button onclick="editClassTitle('${c.id}')" class="text-indigo-600 hover:text-indigo-900 text-xs font-semibold"><i class="fa-solid fa-pen"></i> Edit Title</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    
+        function renderAdminClassesDropdowns() {
+            const clsOpts = appState.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            const subOpts = appState.subjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            const tchOpts = appState.teachers.map(t => `<option value="${t.id}">${t.name} (${t.subject})</option>`).join('');
+    
+            document.getElementById('regStudentClassSelect').innerHTML = `<option value="">-- Choose Class --</option>` + clsOpts;
+            document.getElementById('assignClassSelect').innerHTML = `<option value="">-- Choose Class --</option>` + clsOpts;
+            document.getElementById('assignSubjectSelect').innerHTML = `<option value="">-- Choose Subject --</option>` + subOpts;
+            document.getElementById('assignTeacherSelect').innerHTML = `<option value="">-- Choose Teacher --</option>` + tchOpts;
+            document.getElementById('adminRosterClassFilter').innerHTML = `<option value="">All Classes</option>` + clsOpts;
+            renderAdminClassesTable();
+        }
+    
         function renderAdminRosterTable() {
-            const tbody = document.getElementById('adminRosterTableBody'); // or whatever your table body ID is
-            if (!tbody) return;
-            tbody.innerHTML = '';
-        
-            appState.students.forEach(student => {
-                const cls = appState.classes.find(c => c.id === student.class_id);
-                
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50">
-                        <td class="px-4 py-3 font-medium text-slate-800">${student.id}</td>
-                        <td class="px-4 py-3 font-medium text-slate-800">${student.name}</td>
-                        <td class="px-4 py-3 text-slate-600">${student.age}</td>
-                        <td class="px-4 py-3 text-slate-600">${student.gender}</td>
-                        <td class="px-4 py-3 text-slate-600">${cls ? cls.name : 'Unassigned'}</td>
-                        <td class="px-4 py-3 text-right space-x-2">
-                            <button onclick="openEditStudentModal('${student.id}')" class="text-blue-600 hover:text-blue-800 text-xs font-semibold">
-                                <i class="fa-solid fa-pen"></i> Edit Profile
-                            </button>
-                            <button onclick="deleteStudent('${student.id}')" class="text-red-600 hover:text-red-800 text-xs font-semibold">
-                                <i class="fa-solid fa-trash"></i> Delete
-                            </button>
+            const filterClass = document.getElementById('adminRosterClassFilter').value;
+            const students = filterClass ? appState.students.filter(s => s.class_id === filterClass) : appState.students;
+            const tbody = document.getElementById('adminRosterTableBody');
+            
+            tbody.innerHTML = students.map(s => {
+                const cls = appState.classes.find(c => c.id === s.class_id);
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="py-3 px-4 font-mono text-xs text-indigo-600 font-bold">${s.id}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800">${s.name}</td>
+                        <td class="py-3 px-4 text-slate-600">${cls ? cls.name : 'Unassigned'}</td>
+                        <td class="py-3 px-4 text-slate-600">${s.age} yrs / ${s.gender}</td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <button onclick="openEditStudentModal('${s.id}')" class="text-indigo-600 hover:text-indigo-900 font-semibold text-xs"><i class="fa-solid fa-pen"></i> Edit Profile</button>
+                            <button onclick="deleteStudent('${s.id}')" class="text-red-600 hover:text-red-900 font-semibold text-xs"><i class="fa-solid fa-trash"></i> Delete</button>
                         </td>
                     </tr>
                 `;
-            });
+            }).join('');
         }
-        // function renderAdminRosterTable() {
-        //     const tbody = document.getElementById('adminRosterTableBody');
-        //     const filterClassId = document.getElementById('adminRosterClassFilter').value;
-        //     tbody.innerHTML = '';
-        //     let list = appState.students;
-        //     if (filterClassId) list = list.filter(s => s.class_id === filterClassId);
-
-        //     list.forEach(s => {
-        //         const cObj = appState.classes.find(c => c.id === s.class_id);
-        //         const tr = document.createElement('tr');
-        //         tr.innerHTML = `
-        //             <td class="py-3 px-4 font-mono text-xs text-slate-400">${s.id}</td>
-        //             <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
-        //             <td class="py-3 px-4 text-indigo-700">${cObj ? cObj.name : '-'}</td>
-        //             <td class="py-3 px-4 text-slate-600">${s.age} / ${s.gender}</td>
-        //             <td class="py-3 px-4 text-right">
-        //                 <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
-        //             </td>
-        //         `;
-        //         tbody.appendChild(tr);
-        //     });
-        // }
-
-        async function handleCreateSubject(e) {
-            e.preventDefault();
-            const name = document.getElementById('newSubjectName').value.trim();
-            const newSub = { id: 'sub_' + Date.now(), name };
-            appState.subjects.push(newSub);
-            await saveEntity('subjects', newSub);
-            renderAdminSubjectsTable();
-            e.target.reset();
-        }
-
-        async function handleAssignTeacher(e) {
-            // 1. Prevent default form submission reload
-            if (e && typeof e.preventDefault === 'function') {
-                e.preventDefault();
-            }
-        
-            const classId = document.getElementById('assignClassSelect').value;
-            const subjectId = document.getElementById('assignSubjectSelect').value;
-            const teacherId = document.getElementById('assignTeacherSelect').value;
-        
-            if (!classId || !subjectId || !teacherId) {
-                alert("Please select a class, subject, and teacher.");
-                return;
-            }
-        
-            // 2. Enforce single teacher per class subject
-            if (!appState.teachingAssignments) {
-                appState.teachingAssignments = [];
-            }
-        
-            const existingAssignment = appState.teachingAssignments.find(
-                a => a.class_id === classId && a.subject_id === subjectId
-            );
-        
-            if (existingAssignment) {
-                const confirmOverwrite = confirm(`This subject already has a teacher assigned (${existingAssignment.teacher_name}). Do you want to reassign it to the new teacher?`);
-                if (!confirmOverwrite) return;
-                
-                // Remove existing assignment locally
-                appState.teachingAssignments = appState.teachingAssignments.filter(a => a.id !== existingAssignment.id);
-            }
-        
-            const sub = appState.subjects.find(s => s.id === subjectId);
-            const tch = appState.teachers.find(t => t.id === teacherId);
-            const cls = appState.classes.find(c => c.id === classId);
-        
-            const newAssignment = {
-                id: existingAssignment ? existingAssignment.id : 'ta_' + Date.now(),
-                class_id: classId,
-                subject_id: subjectId,
-                subject_name: sub ? sub.name : 'Unknown Subject',
-                teacher_id: teacherId,
-                teacher_name: tch ? tch.name : 'Unknown Teacher'
-            };
-        
-            appState.teachingAssignments.push(newAssignment);
-        
-            try {
-                // Save to Supabase / LocalStorage securely
-                await saveEntity('teaching_assignments', newAssignment);
-            } catch (err) {
-                console.error("Error saving teaching assignment:", err);
-            }
-            
-            // Refresh assignments view safely without redirecting
-            if (typeof renderTeachingAssignments === 'function') {
-                renderTeachingAssignments();
-            }
-        
-            // Reset form fields if it's a form element
-            if (e && e.target && typeof e.target.reset === 'function') {
-                e.target.reset();
-            }
-        }
-        
+    
         function renderAdminSubjectsTable() {
-            const selectTeacher = document.getElementById('assignTeacherSelect');
-            const selectSub = document.getElementById('assignSubjectSelect');
-            selectTeacher.innerHTML = '<option value="">-- Choose Teacher --</option>';
-            appState.teachers.forEach(t => selectTeacher.innerHTML += `<option value="${t.id}">${t.name}</option>`);
-            selectSub.innerHTML = '<option value="">-- Choose Subject --</option>';
-            appState.subjects.forEach(s => selectSub.innerHTML += `<option value="${s.id}">${s.name}</option>`);
-
             const tbody = document.getElementById('adminAssignmentsTableBody');
-            tbody.innerHTML = '';
-            appState.teachingAssignments.forEach(ta => {
-                const cObj = appState.classes.find(c => c.id === ta.class_id);
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-semibold text-slate-900">${cObj ? cObj.name : ''}</td>
-                    <td class="py-3 px-4 text-indigo-700">${ta.subject_name}</td>
-                    <td class="py-3 px-4 text-slate-700">${ta.teacher_name}</td>
-                    <td class="py-3 px-4 text-right"><button onclick="deleteAssignment('${ta.id}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></td>
+            tbody.innerHTML = appState.teachingAssignments.map(ta => {
+                const cls = appState.classes.find(c => c.id === ta.class_id);
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="py-3 px-4 font-semibold text-slate-800">${cls ? cls.name : '-'}</td>
+                        <td class="py-3 px-4 font-semibold text-indigo-600">${ta.subject_name}</td>
+                        <td class="py-3 px-4 text-slate-600">${ta.teacher_name}</td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="deleteAssignment('${ta.id}')" class="text-red-600 hover:text-red-900 text-xs font-semibold"><i class="fa-solid fa-trash"></i> Remove</button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
-            });
+            }).join('');
         }
-
-        async function deleteAssignment(taId) {
-            appState.teachingAssignments = appState.teachingAssignments.filter(ta => ta.id !== taId);
-            await deleteEntity('teaching_assignments', taId);
+    
+        async function deleteAssignment(id) {
+            appState.teachingAssignments = appState.teachingAssignments.filter(a => a.id !== id);
+            await deleteEntity('teaching_assignments', id);
             renderAdminSubjectsTable();
         }
-
+    
         function renderAdminMarkLists() {
             const tbody = document.getElementById('adminMarkListsTableBody');
-            tbody.innerHTML = '';
-            appState.markLists.forEach(ml => {
-                const cObj = appState.classes.find(c => c.id === ml.class_id);
-                const studentCount = appState.students.filter(s => s.class_id === ml.class_id).length;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-semibold text-slate-900">${cObj ? cObj.name : ''}</td>
-                    <td class="py-3 px-4 text-indigo-600">${ml.subject_name}</td>
-                    <td class="py-3 px-4 text-slate-600">${ml.teacher_name}</td>
-                    <td class="py-3 px-4">${studentCount}</td>
-                    <td class="py-3 px-4">${ml.reported ? '<span class="text-emerald-600 font-bold">Submitted</span>' : '<span class="text-amber-600">Draft</span>'}</td>
-                    <td class="py-3 px-4 text-right"><button onclick="openMarkListModal('${ml.id}')" class="bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg text-xs font-semibold">View Scores</button></td>
+            tbody.innerHTML = appState.markLists.map(ml => {
+                const cls = appState.classes.find(c => c.id === ml.class_id);
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="py-3 px-4 font-semibold text-slate-800">${cls ? cls.name : '-'}</td>
+                        <td class="py-3 px-4 font-semibold text-indigo-600">${ml.subject_name}</td>
+                        <td class="py-3 px-4 text-slate-600">${ml.teacher_name}</td>
+                        <td class="py-3 px-4 text-slate-600">${appState.students.filter(s => s.class_id === ml.class_id).length} students</td>
+                        <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${ml.reported ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${ml.reported ? 'Submitted' : 'Draft'}</span></td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="openMarkListModal('${ml.id}')" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition">Open Desk</button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
-            });
+            }).join('');
         }
-
+    
         function renderTeacherMarkLists() {
+            const myLists = appState.markLists.filter(ml => ml.teacher_id === appState.currentUser.id);
             const tbody = document.getElementById('teacherMarkListsTableBody');
-            tbody.innerHTML = '';
-            const teacherAssignments = appState.teachingAssignments.filter(ta => ta.teacher_id === appState.currentUser.id);
-            document.getElementById('teacherMarkListCount').textContent = `${teacherAssignments.length} Mark Lists`;
-
-            teacherAssignments.forEach(ta => {
-                const cObj = appState.classes.find(c => c.id === ta.class_id);
-                const studentCount = appState.students.filter(s => s.class_id === ta.class_id).length;
-                const mlId = `ml_${ta.class_id}_${ta.subject_id}`;
-                const ml = appState.markLists.find(m => m.id === mlId);
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-semibold text-slate-900">${cObj ? cObj.name : ''}</td>
-                    <td class="py-3 px-4 text-emerald-700">${ta.subject_name}</td>
-                    <td class="py-3 px-4 text-slate-600">${studentCount}</td>
-                    <td class="py-3 px-4">${ml && ml.reported ? '<span class="text-emerald-600 font-bold">Submitted</span>' : '<span class="text-amber-600">Draft</span>'}</td>
-                    <td class="py-3 px-4 text-right"><button onclick="openMarkListModal('${mlId}')" class="bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg text-xs font-semibold">Open Desk</button></td>
+            document.getElementById('teacherMarkListCount').textContent = `${myLists.length} Mark Lists`;
+            tbody.innerHTML = myLists.map(ml => {
+                const cls = appState.classes.find(c => c.id === ml.class_id);
+                return `
+                    <tr class="border-b border-slate-100 hover:bg-slate-50">
+                        <td class="py-3 px-4 font-semibold text-slate-800">${cls ? cls.name : '-'}</td>
+                        <td class="py-3 px-4 font-semibold text-indigo-600">${ml.subject_name}</td>
+                        <td class="py-3 px-4 text-slate-600">${appState.students.filter(s => s.class_id === ml.class_id).length} students</td>
+                        <td class="py-3 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-bold ${ml.reported ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${ml.reported ? 'Submitted' : 'Draft'}</span></td>
+                        <td class="py-3 px-4 text-right">
+                            <button onclick="openMarkListModal('${ml.id}')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-3 py-1.5 rounded-lg text-xs transition"><i class="fa-solid fa-folder-open"></i> Open Desk</button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
-            });
+            }).join('');
         }
-
-        function getLetterGrade(mark) {
-            const num = parseFloat(mark) || 0;
-            if (num >= 90) return 'A+';
-            if (num >= 85) return 'A';
-            if (num >= 80) return 'A-';
-            if (num >= 75) return 'B+';
-            if (num >= 70) return 'B';
-            if (num >= 65) return 'C+';
-            if (num >= 60) return 'C';
-            if (num >= 50) return 'D';
-            return 'F';
-        }
-
-        function calculateStudentScore(studentId, markList) {
-            let total = 0;
-            const sGradeData = markList.grades ? markList.grades[studentId] : null;
-            if (sGradeData && sGradeData.marks && markList.assessments) {
-                markList.assessments.forEach(ass => {
-                    total += parseFloat(sGradeData.marks[ass.id]) || 0;
-                });
-            }
-            const mark = Math.round(total * 100) / 100;
-            const customGrade = sGradeData && sGradeData.customGrade ? sGradeData.customGrade : getLetterGrade(mark);
-            return { mark, customGrade };
-        }
-
+    
+        // --- Grading Desk Modal Logic ---
         function openMarkListModal(markListId) {
-            // 1. Set the active mark list ID in global state
             appState.activeMarkListId = markListId;
-            
-            // 2. Find the specific mark list record
             const ml = appState.markLists.find(m => m.id === markListId);
-            if (!ml) {
-                console.error("Mark list not found for ID:", markListId);
-                alert("Could not load assessment desk. Please try refreshing.");
-                return;
-            }
-        
-            // 3. Update modal header titles if elements exist
-            const titleEl = document.getElementById('deskSubjectTitle');
-            if (titleEl) titleEl.textContent = `${ml.subject_name} - ${ml.teacher_name}`;
-        
-            // 4. Render assessment chips and student grade input rows
-            if (typeof renderAssessmentChips === 'function') renderAssessmentChips(ml);
-            if (typeof renderModalStudents === 'function') renderModalStudents();
-        
-            // 5. Explicitly show the grading modal (adjust modal ID to match yours if needed)
-            const modal = document.getElementById('teacherGradeModal') || document.getElementById('assessmentDeskModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-            } else {
-                console.warn("Grading modal DOM element not found. Check your modal HTML ID.");
-            }
+            if (!ml) return;
+    
+            document.getElementById('modalMarkListTitle').textContent = `${ml.subject_name} (${ml.teacher_name})`;
+            renderAssessmentChips(ml);
+            renderModalStudents();
+            document.getElementById('markListDetailModal').classList.remove('hidden');
         }
-
+    
         function closeMarkListModal() {
             document.getElementById('markListDetailModal').classList.add('hidden');
-            appState.activeMarkListId = null;
         }
-
-        // function renderAssessmentChips(ml) {
-        //     const container = document.getElementById('assessmentsChipsContainer');
-        //     container.innerHTML = '';
-        //     let totalMax = 0;
-        //     if (ml.assessments) {
-        //         ml.assessments.forEach(ass => {
-        //             totalMax += ass.maxMark;
-        //             container.innerHTML += `<div class="bg-white border rounded-lg px-3 py-1 text-xs font-semibold">${ass.title} (${ass.maxMark} pts)</div>`;
-        //         });
-        //     }
-        //     document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
-        // }
-        
+    
         function renderAssessmentChips(ml) {
             const container = document.getElementById('assessmentsChipsContainer');
-            container.innerHTML = '';
-            let totalMax = 0;
-            
-            // Check if current user is admin (optional: allow only teachers or both)
-            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
-        
-            if (ml.assessments) {
-                ml.assessments.forEach(ass => {
-                    totalMax += ass.maxMark;
-                    
-                    // Render chip with a delete button attached
-                    container.innerHTML += `
-                        <div class="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold flex items-center space-x-2 shadow-sm">
-                            <span>${ass.title} (${ass.maxMark} pts)</span>
-                            ${!isAdmin ? `<button onclick="deleteAssessmentCategory('${ass.id}')" class="text-slate-400 hover:text-red-600 transition ml-1" title="Delete Assessment"><i class="fa-solid fa-xmark"></i></button>` : ''}
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
+            container.innerHTML = (ml.assessments || []).map(a => `
+                <div class="bg-white border rounded-lg px-3 py-1 text-xs font-semibold flex items-center space-x-2">
+                    <span>${a.title} (${a.maxMark} pts)</span>
+                </div>
+            `).join('');
         }
-        
-        async function deleteAssessmentCategory(assId) {
-            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
-            if (!ml) return;
-        
-            // Prevent deleting if it's the last remaining assessment
-            if (ml.assessments && ml.assessments.length <= 1) {
-                alert("You must keep at least one assessment category.");
-                return;
-            }
-        
-            if (confirm("Are you sure you want to delete this assessment category? Associated scores for this category will be cleared.")) {
-                // Filter out the assessment
-                ml.assessments = ml.assessments.filter(a => a.id !== assId);
-        
-                // Optional: Clean up score values for this assessment from student grades
-                if (ml.grades) {
-                    Object.keys(ml.grades).forEach(studentId => {
-                        if (ml.grades[studentId].marks && ml.grades[studentId].marks[assId] !== undefined) {
-                            delete ml.grades[studentId].marks[assId];
-                        }
-                    });
-                }
-        
-                // Save updated mark list to Supabase / LocalStorage
-                await saveEntity('mark_lists', ml);
-        
-                // Refresh UI
-                renderAssessmentChips(ml);
-                renderModalStudents();
-            }
-        }
-        
+    
         async function handleAddAssessment(e) {
             e.preventDefault();
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
-        
             const title = document.getElementById('newAssessTitle').value.trim();
             const maxMark = parseFloat(document.getElementById('newAssessMax').value) || 10;
-            
+    
             if (!ml.assessments) ml.assessments = [];
-        
-            // Calculate current total points/weight
-            const currentTotal = ml.assessments.reduce((sum, ass) => sum + Number(ass.maxMark || 0), 0);
-            
-            // Check if adding this assessment exceeds the 100 max mark limit
-            if (currentTotal + maxMark > 100) {
-                alert(`Cannot add assessment. Total maximum marks cannot exceed 100. Current total is ${currentTotal}, and adding ${maxMark} would make it ${currentTotal + maxMark}.`);
-                return;
-            }
-        
-            // Add the new assessment if within limits
             ml.assessments.push({ id: 'a_' + Date.now(), title, maxMark });
-            
             await saveEntity('mark_lists', ml);
             renderAssessmentChips(ml);
             renderModalStudents();
             e.target.reset();
         }
-        
-
-        async function updateAssessmentScore(studentId, assId, val, maxMark) {
+    
+        function renderModalStudents() {
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
-            if (!ml.grades) ml.grades = {};
-            if (!ml.grades[studentId]) ml.grades[studentId] = { marks: {}, customGrade: '' };
-            let num = parseFloat(val) || 0;
-            if (num > maxMark) num = maxMark;
-            ml.grades[studentId].marks[assId] = num;
+            const students = appState.students.filter(s => s.class_id === ml.class_id);
+    
+            const headerTr = document.getElementById('modalStudentsTableHeader');
+            headerTr.innerHTML = `
+                <th class="py-3 px-4 border-r border-slate-200">Student Name</th>
+                ${(ml.assessments || []).map(a => `<th class="py-3 px-4 border-r border-slate-200 text-center">${a.title} (${a.maxMark})</th>`).join('')}
+                <th class="py-3 px-4 border-r border-slate-200 text-center">Total (100)</th>
+                <th class="py-3 px-4 text-center">Grade</th>
+            `;
+    
+            const tbody = document.getElementById('modalStudentsTableBody');
+            tbody.innerHTML = students.map(st => {
+                if (!ml.grades) ml.grades = {};
+                if (!ml.grades[st.id]) ml.grades[st.id] = { marks: {}, customGrade: '-' };
+                const stRecord = ml.grades[st.id];
+    
+                let inputsHtml = (ml.assessments || []).map(a => {
+                    const val = stRecord.marks[a.id] !== undefined ? stRecord.marks[a.id] : '';
+                    return `
+                        <td class="py-2.5 px-3 border-r border-slate-100 text-center">
+                            <input type="number" min="0" max="${a.maxMark}" value="${val}" onchange="updateStudentMark('${st.id}', '${a.id}', this.value)" class="w-16 text-center border rounded-lg py-1 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-500">
+                        </td>
+                    `;
+                }).join('');
+    
+                const scoreObj = calculateStudentScore(st.id, ml);
+                return `
+                    <tr class="border-b border-slate-100">
+                        <td class="py-2.5 px-4 font-semibold text-slate-800 border-r border-slate-100">${st.name}</td>
+                        ${inputsHtml}
+                        <td class="py-2.5 px-4 text-center font-bold text-indigo-600 border-r border-slate-100">${scoreObj.mark}</td>
+                        <td class="py-2.5 px-4 text-center font-bold text-slate-700">${scoreObj.customGrade}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    
+        async function updateStudentMark(studentId, assessId, val) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+            if (!ml.grades[studentId]) ml.grades[studentId] = { marks: {}, customGrade: '-' };
+            ml.grades[studentId].marks[assessId] = parseFloat(val) || 0;
+    
+            const scoreObj = calculateStudentScore(studentId, ml);
+            ml.grades[studentId].customGrade = scoreObj.customGrade;
             await saveEntity('mark_lists', ml);
             renderModalStudents();
         }
-
-        function renderModalStudents() {
-            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
-            const headerRow = document.getElementById('modalStudentsTableHeader');
-            const tbody = document.getElementById('modalStudentsTableBody');
-            const searchQuery = document.getElementById('studentSearchFilter').value.toLowerCase();
-            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
-            tbody.innerHTML = '';
-            if (!ml) return;
-
-            let enrolledStudents = appState.students.filter(s => s.class_id === ml.class_id);
-            if (searchQuery) {
-                enrolledStudents = enrolledStudents.filter(s => s.name.toLowerCase().includes(searchQuery));
-            }
-
-            let headerHTML = `<th class="py-3 px-4 border-b">Student Name</th>`;
-            if (ml.assessments) {
-                ml.assessments.forEach(ass => headerHTML += `<th class="py-3 px-3 border-b text-center">${ass.title}</th>`);
-            }
-            headerHTML += `<th class="py-3 px-4 border-b text-center">Total</th><th class="py-3 px-4 border-b text-center">Letter Grade</th>`;
-            headerRow.innerHTML = headerHTML;
-
-            enrolledStudents.forEach(s => {
-                const scoreObj = calculateStudentScore(s.id, ml);
-                const sGradeData = ml.grades && ml.grades[s.id] ? ml.grades[s.id] : { marks: {} };
-
-                let rowHTML = `<td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>`;
-                if (ml.assessments) {
-                    ml.assessments.forEach(ass => {
-                        const score = (sGradeData.marks && sGradeData.marks[ass.id] !== undefined) ? sGradeData.marks[ass.id] : 0;
-                        rowHTML += `
-                            <td class="py-3 px-2 text-center">
-                                ${isAdmin ? score : `<input type="number" min="0" max="${ass.maxMark}" value="${score}" onchange="updateAssessmentScore('${s.id}', '${ass.id}', this.value, ${ass.maxMark})" class="bg-slate-50 border rounded-lg px-2 py-1 w-20 text-center font-bold">`}
-                            </td>
-                        `;
-                    });
-                }
-                rowHTML += `
-                    <td class="py-3 px-4 text-center font-bold text-indigo-600">${scoreObj.mark}</td>
-                    <td class="py-3 px-4 text-center font-black text-emerald-700">${scoreObj.customGrade}</td>
-                `;
-                const tr = document.createElement('tr');
-                tr.innerHTML = rowHTML;
-                tbody.appendChild(tr);
+    
+        function calculateStudentScore(studentId, ml) {
+            if (!ml.grades || !ml.grades[studentId]) return { mark: 0, customGrade: 'F' };
+            const studentMarks = ml.grades[studentId].marks || {};
+            let totalWeighted = 0, totalPossible = 0;
+    
+            (ml.assessments || []).forEach(a => {
+                totalWeighted += Number(studentMarks[a.id] || 0);
+                totalPossible += Number(a.maxMark || 10);
             });
+    
+            const finalMark = totalPossible > 0 ? Math.round((totalWeighted / totalPossible) * 100) : 0;
+            return { mark: finalMark, customGrade: getLetterGrade(finalMark) };
         }
-
+    
+        function getLetterGrade(score) {
+            if (score >= 90) return 'A+';
+            if (score >= 80) return 'A';
+            if (score >= 75) return 'B+';
+            if (score >= 70) return 'B';
+            if (score >= 60) return 'C';
+            if (score >= 50) return 'D';
+            return 'F';
+        }
+    
         async function toggleReportMarkList() {
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             ml.reported = !ml.reported;
             await saveEntity('mark_lists', ml);
-            renderTeacherMarkLists();
+            alert(ml.reported ? "Mark list officially submitted!" : "Mark list reverted to draft.");
             closeMarkListModal();
+            if (appState.currentUser.role === 'admin') renderAdminMarkLists();
         }
-
-        function exportDatabaseCSV() {
-            let csv = "StudentID,Name,ClassID,Age,Gender\n";
-            appState.students.forEach(s => {
-                csv += `${s.id},"${s.name}",${s.class_id},${s.age},${s.gender}\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute("download", "AcademicPro_Master_Students.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function downloadMarkListPDF() {
-            const element = document.getElementById('printableMarkListArea');
-            element.classList.remove('hidden');
-            html2pdf().from(element).save('MarkList.pdf').then(() => element.classList.add('hidden'));
-        }
-
+    
+        // --- REQUIREMENT #2: Report Card & Dynamic Class Rank Calculation ---
         function populateReportCardDropdowns() {
             const classSelect = document.getElementById('reportCardClassSelect');
-            classSelect.innerHTML = '<option value="">-- Choose Class --</option>';
-            appState.classes.forEach(c => classSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+            classSelect.innerHTML = `<option value="">-- Choose Class --</option>` + appState.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         }
-
+    
         function onClassFilterChange() {
             const classId = document.getElementById('reportCardClassSelect').value;
             const studentSelect = document.getElementById('reportCardStudentSelect');
-            studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
-            appState.students.filter(s => s.class_id === classId).forEach(s => {
-                studentSelect.innerHTML += `<option value="${s.id}">${s.name}</option>`;
-            });
+            const studentsInClass = appState.students.filter(s => s.class_id === classId);
+            studentSelect.innerHTML = `<option value="">-- Choose Student --</option>` + studentsInClass.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            document.getElementById('reportCardContainer').classList.add('hidden');
+            document.getElementById('reportCardEmpty').classList.remove('hidden');
         }
-
+    
         function generateStudentReportCard() {
-            const classId = document.getElementById('reportCardClassSelect').value;
+            const classId = document.getElementById('reportCardClassSelect.value') || document.getElementById('reportCardClassSelect').value;
             const studentId = document.getElementById('reportCardStudentSelect').value;
             const container = document.getElementById('reportCardContainer');
             const emptyState = document.getElementById('reportCardEmpty');
-            if (!classId || !studentId) { container.classList.add('hidden'); emptyState.classList.remove('hidden'); return; }
-
+    
+            if (!classId || !studentId) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+    
             const targetStudent = appState.students.find(s => s.id === studentId);
             const targetClass = appState.classes.find(c => c.id === classId);
             const classMarkLists = appState.markLists.filter(ml => ml.class_id === classId);
-
+    
             document.getElementById('rcIssueDate').textContent = new Date().toLocaleDateString();
             document.getElementById('rcStudentName').textContent = targetStudent.name;
             document.getElementById('rcClassName').textContent = targetClass.name;
             document.getElementById('rcTotalSubjects').textContent = classMarkLists.length;
-
-            let total = 0;
+    
+            let totalMarksSum = 0;
             const tbody = document.getElementById('rcMarksTableBody');
             tbody.innerHTML = '';
+    
             classMarkLists.forEach(ml => {
                 const scoreObj = calculateStudentScore(studentId, ml);
-                total += scoreObj.mark;
+                totalMarksSum += scoreObj.mark;
                 tbody.innerHTML += `
-                    <tr class="border-b">
-                        <td class="py-3 px-4 font-semibold">${ml.subject_name}</td>
-                        <td class="py-3 px-4">${targetClass.name}</td>
-                        <td class="py-3 px-4">${ml.teacher_name}</td>
-                        <td class="py-3 px-4 text-center font-bold text-indigo-600">${scoreObj.mark}</td>
+                    <tr class="border-b border-slate-200">
+                        <td class="py-3 px-4 border-r border-slate-200 font-semibold">${ml.subject_name}</td>
+                        <td class="py-3 px-4 border-r border-slate-200">${targetClass.name}</td>
+                        <td class="py-3 px-4 border-r border-slate-200">${ml.teacher_name}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 text-center font-bold text-indigo-600">${scoreObj.mark}</td>
                         <td class="py-3 px-4 text-center font-bold">${scoreObj.customGrade}</td>
                     </tr>
                 `;
             });
-            const avg = classMarkLists.length > 0 ? (total / classMarkLists.length).toFixed(1) : 0;
+    
+            const avg = classMarkLists.length > 0 ? (totalMarksSum / classMarkLists.length).toFixed(1) : 0;
             document.getElementById('rcOverallAverage').textContent = `${avg} / 100 (${getLetterGrade(avg)})`;
-
-            // --- DYNAMIC RANK CALCULATION ---
-            // 1. Get all students belonging to this class
+    
+            // --- DYNAMIC CLASS RANK CALCULATION (Fixes #2) ---
             const studentsInClass = appState.students.filter(s => s.class_id === classId);
-            
-            // 2. Compute total score for every student in the class
             const studentTotals = studentsInClass.map(stu => {
                 let stuTotal = 0;
                 classMarkLists.forEach(ml => {
@@ -1667,30 +1430,24 @@
                 });
                 return { id: stu.id, total: stuTotal };
             });
-
-            // 3. Sort students by total score descending (highest first)
+    
             studentTotals.sort((a, b) => b.total - a.total);
-
-            // 4. Find the rank (index + 1) of the target student
             const rankIndex = studentTotals.findIndex(s => s.id === studentId);
             const classRank = rankIndex !== -1 ? rankIndex + 1 : 1;
-
-            // 5. Display the calculated rank
+    
             document.getElementById('rcClassRank').textContent = `#${classRank}`;
-            // ---------------------------------
-
+            // -------------------------------------------------
+    
             container.classList.remove('hidden');
             emptyState.classList.add('hidden');
         }
-
+    
         function downloadStudentReportPDF() {
             const element = document.getElementById('printableReportCard');
-            html2pdf().set({ margin: 0.4, filename: 'Official_Report_Card.pdf', html2canvas: { scale: 2 } }).from(element).save();
+            html2pdf().from(element).save('student_transcript.pdf');
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadAppData();
-        });
-    </script>
+    
+        window.onload = loadAppData;
+    </script>   
 </body>
 </html>
