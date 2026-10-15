@@ -706,23 +706,14 @@
         let useCloudDb = false;
         
         // Configuration Constants
-        const SUPABASE_URL = 'https://advaccrffdmlkqizsmaq.supabase.co'; // Your actual URL
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkdmFjY3JmZmRtbGtxaXpzbWFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwNjM3NjIsImV4cCI6MjEwNzYzOTc2Mn0.ME1cahWmI0jbB-1qGDL-pecR2ofAGTCuMUAB7HWKQe8'; // Your actual Anon Key
-        
-        // Initialize Supabase Client safely
-        let supabaseClient = null;
-        if (window.supabase && SUPABASE_URL && !SUPABASE_URL.includes('your-project')) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        try {
+            if (window.supabase && SUPABASE_URL !== 'https://advaccrffdmlkqizsmaq.supabase.co') {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                useCloudDb = true;
+            }
+        } catch (e) {
+            console.log("Supabase client running in standalone fallback mode.");
         }
-
-        // try {
-        //     if (window.supabase && SUPABASE_URL !== 'https://advaccrffdmlkqizsmaq.supabase.co') {
-        //         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        //         useCloudDb = true;
-        //     }
-        // } catch (e) {
-        //     console.log("Supabase client running in standalone fallback mode.");
-        // }
 
         // Global State Management
         let appState = {
