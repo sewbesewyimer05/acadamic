@@ -1286,19 +1286,41 @@
             appState.activeMarkListId = null;
         }
 
+        // function renderAssessmentChips(ml) {
+        //     const container = document.getElementById('assessmentsChipsContainer');
+        //     container.innerHTML = '';
+        //     let totalMax = 0;
+        //     if (ml.assessments) {
+        //         ml.assessments.forEach(ass => {
+        //             totalMax += ass.maxMark;
+        //             container.innerHTML += `<div class="bg-white border rounded-lg px-3 py-1 text-xs font-semibold">${ass.title} (${ass.maxMark} pts)</div>`;
+        //         });
+        //     }
+        //     document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
+        // }
         function renderAssessmentChips(ml) {
             const container = document.getElementById('assessmentsChipsContainer');
             container.innerHTML = '';
             let totalMax = 0;
+            
+            // Check if current user is admin (optional: allow only teachers or both)
+            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
+        
             if (ml.assessments) {
                 ml.assessments.forEach(ass => {
                     totalMax += ass.maxMark;
-                    container.innerHTML += `<div class="bg-white border rounded-lg px-3 py-1 text-xs font-semibold">${ass.title} (${ass.maxMark} pts)</div>`;
+                    
+                    // Render chip with a delete button attached
+                    container.innerHTML += `
+                        <div class="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold flex items-center space-x-2 shadow-sm">
+                            <span>${ass.title} (${ass.maxMark} pts)</span>
+                            ${!isAdmin ? `<button onclick="deleteAssessmentCategory('${ass.id}')" class="text-slate-400 hover:text-red-600 transition ml-1" title="Delete Assessment"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                        </div>
+                    `;
                 });
             }
             document.getElementById('assessmentsTotalWeightBadge').textContent = `Total: ${totalMax} Points`;
         }
-
         async function handleAddAssessment(e) {
             e.preventDefault();
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
