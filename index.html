@@ -36,8 +36,6 @@
     </style>
     
     
-    <div id="app" class="min-h-full flex flex-col">
-    
         <!-- Navigation / Header Bar -->
         <header id="mainHeader" class="bg-indigo-900 text-white shadow-md hidden">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -424,13 +422,13 @@
                         </div>
                     </div>
     
-                    <!-- Mark Lists Tab -->
+                    <!-- Mark Lists Tab (Fixes Problem #1: Visible on Admin Side with Full Privileges) -->
                     <div id="adminTabReports" class="tab-content space-y-6">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                             <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists</h3>
-                                    <p class="text-sm text-slate-500">Read-Only Gatekeeper View for Department Head.</p>
+                                    <p class="text-sm text-slate-500">Supervisory View: Admins can inspect and open any grading desk.</p>
                                 </div>
                             </div>
                             <div class="overflow-x-auto">
@@ -589,7 +587,7 @@
                 </div>
             </div>
     
-            <!-- EDIT STUDENT PROFILE MODAL (Admin No Score Access) -->
+            <!-- EDIT STUDENT PROFILE MODAL -->
             <div id="editStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
                 <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
                     <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
@@ -660,7 +658,7 @@
                 </div>
             </div>
     
-            <!-- MARK LIST DETAILS MODAL -->
+            <!-- MARK LIST DETAILS MODAL (Fixes Problems #2, #3, #4) -->
             <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
                 <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
                     <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
@@ -678,9 +676,12 @@
                                     <i class="fa-solid fa-sliders text-emerald-600"></i>
                                     <span>Continuous Assessment Score Weighting</span>
                                 </h4>
-                                <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Total: 100 Points</span>
+                                <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Manage Assessments</span>
                             </div>
+                            <!-- Fixes Problem #2: Assessment chips now feature a delete button -->
                             <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3"></div>
+                            
+                            <!-- Fixes Problem #3: Max assessment score limited to 100 -->
                             <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
@@ -688,7 +689,7 @@
                                         <input type="text" id="newAssessTitle" required placeholder="e.g. Quiz / Mid-Term / Final" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Max Score Weight</label>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Max Score Weight (Max 100)</label>
                                         <input type="number" id="newAssessMax" required min="1" max="100" placeholder="30" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
                                     </div>
                                 </div>
@@ -798,6 +799,23 @@
                 appState.teachingAssignments = [
                     { id: 'ta1', class_id: 'CLS-001', subject_id: 'sub2', subject_name: 'Math', teacher_id: 'TCH-002', teacher_name: 'Prof. Marie Curie' }
                 ];
+                appState.markLists = [
+                    {
+                        id: 'ml_CLS-001_sub2',
+                        assignment_id: 'ta1',
+                        class_id: 'CLS-001',
+                        subject_name: 'Math',
+                        teacher_id: 'TCH-002',
+                        teacher_name: 'Prof. Marie Curie',
+                        reported: false,
+                        assessments: [
+                            { id: 'a1', title: 'Quiz', maxMark: 10 },
+                            { id: 'a2', title: 'Mid-Term', maxMark: 30 },
+                            { id: 'a3', title: 'Final Exam', maxMark: 60 }
+                        ],
+                        grades: {}
+                    }
+                ];
             }
             checkAuthView();
         }
@@ -816,7 +834,6 @@
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
-        // Sequential ID Generator (Requirement #5)
         function generateSequentialId(prefix, existingList) {
             const count = existingList.length + 1;
             return `${prefix}-${String(count).padStart(3, '0')}`;
@@ -915,17 +932,15 @@
             document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
         }
     
-        // --- REQUIREMENT #1: Exclusive Teacher Subject Assignment ---
         async function handleAssignTeacherSubject(e) {
             e.preventDefault();
             const teacherId = document.getElementById('assignTeacherSelect').value;
             const classId = document.getElementById('assignClassSelect').value;
             const subjectId = document.getElementById('assignSubjectSelect').value;
     
-            // Check if this class + subject already has another teacher assigned
             const existingAssignment = appState.teachingAssignments.find(a => a.class_id === classId && a.subject_id === subjectId);
             if (existingAssignment) {
-                alert(`Conflict: This subject in this class is already assigned to ${existingAssignment.teacher_name}. Please reassign or delete the existing assignment first.`);
+                alert(`Conflict: This subject in this class is already assigned to ${existingAssignment.teacher_name}.`);
                 return;
             }
     
@@ -945,9 +960,8 @@
             appState.teachingAssignments.push(newAssignment);
             await saveEntity('teaching_assignments', newAssignment);
     
-            // Automatically provision a Mark List for this assignment
             const newMarkList = {
-                id: `ml_${classId}_${subjectId}`,
+                id: `ml_${classId}_${subjectId}_${Date.now()}`,
                 assignment_id: newAssignment.id,
                 class_id: classId,
                 subject_name: sub.name,
@@ -955,9 +969,9 @@
                 teacher_name: tch.name,
                 reported: false,
                 assessments: [
-                    { id: 'a1', title: 'Quiz', maxMark: 20 },
+                    { id: 'a1', title: 'Quiz', maxMark: 10 },
                     { id: 'a2', title: 'Mid-Term', maxMark: 30 },
-                    { id: 'a3', title: 'Final Exam', maxMark: 50 }
+                    { id: 'a3', title: 'Final Exam', maxMark: 60 }
                 ],
                 grades: {}
             };
@@ -965,10 +979,9 @@
             await saveEntity('mark_lists', newMarkList);
     
             renderAdminSubjectsTable();
+            renderAdminMarkLists();
             alert(`Successfully assigned ${sub.name} in ${cls.name} exclusively to ${tch.name}!`);
         }
-    
-        // --- REQUIREMENT #2 & #6 & #3 & #4 & #5 Handlers ---
     
         async function handleCreateTeacher(e) {
             e.preventDefault();
@@ -1030,7 +1043,6 @@
             e.target.reset();
         }
     
-        // Requirement #6: Edit Class Title
         async function editClassTitle(clsId) {
             const cls = appState.classes.find(c => c.id === clsId);
             if (!cls) return;
@@ -1059,7 +1071,6 @@
             e.target.reset();
         }
     
-        // Requirement #4: Admin Edit Student Information (No Score Access)
         function openEditStudentModal(studentId) {
             const student = appState.students.find(s => s.id === studentId);
             if (!student) return;
@@ -1092,7 +1103,7 @@
         }
     
         async function deleteStudent(studentId) {
-            if (confirm("Delete student? Associated grades in Supabase will be cleared via ON DELETE CASCADE.")) {
+            if (confirm("Delete student?")) {
                 appState.students = appState.students.filter(s => s.id !== studentId);
                 await deleteEntity('students', studentId);
                 renderAdminRosterTable();
@@ -1108,7 +1119,12 @@
             e.target.reset();
         }
     
-        // --- Rendering Helpers ---
+        function renderAdminOverviewStats() {
+            document.getElementById('statFacultyCount').textContent = appState.teachers.length;
+            document.getElementById('statStudentCount').textContent = appState.students.length;
+            document.getElementById('statClassCount').textContent = appState.classes.length;
+        }
+    
         function renderAdminTeachers() {
             const tbody = document.getElementById('adminTeachersTableBody');
             tbody.innerHTML = appState.teachers.map(t => `
@@ -1198,6 +1214,7 @@
             renderAdminSubjectsTable();
         }
     
+        // Fixes Problem #1: Admin view for all mark lists
         function renderAdminMarkLists() {
             const tbody = document.getElementById('adminMarkListsTableBody');
             tbody.innerHTML = appState.markLists.map(ml => {
@@ -1237,7 +1254,6 @@
             }).join('');
         }
     
-        // --- Grading Desk Modal Logic ---
         function openMarkListModal(markListId) {
             appState.activeMarkListId = markListId;
             const ml = appState.markLists.find(m => m.id === markListId);
@@ -1253,21 +1269,60 @@
             document.getElementById('markListDetailModal').classList.add('hidden');
         }
     
+        // Fixes Problem #2: Render assessment chips with delete icon
         function renderAssessmentChips(ml) {
             const container = document.getElementById('assessmentsChipsContainer');
             container.innerHTML = (ml.assessments || []).map(a => `
-                <div class="bg-white border rounded-lg px-3 py-1 text-xs font-semibold flex items-center space-x-2">
+                <div class="bg-white border rounded-lg px-3.5 py-1 text-xs font-semibold flex items-center space-x-2 shadow-sm">
                     <span>${a.title} (${a.maxMark} pts)</span>
+                    <button type="button" onclick="deleteAssessment('${a.id}')" class="text-red-500 hover:text-red-700 ml-1"><i class="fa-solid fa-xmark"></i></button>
                 </div>
             `).join('');
         }
     
+        // Fixes Problem #2: Delete individual assessment function
+        async function deleteAssessment(assessId) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+            
+            if (ml.assessments.length <= 1) {
+                alert("You must keep at least one assessment.");
+                return;
+            }
+    
+            ml.assessments = ml.assessments.filter(a => a.id !== assessId);
+            
+            if (ml.grades) {
+                Object.keys(ml.grades).forEach(stId => {
+                    if (ml.grades[stId].marks) {
+                        delete ml.grades[stId].marks[assessId];
+                    }
+                });
+            }
+    
+            await saveEntity('mark_lists', ml);
+            renderAssessmentChips(ml);
+            renderModalStudents();
+        }
+    
+        // Fixes Problem #3: Limit maximum assessment score to 100
         async function handleAddAssessment(e) {
             e.preventDefault();
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
             const title = document.getElementById('newAssessTitle').value.trim();
             const maxMark = parseFloat(document.getElementById('newAssessMax').value) || 10;
+    
+            if (maxMark > 100 || maxMark < 1) {
+                alert("Assessment max score must be between 1 and 100.");
+                return;
+            }
+    
+            const currentTotalWeight = (ml.assessments || []).reduce((sum, a) => sum + Number(a.maxMark), 0);
+            if (currentTotalWeight + maxMark > 100) {
+                alert(`Total assessment weights cannot exceed 100. Current total weight is ${currentTotalWeight}.`);
+                return;
+            }
     
             if (!ml.assessments) ml.assessments = [];
             ml.assessments.push({ id: 'a_' + Date.now(), title, maxMark });
@@ -1317,11 +1372,24 @@
             }).join('');
         }
     
+        // Fixes Problem #4: Enforce max allowed score limit on student score inputs
         async function updateStudentMark(studentId, assessId, val) {
             const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
             if (!ml) return;
+            
+            const assessment = ml.assessments.find(a => a.id === assessId);
+            const maxAllowed = assessment ? Number(assessment.maxMark) : 100;
+            
+            let enteredMark = parseFloat(val);
+            if (isNaN(enteredMark) || enteredMark < 0) {
+                enteredMark = 0;
+            } else if (enteredMark > maxAllowed) {
+                alert(`Score cannot exceed the maximum allowed mark of ${maxAllowed} for this assessment.`);
+                enteredMark = maxAllowed;
+            }
+    
             if (!ml.grades[studentId]) ml.grades[studentId] = { marks: {}, customGrade: '-' };
-            ml.grades[studentId].marks[assessId] = parseFloat(val) || 0;
+            ml.grades[studentId].marks[assessId] = enteredMark;
     
             const scoreObj = calculateStudentScore(studentId, ml);
             ml.grades[studentId].customGrade = scoreObj.customGrade;
@@ -1363,7 +1431,6 @@
             if (appState.currentUser.role === 'admin') renderAdminMarkLists();
         }
     
-        // --- REQUIREMENT #2: Report Card & Dynamic Class Rank Calculation ---
         function populateReportCardDropdowns() {
             const classSelect = document.getElementById('reportCardClassSelect');
             classSelect.innerHTML = `<option value="">-- Choose Class --</option>` + appState.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
@@ -1379,7 +1446,7 @@
         }
     
         function generateStudentReportCard() {
-            const classId = document.getElementById('reportCardClassSelect.value') || document.getElementById('reportCardClassSelect').value;
+            const classId = document.getElementById('reportCardClassSelect').value;
             const studentId = document.getElementById('reportCardStudentSelect').value;
             const container = document.getElementById('reportCardContainer');
             const emptyState = document.getElementById('reportCardEmpty');
@@ -1420,7 +1487,6 @@
             const avg = classMarkLists.length > 0 ? (totalMarksSum / classMarkLists.length).toFixed(1) : 0;
             document.getElementById('rcOverallAverage').textContent = `${avg} / 100 (${getLetterGrade(avg)})`;
     
-            // --- DYNAMIC CLASS RANK CALCULATION (Fixes #2) ---
             const studentsInClass = appState.students.filter(s => s.class_id === classId);
             const studentTotals = studentsInClass.map(stu => {
                 let stuTotal = 0;
@@ -1436,7 +1502,6 @@
             const classRank = rankIndex !== -1 ? rankIndex + 1 : 1;
     
             document.getElementById('rcClassRank').textContent = `#${classRank}`;
-            // -------------------------------------------------
     
             container.classList.remove('hidden');
             emptyState.classList.add('hidden');
@@ -1448,6 +1513,7 @@
         }
     
         window.onload = loadAppData;
-    </script>   
+    </script>
+ 
 </body>
 </html>
