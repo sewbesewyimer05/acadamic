@@ -1385,29 +1385,33 @@
             return { mark, customGrade };
         }
 
-        function openMarkListModal(id) {
-            appState.activeMarkListId = id;
-            const ml = appState.markLists.find(m => m.id === id);
-            if (!ml) return;
-
-            const cObj = appState.classes.find(c => c.id === ml.class_id);
-            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
-            document.getElementById('modalMarkListTitle').textContent = `${cObj ? cObj.name : ''} - ${ml.subject_name}`;
-            document.getElementById('modalSubjectBadge').textContent = ml.subject_name;
-
-            if (isAdmin) {
-                document.getElementById('modalReadOnlyNotice').classList.remove('hidden');
-                document.getElementById('addAssessmentForm').classList.add('hidden');
-                document.getElementById('modalReportBtn').classList.add('hidden');
-            } else {
-                document.getElementById('modalReadOnlyNotice').classList.add('hidden');
-                document.getElementById('addAssessmentForm').classList.remove('hidden');
-                document.getElementById('modalReportBtn').classList.remove('hidden');
+        function openMarkListModal(markListId) {
+            // 1. Set the active mark list ID in global state
+            appState.activeMarkListId = markListId;
+            
+            // 2. Find the specific mark list record
+            const ml = appState.markLists.find(m => m.id === markListId);
+            if (!ml) {
+                console.error("Mark list not found for ID:", markListId);
+                alert("Could not load assessment desk. Please try refreshing.");
+                return;
             }
-
-            renderAssessmentChips(ml);
-            renderModalStudents();
-            document.getElementById('markListDetailModal').classList.remove('hidden');
+        
+            // 3. Update modal header titles if elements exist
+            const titleEl = document.getElementById('deskSubjectTitle');
+            if (titleEl) titleEl.textContent = `${ml.subject_name} - ${ml.teacher_name}`;
+        
+            // 4. Render assessment chips and student grade input rows
+            if (typeof renderAssessmentChips === 'function') renderAssessmentChips(ml);
+            if (typeof renderModalStudents === 'function') renderModalStudents();
+        
+            // 5. Explicitly show the grading modal (adjust modal ID to match yours if needed)
+            const modal = document.getElementById('teacherGradeModal') || document.getElementById('assessmentDeskModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            } else {
+                console.warn("Grading modal DOM element not found. Check your modal HTML ID.");
+            }
         }
 
         function closeMarkListModal() {
