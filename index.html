@@ -1552,11 +1552,34 @@
             container.classList.remove('hidden');
             emptyState.classList.add('hidden');
         }
-    
+        
         function downloadStudentReportPDF() {
             const element = document.getElementById('printableReportCard');
-            html2pdf().from(element).save('student_transcript.pdf');
+            
+            // Configuration optimized for both mobile and high-resolution PC displays
+            const opt = {
+                margin:       [0.4, 0.4, 0.4, 0.4],
+                filename:     `Student_Transcript_${document.getElementById('rcStudentName').textContent.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: document.documentElement.offsetWidth
+                },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+        
+            html2pdf().set(opt).from(element).save();
         }
+
+        // function downloadStudentReportPDF() {
+        //     const element = document.getElementById('printableReportCard');
+        //     html2pdf().from(element).save('student_transcript.pdf');
+        // }
     
         window.onload = loadAppData;
     </script>
