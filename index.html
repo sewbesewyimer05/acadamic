@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcademicPro - Student Information & Grade Management System</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- html2pdf for report generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media print {
+            body * { visibility: hidden; }
+            #printableArea, #printableArea * { visibility: visible; }
+            #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 antialiased flex flex-col">
+
+    <!-- App Container -->
+    <div id="app" class="min-h-full flex flex-col">
+
+        <!-- Navigation / Header Bar -->
+        <header id="mainHeader" class="bg-indigo-900 text-white shadow-md hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-700 p-2 rounded-xl text-indigo-200">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">AcademicPro SIMS</h1>
+                        <p class="text-xs text-indigo-300" id="headerRoleBadge">Department Head Portal</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-medium" id="headerUserName">Admin User</p>
+                        <p class="text-xs text-indigo-300" id="headerUserRole">Administrator</p>
+                    </div>
+                    <button onclick="logout()" class="bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Viewport -->
+        <main class="flex-1 flex flex-col">
+
+            <div id="loginView" class="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 p-4">
+                <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden p-8 border border-indigo-100">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex bg-indigo-50 text-indigo-600 p-4 rounded-2xl mb-3 shadow-inner">
+                            <i class="fa-solid fa-school text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Academic Portal Login</h2>
+                        <p class="text-sm text-slate-500 mt-1">Select your portal and enter credentials</p>
+                    </div>
+
+                    <!-- Role Selector Tabs -->
+                    <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
+                        <button type="button" onclick="switchLoginRole('admin')" id="loginRoleAdmin" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">General Admin</button>
+                        <button type="button" onclick="switchLoginRole('teacher')" id="loginRoleTeacher" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Teacher Portal</button>
+                    </div>
+
+                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                        <input type="hidden" id="selectedRole" value="admin">
+                        
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="admin">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                                <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="admin123">
+                            </div>
+                        </div>
+
+                        <div id="loginError" class="hidden text-red-500 text-xs bg-red-50 p-3 rounded-xl border border-red-100 flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span id="loginErrorText">Invalid credentials. Please try again.</span>
+                        </div>
+
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center space-x-2">
+                            <span>Sign In to Portal</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
+                        <p>Default Admin: <span class="font-mono text-indigo-600 font-semibold">admin</span> / <span class="font-mono text-indigo-600 font-semibold">admin123</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="adminDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
+                <!-- Admin Sub-nav Header -->
+                <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Department Head Control Panel</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="switchAdminTab('teachers')" id="adminTabBtnTeachers" class="px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition">
+                            <i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty Accounts
+                        </button>
+                        <button onclick="switchAdminTab('classes')" id="adminTabBtnClasses" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                            <i class="fa-solid fa-school-flag mr-1.5"></i> Classes & Students
+                        </button>
+                        <button onclick="switchAdminTab('subjects')" id="adminTabBtnSubjects" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                            <i class="fa-solid fa-book-bookmark mr-1.5"></i> Subjects & Teaching Assignments
+                        </button>
+                        <button onclick="switchAdminTab('reports')" id="adminTabBtnReports" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                            <i class="fa-solid fa-folder-open mr-1.5"></i> Mark Lists
+                        </button>
+                        <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                            <i class="fa-solid fa-id-card mr-1.5"></i> Compile Report Cards
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Tab Contents -->
+                <div class="flex-1 max-w-7xl w-full mx-auto p-6">
+
+                    <!-- Tab 1: Faculty Accounts -->
+                    <div id="adminTabTeachers" class="tab-content active space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Create Teacher Form -->
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                    <i class="fa-solid fa-user-plus text-indigo-600"></i>
+                                    <span>Create Teacher Account</span>
+                                </h3>
+                                <form onsubmit="handleCreateTeacher(event)" class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                                        <input type="text" id="newTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Dr. Robert Smith">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Primary Specialty / Department</label>
+                                        <input type="text" id="newTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Science Department">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
+                                        <input type="text" id="newTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. rsmith">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                                        <input type="text" id="newTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Secure password">
+                                    </div>
+                                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
+                                        <i class="fa-solid fa-check"></i>
+                                        <span>Create Account</span>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- Teachers List -->
+                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                        <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
+                                        <span>Active Faculty Accounts</span>
+                                    </h3>
+                                    <span id="teacherCountBadge" class="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-full text-xs">0 Teachers</span>
+                                </div>
+                                <div class="overflow-x-auto flex-1">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                <th class="py-3 px-4">Teacher Name</th>
+                                                <th class="py-3 px-4">Department</th>
+                                                <th class="py-3 px-4">Username</th>
+                                                <th class="py-3 px-4">Assigned Classes</th>
+                                                <th class="py-3 px-4 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminTeachersTableBody" class="divide-y divide-slate-100 text-sm">
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Classes & Students Management -->
+                    <div id="adminTabClasses" class="tab-content space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Create Class Form & Student Registration Form -->
+                            <div class="space-y-6">
+                                <!-- Create Class Form -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-square-plus text-indigo-600"></i>
+                                        <span>Create New Class / Grade</span>
+                                    </h3>
+                                    <form onsubmit="handleCreateClass(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Class Title</label>
+                                            <input type="text" id="newClassName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Grade 1, Grade 10 - Sec A">
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Create Class</span>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Add Student to Class Form -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-user-plus text-emerald-600"></i>
+                                        <span>Register Student to Class</span>
+                                    </h3>
+                                    <form onsubmit="handleRegisterStudent(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Select Target Class</label>
+                                            <select id="regStudentClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                <option value="">-- Choose Class --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Student Full Name</label>
+                                            <input type="text" id="regStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Solomon Abebe">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Age</label>
+                                                <input type="number" id="regStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. 7">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Gender</label>
+                                                <select id="regStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                    <option value="Male">Male</option>
+                                                    <option value="Female">Female</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-emerald-100 flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-user-check"></i>
+                                            <span>Register Student</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Class Roster & Master Student Explorer -->
+                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                                    <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                        <i class="fa-solid fa-users text-indigo-600"></i>
+                                        <span>Master Class Roster</span>
+                                    </h3>
+                                    <div class="flex items-center space-x-3">
+                                        <label class="text-xs font-bold uppercase text-slate-400">Filter Class:</label>
+                                        <select id="adminRosterClassFilter" onchange="renderAdminRosterTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">All Classes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto flex-1">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                <th class="py-3 px-4">Student ID</th>
+                                                <th class="py-3 px-4">Full Name</th>
+                                                <th class="py-3 px-4">Class</th>
+                                                <th class="py-3 px-4">Age / Gender</th>
+                                                <th class="py-3 px-4 text-right">Admin Actions (No Mark Editing)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminRosterTableBody" class="divide-y divide-slate-100 text-sm">
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Subjects & Teacher Assignments -->
+                    <div id="adminTabSubjects" class="tab-content space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="space-y-6">
+                                <!-- Create Subject Form -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-book-open text-indigo-600"></i>
+                                        <span>Create Subject</span>
+                                    </h3>
+                                    <form onsubmit="handleCreateSubject(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Subject Name</label>
+                                            <input type="text" id="newSubjectName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. English, Math, Sport">
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Add Subject</span>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Assign Teacher to Class & Subject -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-link text-indigo-600"></i>
+                                        <span>Assign Class Subject to Teacher</span>
+                                    </h3>
+                                    <form onsubmit="handleAssignTeacherSubject(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Select Teacher</label>
+                                            <select id="assignTeacherSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Teacher --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Select Class</label>
+                                            <select id="assignClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Class --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Select Subject</label>
+                                            <select id="assignSubjectSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Subject --</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>Create Teaching Assignment</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- List of Assignments & Subjects -->
+                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                    <i class="fa-solid fa-list-check text-indigo-600"></i>
+                                    <span>Active Teaching Assignments</span>
+                                </h3>
+                                <div class="overflow-x-auto flex-1">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                <th class="py-3 px-4">Class</th>
+                                                <th class="py-3 px-4">Subject</th>
+                                                <th class="py-3 px-4">Assigned Teacher</th>
+                                                <th class="py-3 px-4 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminAssignmentsTableBody" class="divide-y divide-slate-100 text-sm">
+                                            <!-- Dynamically populated -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Admin View Teacher Mark Lists & Reports -->
+                    <div id="adminTabReports" class="tab-content space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists & Class Scores</h3>
+                                    <p class="text-sm text-slate-500">Review teacher mark lists (Read-Only Mode: Admin cannot edit marks or assessments).</p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <select id="adminFilterTeacher" onchange="renderAdminMarkLists()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        <option value="">All Teachers</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                            <th class="py-3 px-4">Class / Grade</th>
+                                            <th class="py-3 px-4">Subject</th>
+                                            <th class="py-3 px-4">Teacher</th>
+                                            <th class="py-3 px-4">Students Count</th>
+                                            <th class="py-3 px-4">Submission Status</th>
+                                            <th class="py-3 px-4 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminMarkListsTableBody" class="divide-y divide-slate-100 text-sm">
+                                        <!-- Dynamically populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Compile Report Cards -->
+                    <div id="adminTabCard" class="tab-content space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Student Comprehensive Report Cards</h3>
+                                    <p class="text-sm text-slate-500">Filter by Class/Grade to aggregate all subject scores (e.g., English, Math, Sport) and compute official rank.</p>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Select Class / Grade</label>
+                                        <select id="reportCardClassSelect" onchange="onClassFilterChange()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- Choose Class --</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Select Student</label>
+                                        <select id="reportCardStudentSelect" onchange="generateStudentReportCard()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- Choose Student --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Report Card Preview Box -->
+                            <div id="reportCardContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm hidden">
+                                <div id="printableReportCard" class="space-y-6 bg-white p-4 border border-slate-100 rounded-xl">
+                                    <!-- Header -->
+                                    <div class="border-b-2 border-slate-900 pb-6 flex justify-between items-start">
+                                        <div>
+                                            <div class="flex items-center space-x-2 text-indigo-700 font-bold text-xl mb-1">
+                                                <i class="fa-solid fa-graduation-cap"></i>
+                                                <span>ፍሬ ቅዱሳን ሰንበት ትምህርት ቤት</span>
+                                            </div>
+                                            <h2 class="text-2xl font-bold text-slate-900">Official Student Transcripts & Report Card</h2>
+                                            <p class="text-sm text-slate-500">Department of Academic Records & Evaluation</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs font-semibold uppercase text-slate-400">Date Issued</p>
+                                            <p class="text-sm font-medium text-slate-700" id="rcIssueDate">-</p>
+                                            <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Record</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Student Bio & Class Rank -->
+                                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 bg-slate-50 p-4 rounded-xl text-sm border border-slate-200">
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">የተማሪው ስም</span>
+                                            <span class="font-bold text-slate-900" id="rcStudentName">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">Class / Grade</span>
+                                            <span class="font-bold text-indigo-700" id="rcClassName">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">Total Subjects</span>
+                                            <span class="font-bold text-slate-900" id="rcTotalSubjects">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">Overall Average</span>
+                                            <span class="font-bold text-indigo-600 text-base" id="rcOverallAverage">-</span>
+                                        </div>
+                                        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2 text-center">
+                                            <span class="block text-xs font-semibold text-indigo-500 uppercase">Class Rank</span>
+                                            <span class="font-black text-indigo-700 text-lg" id="rcClassRank">-</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Marks Table -->
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">Complete Subject Breakdown</h4>
+                                        <table class="w-full text-left border-collapse border border-slate-300 rounded-xl overflow-hidden min-w-full">
+                                            <thead>
+                                                <tr class="bg-slate-100 text-xs font-bold text-slate-700 uppercase border-b border-slate-300">
+                                                    <th class="py-3 px-4 border-r border-slate-300">የትምህርት አይነት (Subject)</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300">ክፍል (Class)</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300">የመምህሩ ስም (Teacher)</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300 text-center">ውጤት (100)</th>
+                                                    <th class="py-3 px-4 text-center">Grade</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="rcMarksTableBody" class="divide-y divide-slate-200 text-sm">
+                                                <!-- Dynamically populated -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- Remarks & Signatures -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 border-t border-slate-200">
+                                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                            <h5 class="font-bold text-xs uppercase text-slate-400 mb-1">Department Head Remarks</h5>
+                                            <p class="text-sm font-medium text-slate-700" id="rcRemarks">Official academic transcript reviewed. All reported subject scores compiled.</p>
+                                        </div>
+                                        <div class="flex flex-col justify-end text-right">
+                                            <div class="border-b border-slate-400 w-48 ml-auto mb-2"></div>
+                                            <p class="font-bold text-sm text-slate-900">ፊርማ (Signature)</p>
+                                            <p class="text-xs text-slate-500">የትምህርት ክፍሉ ተጠሪ</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-8 flex justify-end space-x-3 pt-6 border-t border-slate-100">
+                                    <button onclick="downloadStudentReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-md shadow-indigo-100 transition flex items-center space-x-2">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <span>Download PDF Report Card</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Empty State for Report Card -->
+                            <div id="reportCardEmpty" class="text-center py-12 text-slate-400">
+                                <i class="fa-solid fa-id-card text-4xl mb-3 text-slate-300"></i>
+                                <p class="text-base font-medium">Please select a class and student from the dropdowns above to generate their comprehensive report card.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="teacherDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
+                <!-- Teacher Sub-nav Header -->
+                <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Teacher Portal</span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="switchTeacherTab('marklists')" id="teacherTabBtnMarkLists" class="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-50 text-emerald-700 transition">
+                            <i class="fa-solid fa-list-check mr-2"></i> My Assigned Classes & Mark Lists
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Teacher Tab Contents -->
+                <div class="flex-1 max-w-7xl w-full mx-auto p-6">
+                    <div id="teacherTabMarkLists" class="tab-content active space-y-6">
+                        <!-- Mark Lists List for Teacher -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                        <i class="fa-solid fa-clipboard-list text-emerald-600"></i>
+                                        <span>My Assigned Class Mark Lists</span>
+                                    </h3>
+                                    <p class="text-xs text-slate-500">Classes and subjects assigned to you by the Department Head. Enter assessments and student scores.</p>
+                                </div>
+                                <span id="teacherMarkListCount" class="bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full text-xs">0 Mark Lists</span>
+                            </div>
+                            <div class="overflow-x-auto flex-1">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                            <th class="py-3 px-4">Class / Grade</th>
+                                            <th class="py-3 px-4">Assigned Subject</th>
+                                            <th class="py-3 px-4">Enrolled Students</th>
+                                            <th class="py-3 px-4">Status</th>
+                                            <th class="py-3 px-4 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="teacherMarkListsTableBody" class="divide-y divide-slate-100 text-sm">
+                                        <!-- Dynamically populated -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EDIT TEACHER MODAL -->
+            <div id="editTeacherModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
+                    <div class="p-6 bg-indigo-900 text-white flex items-center justify-between">
+                        <h3 class="text-lg font-bold flex items-center space-x-2">
+                            <i class="fa-solid fa-user-pen"></i>
+                            <span>Edit Teacher Account</span>
+                        </h3>
+                        <button onclick="closeEditTeacherModal()" class="text-slate-300 hover:text-white transition">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+                    <form onsubmit="handleSaveEditedTeacher(event)" class="p-6 space-y-4">
+                        <input type="hidden" id="editTeacherId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Full Name</label>
+                            <input type="text" id="editTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Department</label>
+                            <input type="text" id="editTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Username</label>
+                            <input type="text" id="editTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Password</label>
+                            <input type="text" id="editTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                            <button type="button" onclick="closeEditTeacherModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">Cancel</button>
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm transition shadow-md shadow-indigo-100">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- EDIT STUDENT DEMOGRAPHICS MODAL (ADMIN ONLY) -->
+            <div id="editStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200">
+                    <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
+                        <h3 class="text-lg font-bold flex items-center space-x-2">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span>Edit Student Information</span>
+                        </h3>
+                        <button onclick="closeEditStudentModal()" class="text-slate-300 hover:text-white transition">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+                    <form onsubmit="handleSaveEditedStudent(event)" class="p-6 space-y-4">
+                        <input type="hidden" id="editStudentId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Student Full Name</label>
+                            <input type="text" id="editStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Age</label>
+                                <input type="number" id="editStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Gender</label>
+                                <select id="editStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Assigned Class</label>
+                            <select id="editStudentClass" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <p class="text-xs text-amber-600 bg-amber-50 p-2 rounded-lg border border-amber-100 flex items-center"><i class="fa-solid fa-lock mr-1.5"></i> Admin Note: You are modifying student record details only. Marks are updated by assigned teachers.</p>
+                        <div class="flex justify-end space-x-3 pt-4 border-t border-slate-100">
+                            <button type="button" onclick="closeEditStudentModal()" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition">Cancel</button>
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm transition shadow-md shadow-indigo-100">Save Student Info</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MARK LIST DETAILS MODAL -->
+            <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+                    <!-- Modal Header -->
+                    <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span id="modalSubjectBadge" class="bg-indigo-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 inline-block">Subject</span>
+                                <span id="modalReadOnlyNotice" class="bg-amber-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 hidden"><i class="fa-solid fa-eye mr-1"></i> Read Only (Admin View)</span>
+                            </div>
+                            <h3 id="modalMarkListTitle" class="text-xl font-bold">Mark List Title</h3>
+                            <p class="text-xs text-slate-400" id="modalSubHeading">Teacher manages assessments and enters scores for pre-registered students.</p>
+                        </div>
+                        <button onclick="closeMarkListModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition">
+                            <i class="fa-solid fa-xmark text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body / Content -->
+                    <div class="p-6 flex-1 overflow-y-auto space-y-6">
+
+                        <!-- SECTION 1: Assessment Management -->
+                        <div id="assessmentSectionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                                    <i class="fa-solid fa-sliders text-emerald-600"></i>
+                                    <span>Class Assessments Setup</span>
+                                </h4>
+                                <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Total Max Score: 0 Points</span>
+                            </div>
+
+                            <!-- List of existing assessments -->
+                            <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3">
+                                <!-- Dynamically populated badges -->
+                            </div>
+
+                            <!-- Form to Add Assessment (Hidden for Admin) -->
+                            <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assessment Name</label>
+                                        <input type="text" id="newAssessTitle" required placeholder="e.g. Midterm Exam, Quiz 1, Project" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Max Score</label>
+                                        <input type="number" id="newAssessMax" required min="1" max="100" placeholder="e.g. 30" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-plus text-xs"></i>
+                                        <span>Add Assessment Column</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Info Banner for Teacher Student Lock -->
+                        <div id="teacherLockNotice" class="bg-blue-50 border border-blue-200 text-blue-800 text-xs p-3 rounded-xl flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-info text-blue-600 text-base"></i>
+                            <span><strong>Roster Note:</strong> Student roster is managed by the Department Head. Teachers enter marks for assigned assessments.</span>
+                        </div>
+
+                        <!-- SECTION 2: Dynamic Students Grade Table -->
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr id="modalStudentsTableHeader" class="bg-slate-100 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase">
+                                        <!-- Dynamically generated headers for Name, Assessments, Total, Grade -->
+                                    </tr>
+                                </thead>
+                                <tbody id="modalStudentsTableBody" class="divide-y divide-slate-100 text-sm bg-white">
+                                    <!-- Dynamically populated -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                        <div class="flex items-center space-x-2">
+                            <span id="modalReportStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700">Draft / Not Reported</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button onclick="downloadMarkListPDF()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>Download PDF</span>
+                            </button>
+                            <button id="modalReportBtn" onclick="toggleReportMarkList()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center space-x-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Submit Report to Head</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRINTABLE MARK LIST HIDDEN CONTAINER FOR PDF GENERATION -->
+            <div id="printableMarkListArea" class="hidden p-8 bg-white text-slate-800">
+                <div class="border-b pb-4 mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold" id="pdfMlTitle">Mark List</h2>
+                        <p class="text-sm text-slate-500" id="pdfMlSubject">Subject: -</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400">Teacher: <span id="pdfMlTeacher" class="font-bold">-</span></p>
+                        <p class="text-xs text-slate-400">Date: <span id="pdfMlDate" class="font-bold">-</span></p>
+                    </div>
+                </div>
+                <table class="w-full text-left border-collapse border border-slate-300">
+                    <thead>
+                        <tr class="bg-slate-100 text-xs font-bold uppercase text-slate-700">
+                            <th class="border p-2">No.</th>
+                            <th class="border p-2">የተማሪው ስም</th>
+                            <th class="border p-2">Mark (100)</th>
+                            <th class="border p-2">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdfMlTableBody" class="text-sm">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // Global State Management
+        let appState = {
+            currentUser: null,
+            classes: [
+                { id: 'c1', name: 'Grade 1' },
+                { id: 'c2', name: 'Grade 2' }
+            ],
+            subjects: [
+                { id: 'sub1', name: 'English' },
+                { id: 'sub2', name: 'Math' },
+                { id: 'sub3', name: 'Sport' }
+            ],
+            students: [
+                { id: 's1', classId: 'c1', name: 'Solomon Abebe', age: 7, gender: 'Male' },
+                { id: 's2', classId: 'c1', name: 'Bethelhem Tadesse', age: 7, gender: 'Female' },
+                { id: 's3', classId: 'c2', name: 'Dawit Yohannes', age: 8, gender: 'Male' }
+            ],
+            teachers: [
+                { id: 't1', name: 'Dr. Alan Turing', subject: 'Science', username: 'aturing', password: 'password123' },
+                { id: 't2', name: 'Prof. Marie Curie', subject: 'Math', username: 'mcurie', password: 'password123' }
+            ],
+            teachingAssignments: [
+                { id: 'ta1', classId: 'c1', subjectId: 'sub1', subjectName: 'English', teacherId: 't1', teacherName: 'Dr. Alan Turing' },
+                { id: 'ta2', classId: 'c1', subjectId: 'sub2', subjectName: 'Math', teacherId: 't2', teacherName: 'Prof. Marie Curie' },
+                { id: 'ta3', classId: 'c1', subjectId: 'sub3', subjectName: 'Sport', teacherId: 't1', teacherName: 'Dr. Alan Turing' }
+            ],
+            markLists: [
+                {
+                    id: 'ml_c1_sub1',
+                    assignmentId: 'ta1',
+                    classId: 'c1',
+                    className: 'Grade 1',
+                    subjectName: 'English',
+                    teacherId: 't1',
+                    teacherName: 'Dr. Alan Turing',
+                    reported: true,
+                    assessments: [
+                        { id: 'a1', title: 'Quiz 1', maxMark: 20 },
+                        { id: 'a2', title: 'Midterm', maxMark: 30 },
+                        { id: 'a3', title: 'Final Exam', maxMark: 50 }
+                    ],
+                    grades: {
+                        's1': { marks: { a1: 18, a2: 28, a3: 46 }, customGrade: 'A+' },
+                        's2': { marks: { a1: 15, a2: 23, a3: 40 }, customGrade: 'B+' }
+                    }
+                },
+                {
+                    id: 'ml_c1_sub2',
+                    assignmentId: 'ta2',
+                    classId: 'c1',
+                    className: 'Grade 1',
+                    subjectName: 'Math',
+                    teacherId: 't2',
+                    teacherName: 'Prof. Marie Curie',
+                    reported: true,
+                    assessments: [
+                        { id: 'a1', title: 'Class Test', maxMark: 40 },
+                        { id: 'a2', title: 'Final Exam', maxMark: 60 }
+                    ],
+                    grades: {
+                        's1': { marks: { a1: 36, a2: 52 }, customGrade: 'A' },
+                        's2': { marks: { a1: 30, a2: 45 }, customGrade: 'B+' }
+                    }
+                }
+            ],
+            activeMarkListId: null
+        };
+
+        // State Persistence
+        function loadState() {
+            const saved = localStorage.getItem('academic_sims_state_v2');
+            if (saved) {
+                try {
+                    appState = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Failed to load saved state', e);
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('academic_sims_state_v2', JSON.stringify(appState));
+        }
+
+        // Authentication & Views
+        function checkAuthView() {
+            const loginView = document.getElementById('loginView');
+            const mainHeader = document.getElementById('mainHeader');
+            const adminDashboard = document.getElementById('adminDashboard');
+            const teacherDashboard = document.getElementById('teacherDashboard');
+
+            if (!appState.currentUser) {
+                loginView.classList.remove('hidden');
+                mainHeader.classList.add('hidden');
+                adminDashboard.classList.add('hidden');
+                teacherDashboard.classList.add('hidden');
+                return;
+            }
+
+            loginView.classList.add('hidden');
+            mainHeader.classList.remove('hidden');
+
+            document.getElementById('headerUserName').textContent = appState.currentUser.name;
+
+            if (appState.currentUser.role === 'admin') {
+                document.getElementById('headerUserRole').textContent = 'Administrator';
+                document.getElementById('headerRoleBadge').textContent = 'Department Head Portal';
+                adminDashboard.classList.remove('hidden');
+                teacherDashboard.classList.add('hidden');
+                renderAdminTeachers();
+                renderAdminClassesDropdowns();
+                renderAdminRosterTable();
+                renderAdminSubjectsTable();
+                renderAdminMarkLists();
+                populateReportCardDropdowns();
+            } else {
+                document.getElementById('headerUserRole').textContent = `Faculty Teacher`;
+                document.getElementById('headerRoleBadge').textContent = 'Teacher Portal';
+                adminDashboard.classList.add('hidden');
+                teacherDashboard.classList.remove('hidden');
+                renderTeacherMarkLists();
+            }
+        }
+
+        function switchLoginRole(role) {
+            document.getElementById('selectedRole').value = role;
+            const btnAdmin = document.getElementById('loginRoleAdmin');
+            const btnTeacher = document.getElementById('loginRoleTeacher');
+            const usernameInput = document.getElementById('loginUsername');
+            const passwordInput = document.getElementById('loginPassword');
+
+            if (role === 'admin') {
+                btnAdmin.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
+                btnTeacher.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+                usernameInput.value = 'admin';
+                passwordInput.value = 'admin123';
+            } else {
+                btnTeacher.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
+                btnAdmin.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+                usernameInput.value = 'aturing';
+                passwordInput.value = 'password123';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('selectedRole').value;
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            if (role === 'admin') {
+                if (u === 'admin' && p === 'admin123') {
+                    appState.currentUser = { id: 'admin', name: 'Department Head', role: 'admin' };
+                    errorDiv.classList.add('hidden');
+                    checkAuthView();
+                } else {
+                    errorDiv.classList.remove('hidden');
+                }
+            } else {
+                const teacher = appState.teachers.find(t => t.username === u && t.password === p);
+                if (teacher) {
+                    appState.currentUser = { id: teacher.id, name: teacher.name, role: 'teacher' };
+                    errorDiv.classList.add('hidden');
+                    checkAuthView();
+                } else {
+                    errorDiv.classList.remove('hidden');
+                }
+            }
+        }
+
+        function logout() {
+            appState.currentUser = null;
+            checkAuthView();
+        }
+
+        // Helpers
+        function getLetterGrade(mark) {
+            const num = parseFloat(mark) || 0;
+            if (num >= 90) return 'A+';
+            if (num >= 85) return 'A';
+            if (num >= 80) return 'A-';
+            if (num >= 75) return 'B+';
+            if (num >= 70) return 'B';
+            if (num >= 65) return 'C+';
+            if (num >= 60) return 'C';
+            if (num >= 50) return 'D';
+            return 'F';
+        }
+
+        function getGradeBadgeClass(grade) {
+            if (!grade) grade = 'F';
+            const cleanGrade = grade.trim().toUpperCase();
+            if (cleanGrade.startsWith('A')) return 'bg-emerald-100 text-emerald-800';
+            if (cleanGrade.startsWith('B')) return 'bg-blue-100 text-blue-800';
+            if (cleanGrade.startsWith('C')) return 'bg-amber-100 text-amber-800';
+            if (cleanGrade.startsWith('D')) return 'bg-orange-100 text-orange-800';
+            return 'bg-red-100 text-red-800';
+        }
+
+        function calculateStudentScore(studentId, markList) {
+            let total = 0;
+            const sGradeData = markList.grades ? markList.grades[studentId] : null;
+            if (sGradeData && sGradeData.marks && markList.assessments) {
+                markList.assessments.forEach(ass => {
+                    const score = parseFloat(sGradeData.marks[ass.id]) || 0;
+                    total += score;
+                });
+            }
+            const mark = Math.round(total * 100) / 100;
+            const customGrade = sGradeData && sGradeData.customGrade ? sGradeData.customGrade : getLetterGrade(mark);
+            return { mark, customGrade };
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('#adminDashboard .tab-content').forEach(el => el.classList.remove('active'));
+            ['Teachers', 'Classes', 'Subjects', 'Reports', 'Card'].forEach(t => {
+                const btn = document.getElementById(`adminTabBtn${t}`);
+                if (btn) btn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
+            });
+
+            const activeBtn = document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
+            if (activeBtn) activeBtn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
+
+            if (tabName === 'teachers') {
+                document.getElementById('adminTabTeachers').classList.add('active');
+                renderAdminTeachers();
+            } else if (tabName === 'classes') {
+                document.getElementById('adminTabClasses').classList.add('active');
+                renderAdminClassesDropdowns();
+                renderAdminRosterTable();
+            } else if (tabName === 'subjects') {
+                document.getElementById('adminTabSubjects').classList.add('active');
+                renderAdminSubjectsTable();
+            } else if (tabName === 'reports') {
+                document.getElementById('adminTabReports').classList.add('active');
+                renderAdminMarkLists();
+            } else if (tabName === 'card') {
+                document.getElementById('adminTabCard').classList.add('active');
+                populateReportCardDropdowns();
+            }
+        }
+
+        function switchTeacherTab(tabName) {
+            if (tabName === 'marklists') {
+                renderTeacherMarkLists();
+            }
+        }
+
+        // Admin: Teacher Account Management
+        function handleCreateTeacher(e) {
+            e.preventDefault();
+            const name = document.getElementById('newTeacherName').value.trim();
+            const subject = document.getElementById('newTeacherSubject').value.trim();
+            const username = document.getElementById('newTeacherUsername').value.trim();
+            const password = document.getElementById('newTeacherPassword').value.trim();
+
+            if (appState.teachers.some(t => t.username === username)) {
+                alert('Username already exists. Please choose a different username.');
+                return;
+            }
+
+            const newTeacher = { id: 't_' + Date.now(), name, subject, username, password };
+            appState.teachers.push(newTeacher);
+            saveState();
+            renderAdminTeachers();
+            e.target.reset();
+        }
+
+        function deleteTeacher(teacherId) {
+            if (confirm('Are you sure you want to delete this teacher account?')) {
+                appState.teachers = appState.teachers.filter(t => t.id !== teacherId);
+                appState.teachingAssignments = appState.teachingAssignments.filter(ta => ta.teacherId !== teacherId);
+                saveState();
+                renderAdminTeachers();
+                renderAdminSubjectsTable();
+            }
+        }
+
+        function openEditTeacherModal(teacherId) {
+            const t = appState.teachers.find(item => item.id === teacherId);
+            if (!t) return;
+            document.getElementById('editTeacherId').value = t.id;
+            document.getElementById('editTeacherName').value = t.name;
+            document.getElementById('editTeacherSubject').value = t.subject;
+            document.getElementById('editTeacherUsername').value = t.username;
+            document.getElementById('editTeacherPassword').value = t.password;
+            document.getElementById('editTeacherModal').classList.remove('hidden');
+        }
+
+        function closeEditTeacherModal() {
+            document.getElementById('editTeacherModal').classList.add('hidden');
+        }
+
+        function handleSaveEditedTeacher(e) {
+            e.preventDefault();
+            const id = document.getElementById('editTeacherId').value;
+            const t = appState.teachers.find(item => item.id === id);
+            if (!t) return;
+
+            const username = document.getElementById('editTeacherUsername').value.trim();
+            if (appState.teachers.some(item => item.username === username && item.id !== id)) {
+                alert('Username is already taken by another teacher.');
+                return;
+            }
+
+            t.name = document.getElementById('editTeacherName').value.trim();
+            t.subject = document.getElementById('editTeacherSubject').value.trim();
+            t.username = username;
+            t.password = document.getElementById('editTeacherPassword').value.trim();
+
+            appState.teachingAssignments.forEach(ta => {
+                if (ta.teacherId === id) ta.teacherName = t.name;
+            });
+            appState.markLists.forEach(ml => {
+                if (ml.teacherId === id) ml.teacherName = t.name;
+            });
+
+            saveState();
+            renderAdminTeachers();
+            renderAdminSubjectsTable();
+            closeEditTeacherModal();
+        }
+
+        function renderAdminTeachers() {
+            const tbody = document.getElementById('adminTeachersTableBody');
+            tbody.innerHTML = '';
+            document.getElementById('teacherCountBadge').textContent = `${appState.teachers.length} Teachers`;
+
+            if (appState.teachers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">No teachers registered yet.</td></tr>`;
+                return;
+            }
+
+            appState.teachers.forEach(t => {
+                const assignCount = appState.teachingAssignments.filter(ta => ta.teacherId === t.id).length;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-900">${t.name}</td>
+                    <td class="py-3 px-4 text-slate-600">${t.subject}</td>
+                    <td class="py-3 px-4 font-mono text-indigo-600">${t.username}</td>
+                    <td class="py-3 px-4"><span class="bg-indigo-50 text-indigo-700 font-semibold px-2 py-0.5 rounded-full text-xs">${assignCount} Assignments</span></td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="openEditTeacherModal('${t.id}')" class="text-indigo-600 hover:text-indigo-800 p-1.5 rounded-lg transition"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteTeacher('${t.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg transition"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Admin: Class & Student Management
+        function handleCreateClass(e) {
+            e.preventDefault();
+            const name = document.getElementById('newClassName').value.trim();
+            if (appState.classes.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+                alert('Class with this title already exists.');
+                return;
+            }
+            const newClass = { id: 'c_' + Date.now(), name };
+            appState.classes.push(newClass);
+            saveState();
+            renderAdminClassesDropdowns();
+            e.target.reset();
+        }
+
+        function handleRegisterStudent(e) {
+            e.preventDefault();
+            const classId = document.getElementById('regStudentClassSelect').value;
+            const name = document.getElementById('regStudentName').value.trim();
+            const age = parseInt(document.getElementById('regStudentAge').value) || 7;
+            const gender = document.getElementById('regStudentGender').value;
+
+            if (!classId) return;
+
+            const newStudent = { id: 's_' + Date.now(), classId, name, age, gender };
+            appState.students.push(newStudent);
+            saveState();
+            renderAdminRosterTable();
+            populateReportCardDropdowns();
+            e.target.reset();
+        }
+
+        function deleteStudent(studentId) {
+            if (confirm('Are you sure you want to remove this student from the roster?')) {
+                appState.students = appState.students.filter(s => s.id !== studentId);
+                saveState();
+                renderAdminRosterTable();
+                populateReportCardDropdowns();
+            }
+        }
+
+        function openEditStudentModal(studentId) {
+            const s = appState.students.find(item => item.id === studentId);
+            if (!s) return;
+
+            document.getElementById('editStudentId').value = s.id;
+            document.getElementById('editStudentName').value = s.name;
+            document.getElementById('editStudentAge').value = s.age;
+            document.getElementById('editStudentGender').value = s.gender;
+
+            const select = document.getElementById('editStudentClass');
+            select.innerHTML = '';
+            appState.classes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                if (c.id === s.classId) opt.selected = true;
+                select.appendChild(opt);
+            });
+
+            document.getElementById('editStudentModal').classList.remove('hidden');
+        }
+
+        function closeEditStudentModal() {
+            document.getElementById('editStudentModal').classList.add('hidden');
+        }
+
+        function handleSaveEditedStudent(e) {
+            e.preventDefault();
+            const id = document.getElementById('editStudentId').value;
+            const s = appState.students.find(item => item.id === id);
+            if (!s) return;
+
+            s.name = document.getElementById('editStudentName').value.trim();
+            s.age = parseInt(document.getElementById('editStudentAge').value) || s.age;
+            s.gender = document.getElementById('editStudentGender').value;
+            s.classId = document.getElementById('editStudentClass').value;
+
+            saveState();
+            renderAdminRosterTable();
+            populateReportCardDropdowns();
+            closeEditStudentModal();
+        }
+
+        function renderAdminClassesDropdowns() {
+            const selectReg = document.getElementById('regStudentClassSelect');
+            const selectFilter = document.getElementById('adminRosterClassFilter');
+            const selectAssign = document.getElementById('assignClassSelect');
+
+            selectReg.innerHTML = '<option value="">-- Choose Class --</option>';
+            selectFilter.innerHTML = '<option value="">All Classes</option>';
+            selectAssign.innerHTML = '<option value="">-- Choose Class --</option>';
+
+            appState.classes.forEach(c => {
+                selectReg.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                selectFilter.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+                selectAssign.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            });
+        }
+
+        function renderAdminRosterTable() {
+            const tbody = document.getElementById('adminRosterTableBody');
+            const filterClassId = document.getElementById('adminRosterClassFilter').value;
+            tbody.innerHTML = '';
+
+            let list = appState.students;
+            if (filterClassId) {
+                list = list.filter(s => s.classId === filterClassId);
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">No students registered in roster.</td></tr>`;
+                return;
+            }
+
+            list.forEach(s => {
+                const cObj = appState.classes.find(c => c.id === s.classId);
+                const className = cObj ? cObj.name : 'Unassigned';
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono text-xs text-slate-400">${s.id}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
+                    <td class="py-3 px-4 text-indigo-700 font-medium">${className}</td>
+                    <td class="py-3 px-4 text-slate-600">${s.age} yrs / ${s.gender}</td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="openEditStudentModal('${s.id}')" class="text-indigo-600 hover:text-indigo-800 p-1.5 rounded-lg transition" title="Edit Student Info"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteStudent('${s.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg transition" title="Remove Student"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Admin: Subjects & Assignments Management
+        function handleCreateSubject(e) {
+            e.preventDefault();
+            const name = document.getElementById('newSubjectName').value.trim();
+            if (appState.subjects.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+                alert('Subject already exists.');
+                return;
+            }
+            const newSub = { id: 'sub_' + Date.now(), name };
+            appState.subjects.push(newSub);
+            saveState();
+            renderAdminSubjectsTable();
+            e.target.reset();
+        }
+
+        function handleAssignTeacherSubject(e) {
+            e.preventDefault();
+            const teacherId = document.getElementById('assignTeacherSelect').value;
+            const classId = document.getElementById('assignClassSelect').value;
+            const subjectId = document.getElementById('assignSubjectSelect').value;
+
+            if (!teacherId || !classId || !subjectId) return;
+
+            const tObj = appState.teachers.find(t => t.id === teacherId);
+            const cObj = appState.classes.find(c => c.id === classId);
+            const sObj = appState.subjects.find(s => s.id === subjectId);
+
+            if (appState.teachingAssignments.some(ta => ta.classId === classId && ta.subjectId === subjectId)) {
+                alert(`Subject "${sObj.name}" in class "${cObj.name}" is already assigned to a teacher.`);
+                return;
+            }
+
+            const newAssignment = {
+                id: 'ta_' + Date.now(),
+                classId,
+                subjectId,
+                subjectName: sObj.name,
+                teacherId,
+                teacherName: tObj.name
+            };
+
+            appState.teachingAssignments.push(newAssignment);
+
+            // Create corresponding marklist container if missing
+            const mlId = `ml_${classId}_${subjectId}`;
+            if (!appState.markLists.some(m => m.id === mlId)) {
+                appState.markLists.push({
+                    id: mlId,
+                    assignmentId: newAssignment.id,
+                    classId,
+                    className: cObj.name,
+                    subjectName: sObj.name,
+                    teacherId,
+                    teacherName: tObj.name,
+                    reported: false,
+                    assessments: [
+                        { id: 'a1', title: 'Quiz 1', maxMark: 20 },
+                        { id: 'a2', title: 'Midterm', maxMark: 30 },
+                        { id: 'a3', title: 'Final Exam', maxMark: 50 }
+                    ],
+                    grades: {}
+                });
+            }
+
+            saveState();
+            renderAdminSubjectsTable();
+        }
+
+        function deleteAssignment(assignmentId) {
+            if (confirm('Are you sure you want to remove this teaching assignment?')) {
+                appState.teachingAssignments = appState.teachingAssignments.filter(ta => ta.id !== assignmentId);
+                saveState();
+                renderAdminSubjectsTable();
+            }
+        }
+
+        function renderAdminSubjectsTable() {
+            const selectTeacher = document.getElementById('assignTeacherSelect');
+            const selectSub = document.getElementById('assignSubjectSelect');
+
+            selectTeacher.innerHTML = '<option value="">-- Choose Teacher --</option>';
+            appState.teachers.forEach(t => selectTeacher.innerHTML += `<option value="${t.id}">${t.name} (${t.subject})</option>`);
+
+            selectSub.innerHTML = '<option value="">-- Choose Subject --</option>';
+            appState.subjects.forEach(s => selectSub.innerHTML += `<option value="${s.id}">${s.name}</option>`);
+
+            const tbody = document.getElementById('adminAssignmentsTableBody');
+            tbody.innerHTML = '';
+
+            if (appState.teachingAssignments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400">No teaching assignments created yet.</td></tr>`;
+                return;
+            }
+
+            appState.teachingAssignments.forEach(ta => {
+                const cObj = appState.classes.find(c => c.id === ta.classId);
+                const className = cObj ? cObj.name : 'Unknown Class';
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-900">${className}</td>
+                    <td class="py-3 px-4 text-indigo-700 font-semibold">${ta.subjectName}</td>
+                    <td class="py-3 px-4 text-slate-700">${ta.teacherName}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteAssignment('${ta.id}')" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg transition" title="Remove Assignment"><i class="fa-solid fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderTeacherMarkLists() {
+            const tbody = document.getElementById('teacherMarkListsTableBody');
+            tbody.innerHTML = '';
+
+            const teacherAssignments = appState.teachingAssignments.filter(ta => ta.teacherId === appState.currentUser.id);
+            document.getElementById('teacherMarkListCount').textContent = `${teacherAssignments.length} Assigned Mark Lists`;
+
+            if (teacherAssignments.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">You do not have any assigned classes or subjects yet. Contact Department Head.</td></tr>`;
+                return;
+            }
+
+            teacherAssignments.forEach(ta => {
+                const cObj = appState.classes.find(c => c.id === ta.classId);
+                const className = cObj ? cObj.name : 'Class';
+                const studentCount = appState.students.filter(s => s.classId === ta.classId).length;
+                const mlId = `ml_${ta.classId}_${ta.subjectId}`;
+                const ml = appState.markLists.find(m => m.id === mlId);
+                const reported = ml ? ml.reported : false;
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                const statusBadge = reported
+                    ? `<span class="bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full text-xs">Submitted</span>`
+                    : `<span class="bg-amber-50 text-amber-700 font-semibold px-2.5 py-1 rounded-full text-xs">Draft</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-900">${className}</td>
+                    <td class="py-3 px-4 text-emerald-700 font-medium">${ta.subjectName}</td>
+                    <td class="py-3 px-4 text-slate-600">${studentCount} Enrolled Students</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openMarkListModal('${mlId}')" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold px-3 py-1.5 rounded-lg text-xs transition">
+                            <i class="fa-solid fa-pen-to-square mr-1"></i> Open & Enter Scores
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderAdminMarkLists() {
+            const tbody = document.getElementById('adminMarkListsTableBody');
+            const filterTeacherId = document.getElementById('adminFilterTeacher').value;
+            tbody.innerHTML = '';
+
+            let list = appState.markLists;
+            if (filterTeacherId) {
+                list = list.filter(ml => ml.teacherId === filterTeacherId);
+            }
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">No mark lists available.</td></tr>`;
+                return;
+            }
+
+            list.forEach(ml => {
+                const studentCount = appState.students.filter(s => s.classId === ml.classId).length;
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                const statusBadge = ml.reported
+                    ? `<span class="bg-emerald-50 text-emerald-700 font-semibold px-2.5 py-1 rounded-full text-xs">Submitted</span>`
+                    : `<span class="bg-amber-50 text-amber-700 font-semibold px-2.5 py-1 rounded-full text-xs">Draft</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-900">${ml.className}</td>
+                    <td class="py-3 px-4 text-indigo-600 font-medium">${ml.subjectName}</td>
+                    <td class="py-3 px-4 text-slate-600">${ml.teacherName}</td>
+                    <td class="py-3 px-4 text-slate-600">${studentCount} Students</td>
+                    <td class="py-3 px-4">${statusBadge}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openMarkListModal('${ml.id}')" class="bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold px-3 py-1.5 rounded-lg text-xs transition">
+                            <i class="fa-solid fa-eye mr-1"></i> View Scores
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Modal: Mark List & Score Input
+        function openMarkListModal(id) {
+            appState.activeMarkListId = id;
+            let ml = appState.markLists.find(m => m.id === id);
+            if (!ml) return;
+
+            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
+
+            document.getElementById('modalMarkListTitle').textContent = `${ml.className} - ${ml.subjectName}`;
+            document.getElementById('modalSubjectBadge').textContent = ml.subjectName;
+            document.getElementById('modalSubHeading').textContent = `Teacher: ${ml.teacherName} | Managed class assessments & scores`;
+
+            if (isAdmin) {
+                document.getElementById('modalReadOnlyNotice').classList.remove('hidden');
+                document.getElementById('addAssessmentForm').classList.add('hidden');
+                document.getElementById('modalReportBtn').classList.add('hidden');
+            } else {
+                document.getElementById('modalReadOnlyNotice').classList.add('hidden');
+                document.getElementById('addAssessmentForm').classList.remove('hidden');
+                document.getElementById('modalReportBtn').classList.remove('hidden');
+            }
+
+            renderAssessmentChips(ml);
+            renderModalStudents();
+            updateModalReportStatusBadge(ml);
+
+            document.getElementById('markListDetailModal').classList.remove('hidden');
+        }
+
+        function closeMarkListModal() {
+            document.getElementById('markListDetailModal').classList.add('hidden');
+            appState.activeMarkListId = null;
+        }
+
+        function renderAssessmentChips(ml) {
+            const container = document.getElementById('assessmentsChipsContainer');
+            container.innerHTML = '';
+            let totalMax = 0;
+            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
+
+            ml.assessments.forEach(ass => {
+                totalMax += ass.maxMark;
+                const chip = document.createElement('div');
+                chip.className = "bg-white border border-slate-200 shadow-sm rounded-lg px-3 py-1.5 flex items-center space-x-2 text-xs font-semibold text-slate-700";
+                chip.innerHTML = `
+                    <span>${ass.title} (${ass.maxMark} pts)</span>
+                    ${!isAdmin ? `<button onclick="removeAssessment('${ass.id}')" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                `;
+                container.appendChild(chip);
+            });
+
+            document.getElementById('assessmentsTotalWeightBadge').textContent = `Total Max Score: ${totalMax} Points`;
+        }
+
+        function handleAddAssessment(e) {
+            e.preventDefault();
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            const title = document.getElementById('newAssessTitle').value.trim();
+            const maxMark = parseFloat(document.getElementById('newAssessMax').value) || 10;
+
+            const newAss = { id: 'a_' + Date.now(), title, maxMark };
+            ml.assessments.push(newAss);
+
+            saveState();
+            renderAssessmentChips(ml);
+            renderModalStudents();
+            e.target.reset();
+        }
+
+        function removeAssessment(assId) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            ml.assessments = ml.assessments.filter(a => a.id !== assId);
+            saveState();
+            renderAssessmentChips(ml);
+            renderModalStudents();
+        }
+
+        function updateAssessmentScore(studentId, assId, scoreVal, maxMark) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            if (!ml.grades) ml.grades = {};
+            if (!ml.grades[studentId]) ml.grades[studentId] = { marks: {}, customGrade: '' };
+
+            let num = parseFloat(scoreVal) || 0;
+            if (num < 0) num = 0;
+            if (num > maxMark) num = maxMark;
+
+            ml.grades[studentId].marks[assId] = num;
+            saveState();
+            renderModalStudents();
+        }
+
+        function updateCustomGrade(studentId, gradeVal) {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            if (!ml.grades) ml.grades = {};
+            if (!ml.grades[studentId]) ml.grades[studentId] = { marks: {}, customGrade: '' };
+
+            ml.grades[studentId].customGrade = gradeVal.trim();
+            saveState();
+        }
+
+        function renderModalStudents() {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            const headerRow = document.getElementById('modalStudentsTableHeader');
+            const tbody = document.getElementById('modalStudentsTableBody');
+            const isAdmin = appState.currentUser && appState.currentUser.role === 'admin';
+            tbody.innerHTML = '';
+
+            if (!ml) return;
+
+            // Fetch students belonging to this class
+            const enrolledStudents = appState.students.filter(s => s.classId === ml.classId);
+
+            let headerHTML = `<th class="py-3 px-4 border-b">#</th><th class="py-3 px-4 border-b">የተማሪው ስም</th>`;
+            ml.assessments.forEach(ass => {
+                headerHTML += `<th class="py-3 px-3 border-b text-center">${ass.title} (${ass.maxMark})</th>`;
+            });
+            headerHTML += `<th class="py-3 px-4 border-b text-center">Total Score</th><th class="py-3 px-4 border-b text-center">Grade</th>`;
+            headerRow.innerHTML = headerHTML;
+
+            if (enrolledStudents.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${ml.assessments.length + 4}" class="py-8 text-center text-slate-400">No students registered in this class by Department Head yet.</td></tr>`;
+                return;
+            }
+
+            enrolledStudents.forEach((s, idx) => {
+                const scoreObj = calculateStudentScore(s.id, ml);
+                const sGradeData = ml.grades && ml.grades[s.id] ? ml.grades[s.id] : { marks: {} };
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+
+                let rowHTML = `
+                    <td class="py-3 px-4 text-slate-400 font-mono text-xs">${idx + 1}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
+                `;
+
+                ml.assessments.forEach(ass => {
+                    const score = (sGradeData.marks && sGradeData.marks[ass.id] !== undefined) ? sGradeData.marks[ass.id] : 0;
+                    rowHTML += `
+                        <td class="py-3 px-2 text-center">
+                            ${isAdmin 
+                                ? `<span class="font-bold text-slate-700">${score}</span>`
+                                : `<input type="number" min="0" max="${ass.maxMark}" step="0.5" value="${score}" onchange="updateAssessmentScore('${s.id}', '${ass.id}', this.value, ${ass.maxMark})" class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-20 text-center font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500">`
+                            }
+                        </td>
+                    `;
+                });
+
+                rowHTML += `
+                    <td class="py-3 px-4 text-center font-bold text-indigo-600">${scoreObj.mark}</td>
+                    <td class="py-3 px-4 text-center">
+                        ${isAdmin 
+                            ? `<span class="font-bold px-2.5 py-1 rounded-lg text-xs ${getGradeBadgeClass(scoreObj.customGrade)}">${scoreObj.customGrade}</span>`
+                            : `<input type="text" value="${scoreObj.customGrade}" onchange="updateCustomGrade('${s.id}', this.value)" class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-20 text-center font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-xs">`
+                        }
+                    </td>
+                `;
+
+                tr.innerHTML = rowHTML;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateModalReportStatusBadge(ml) {
+            const badge = document.getElementById('modalReportStatusBadge');
+            const btn = document.getElementById('modalReportBtn');
+
+            if (ml.reported) {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700";
+                badge.textContent = "Reported to Department Head";
+                if (btn) btn.innerHTML = `<i class="fa-solid fa-arrow-rotate-left"></i><span>Unsubmit Report</span>`;
+            } else {
+                badge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700";
+                badge.textContent = "Draft / Not Reported";
+                if (btn) btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i><span>Submit Report to Head</span>`;
+            }
+        }
+
+        function toggleReportMarkList() {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            ml.reported = !ml.reported;
+            saveState();
+            updateModalReportStatusBadge(ml);
+            renderTeacherMarkLists();
+        }
+
+        function downloadMarkListPDF() {
+            const ml = appState.markLists.find(m => m.id === appState.activeMarkListId);
+            if (!ml) return;
+
+            document.getElementById('pdfMlTitle').textContent = `${ml.className} - Mark List`;
+            document.getElementById('pdfMlSubject').textContent = `Subject: ${ml.subjectName}`;
+            document.getElementById('pdfMlTeacher').textContent = ml.teacherName;
+            document.getElementById('pdfMlDate').textContent = new Date().toLocaleDateString();
+
+            const tbody = document.getElementById('pdfMlTableBody');
+            tbody.innerHTML = '';
+
+            const enrolledStudents = appState.students.filter(s => s.classId === ml.classId);
+
+            enrolledStudents.forEach((s, idx) => {
+                const scoreObj = calculateStudentScore(s.id, ml);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="border p-2 text-center">${idx + 1}</td>
+                    <td class="border p-2 font-semibold">${s.name}</td>
+                    <td class="border p-2 text-center font-bold">${scoreObj.mark}</td>
+                    <td class="border p-2 text-center font-bold">${scoreObj.customGrade}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const element = document.getElementById('printableMarkListArea');
+            element.classList.remove('hidden');
+
+            const opt = {
+                margin: 0.5,
+                filename: `${ml.className}_${ml.subjectName}_MarkList.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.classList.add('hidden');
+            });
+        }
+
+        function populateReportCardDropdowns() {
+            const classSelect = document.getElementById('reportCardClassSelect');
+            const currentClassVal = classSelect.value;
+            classSelect.innerHTML = '<option value="">-- Choose Class --</option>';
+
+            appState.classes.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = c.name;
+                if (c.id === currentClassVal) opt.selected = true;
+                classSelect.appendChild(opt);
+            });
+
+            populateStudentsForReportCard();
+        }
+
+        function onClassFilterChange() {
+            populateStudentsForReportCard();
+            generateStudentReportCard();
+        }
+
+        function populateStudentsForReportCard() {
+            const classId = document.getElementById('reportCardClassSelect').value;
+            const studentSelect = document.getElementById('reportCardStudentSelect');
+            studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
+
+            if (!classId) return;
+
+            const classStudents = appState.students.filter(s => s.classId === classId);
+            classStudents.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s.id;
+                opt.textContent = s.name;
+                studentSelect.appendChild(opt);
+            });
+        }
+
+        function generateStudentReportCard() {
+            const classId = document.getElementById('reportCardClassSelect').value;
+            const studentId = document.getElementById('reportCardStudentSelect').value;
+            const container = document.getElementById('reportCardContainer');
+            const emptyState = document.getElementById('reportCardEmpty');
+
+            if (!classId || !studentId) {
+                container.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            const targetClass = appState.classes.find(c => c.id === classId);
+            const targetStudent = appState.students.find(s => s.id === studentId);
+            const classStudents = appState.students.filter(s => s.classId === classId);
+            const classMarkLists = appState.markLists.filter(ml => ml.classId === classId);
+
+            // Compute rankings for all students in class across subjects
+            const classStudentAveragesMap = {};
+            classStudents.forEach(st => {
+                classStudentAveragesMap[st.id] = { total: 0, count: 0, name: st.name };
+                classMarkLists.forEach(ml => {
+                    const scoreObj = calculateStudentScore(st.id, ml);
+                    classStudentAveragesMap[st.id].total += scoreObj.mark;
+                    classStudentAveragesMap[st.id].count += 1;
+                });
+            });
+
+            const classRankings = Object.keys(classStudentAveragesMap).map(sKey => {
+                const item = classStudentAveragesMap[sKey];
+                return {
+                    studentId: sKey,
+                    avg: item.count > 0 ? item.total / item.count : 0
+                };
+            }).sort((a, b) => b.avg - a.avg);
+
+            const targetStudentRankIndex = classRankings.findIndex(r => r.studentId === studentId);
+            const rankText = targetStudentRankIndex !== -1 ? `#${targetStudentRankIndex + 1} of ${classRankings.length}` : 'N/A';
+
+            let studentRecords = [];
+            let totalMarks = 0;
+
+            classMarkLists.forEach(ml => {
+                const scoreObj = calculateStudentScore(studentId, ml);
+                studentRecords.push({
+                    subject: ml.subjectName,
+                    className: ml.className,
+                    teacher: ml.teacherName,
+                    mark: scoreObj.mark,
+                    grade: scoreObj.customGrade
+                });
+                totalMarks += scoreObj.mark;
+            });
+
+            document.getElementById('rcIssueDate').textContent = new Date().toLocaleDateString();
+            document.getElementById('rcStudentName').textContent = targetStudent ? targetStudent.name : '-';
+            document.getElementById('rcClassName').textContent = targetClass ? targetClass.name : '-';
+            document.getElementById('rcTotalSubjects').textContent = studentRecords.length;
+            document.getElementById('rcClassRank').textContent = rankText;
+            
+            const avg = studentRecords.length > 0 ? (totalMarks / studentRecords.length).toFixed(1) : 0;
+            document.getElementById('rcOverallAverage').textContent = `${avg} / 100 (${getLetterGrade(avg)})`;
+
+            const tbody = document.getElementById('rcMarksTableBody');
+            tbody.innerHTML = '';
+
+            if (studentRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">No subject mark lists available for this class yet.</td></tr>`;
+            } else {
+                studentRecords.forEach(rec => {
+                    const tr = document.createElement('tr');
+                    tr.className = "border-b border-slate-200";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-semibold text-slate-900 border-r border-slate-200">${rec.subject}</td>
+                        <td class="py-3 px-4 text-slate-600 border-r border-slate-200">${rec.className}</td>
+                        <td class="py-3 px-4 text-slate-600 border-r border-slate-200">${rec.teacher}</td>
+                        <td class="py-3 px-4 text-center font-bold text-indigo-600 border-r border-slate-200">${rec.mark}</td>
+                        <td class="py-3 px-4 text-center"><span class="font-bold px-2.5 py-1 rounded-lg text-xs ${getGradeBadgeClass(rec.grade)}">${rec.grade}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            container.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+        }
+
+        function downloadStudentReportPDF() {
+            const studentName = document.getElementById('rcStudentName').textContent;
+            const element = document.getElementById('printableReportCard');
+
+            const opt = {
+                margin: 0.4,
+                filename: `${studentName}_Official_Report_Card.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, scrollY: 0, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            checkAuthView();
+        });
+    </script>
+</body>
+</html>
