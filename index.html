@@ -1016,16 +1016,48 @@
             }
         }
 
-        // Populate the summary class dropdown options
+        // Populate the summary class dropdown options with actual Class Names
         function populateSummaryClassDropdown() {
             const select = document.getElementById('summaryClassSelect');
             if (!select) return;
         
+            // 1. Gather all unique class names or objects from appState
+            // If your app has an appState.classes array (e.g. [{id: 'c_1', name: 'Grade 10 Section A'}, ...])
+            let classList = [];
+            
+            if (appState.classes && appState.classes.length > 0) {
+                classList = appState.classes.map(c => ({
+                    id: c.id,
+                    name: c.name || c.className || c.grade || c.id
+                }));
+            } else {
+                // Fallback: extract from markLists and students
+                const rawClasses = new Set();
+                
+                if (appState.markLists) {
+                    appState.markLists.forEach(ml => {
+                        if (ml.className) rawClasses.add(ml.className);
+                        if (ml.class_id) rawClasses.add(ml.class_id);
+                    });
+                }
+                
+                if (appState.students) {
+                    appState.students.forEach(s => {
+                        if (s.className) rawClasses.add(s.className);
+                        if (s.grade) rawClasses.add(s.grade);
+                        if (s.class_id) rawClasses.add(s.class_id);
+                    });
+                }
+        
+                classList = Array.from(rawClasses).map(cName => ({
+                    id: cName,
+                    name: cName
+                }));
+            }
+        
+            // 2. Render options showing the friendly name, while keeping the ID/Name as value
             select.innerHTML = '<option value="">-- Choose Class --</option>' + 
-                appState.students
-                    .map(s => s.grade || s.className || s.class_id)
-                    .filter((v, i, a) => v && a.indexOf(v) === i) // Unique classes
-                    .map(c => `<option value="${c}">${c}</option>`).join('');
+                classList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         }
         
         // Calculate and render student totals, averages, and rankings
