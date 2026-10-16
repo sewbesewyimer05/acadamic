@@ -129,6 +129,8 @@
                         <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export</button>
                     </div>
                 </div>
+
+                
                 <!-- Class Summary & Ranking Tab -->
                 <div id="adminTabClassSummary" class="tab-content space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -144,7 +146,7 @@
                                 </select>
                             </div>
                         </div>
-                
+    
                         <!-- Summary Table View -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
@@ -169,7 +171,29 @@
                         </div>
                     </div>
                 </div>
-    
+                
+<!-- Class Summary Table in a Printable Container ID -->
+                <div id="printableClassSummary" class="bg-white p-6 rounded-3xl shadow-xs border border-slate-200 space-y-6">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Class Performance & Student Ranks</h3>
+                            <p class="text-sm text-slate-500">View overall student scores, averages, and auto-calculated rankings per class.</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="text-xs font-bold uppercase text-slate-400">Select Class:</label>
+                            <select id="summaryClassSelect" onchange="renderClassSummaryTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Choose Class --</option>
+                            </select>
+                            <!-- Add PDF Download Button Here -->
+                            <button onclick="downloadClassSummaryPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-sm transition flex items-center space-x-1.5">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>Download PDF</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Table container... -->
+                </div>
+<!-- end         -->
                 <div class="flex-1 max-w-7xl w-full mx-auto p-6">
     
                     <!-- Overview Tab -->
@@ -489,6 +513,8 @@
                             </div>
                         </div>
                     </div>
+
+
     
                     <!-- Report Cards Tab -->
                     <div id="adminTabCard" class="tab-content space-y-6">
@@ -1096,7 +1122,8 @@
             `;
         
             classMarkLists.forEach(ml => {
-                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${ml.subjects}</th>`;
+                const subjectTitle = ml.subject_name || ml.subject || ml.title || 'Subject';
+                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${subjectTitle}</th>`;
             });
         
             headerHTML += `
@@ -1798,6 +1825,29 @@
         
             html2pdf().set(opt).from(element).save();
         }
+
+        function downloadClassSummaryPDF() {
+            const element = document.getElementById('printableClassSummary');
+            const select = document.getElementById('summaryClassSelect');
+            const className = select && select.options[select.selectedIndex] ? select.options[select.selectedIndex].text.replace(/\s+/g, '_') : 'Class_Summary';
+            
+            const opt = {
+                margin:       0.4,
+                filename:     `Class_Ranks_${className}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    letterRendering: true,
+                    windowWidth: 1024
+                },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+            };
+        
+            html2pdf().set(opt).from(element).save();
+        }
+
 
         // function downloadStudentReportPDF() {
         //     const element = document.getElementById('printableReportCard');
