@@ -1831,8 +1831,14 @@
             const select = document.getElementById('summaryClassSelect');
             const className = select && select.options[select.selectedIndex] ? select.options[select.selectedIndex].text.replace(/\s+/g, '_') : 'Class_Summary';
             
+            // Check if element exists and has content
+            if (!element) {
+                showNotification("Printable element not found.", "error");
+                return;
+            }
+        
             const opt = {
-                margin:       0.4,
+                margin:       [0.4, 0.4, 0.4, 0.4],
                 filename:     `Class_Ranks_${className}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { 
@@ -1840,14 +1846,21 @@
                     useCORS: true, 
                     logging: false,
                     letterRendering: true,
-                    windowWidth: 1024
+                    windowWidth: 1122, // Explicit landscape width to prevent PC cropping
+                    scrollX: 0,
+                    scrollY: 0
                 },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
         
-            html2pdf().set(opt).from(element).save();
+            html2pdf().set(opt).from(element).save().then(() => {
+                showNotification("Class summary PDF downloaded successfully!");
+            }).catch(err => {
+                console.error("PDF Export Error:", err);
+                showNotification("Failed to generate PDF.", "error");
+            });
         }
-
 
         // function downloadStudentReportPDF() {
         //     const element = document.getElementById('printableReportCard');
