@@ -1828,12 +1828,19 @@
 
         function downloadClassSummaryPDF() {
             const element = document.getElementById('printableClassSummary');
+            if (!element) {
+                console.error("Error: #printableClassSummary element not found in DOM.");
+                alert("Printable container not found. Please switch to the Class Roster & Ranks tab first.");
+                return;
+            }
+        
             const select = document.getElementById('summaryClassSelect');
             const className = select && select.options[select.selectedIndex] ? select.options[select.selectedIndex].text.replace(/\s+/g, '_') : 'Class_Summary';
             
-            // Check if element exists and has content
-            if (!element) {
-                showNotification("Printable element not found.", "error");
+            // Check if html2pdf library is loaded
+            if (typeof html2pdf === 'undefined') {
+                console.error("Error: html2pdf library is not loaded.");
+                alert("PDF library is still loading or blocked. Please check your internet connection or CDN links.");
                 return;
             }
         
@@ -1844,9 +1851,9 @@
                 html2canvas:  { 
                     scale: 2, 
                     useCORS: true, 
-                    logging: false,
+                    logging: true, // Enabled temporarily to help debug in browser console
                     letterRendering: true,
-                    windowWidth: 1122, // Explicit landscape width to prevent PC cropping
+                    windowWidth: 1122,
                     scrollX: 0,
                     scrollY: 0
                 },
@@ -1855,10 +1862,10 @@
             };
         
             html2pdf().set(opt).from(element).save().then(() => {
-                showNotification("Class summary PDF downloaded successfully!");
+                console.log("PDF generated successfully.");
             }).catch(err => {
-                console.error("PDF Export Error:", err);
-                showNotification("Failed to generate PDF.", "error");
+                console.error("html2pdf generation failed:", err);
+                alert("Failed to generate PDF. Check browser console for details.");
             });
         }
 
