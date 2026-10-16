@@ -1022,38 +1022,49 @@
             if (!select) return;
         
             select.innerHTML = '<option value="">-- Choose Class --</option>' + 
-                appState.classes.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                appState.students
+                    .map(s => s.grade || s.className || s.class_id)
+                    .filter((v, i, a) => v && a.indexOf(v) === i) // Unique classes
+                    .map(c => `<option value="${c}">${c}</option>`).join('');
         }
         
         // Calculate and render student totals, averages, and rankings
         function renderClassSummaryTable() {
-            const classId = document.getElementById('summaryClassSelect').value;
+            const classVal = document.getElementById('summaryClassSelect').value;
             const thead = document.getElementById('classSummaryHead');
             const tbody = document.getElementById('classSummaryBody');
         
-            if (!classId) {
+            if (!classVal) {
                 tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">Please select a class to load student rankings.</td></tr>`;
                 return;
             }
         
-            // 1. Get all students and subjects assigned to this class
-            const classStudents = appState.students.filter(s => s.class_id === classId);
-            const classAssignments = appState.assignments.filter(a => a.class_id === classId);
+            // 1. Filter students matching selected class (flexible type & key checking)
+            const classStudents = appState.students.filter(s => 
+                String(s.grade) === String(classVal) || 
+                String(s.className) === String(classVal) || 
+                String(s.class_id) === String(classVal)
+            );
             
             if (classStudents.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No students registered in this class.</td></tr>`;
                 return;
             }
         
-            // 2. Build dynamic Table Headers (Subject Columns)
+            // 2. Fetch all mark lists corresponding to this class
+            const classMarkLists = appState.markLists.filter(ml => 
+                String(ml.className) === String(classVal) || 
+                String(ml.class_id) === String(classVal)
+            );
+        
+            // Build Dynamic Headers for available subjects
             let headerHTML = `
                 <th class="py-3 px-4 border-r border-indigo-800 text-center">Rank</th>
                 <th class="py-3 px-4 border-r border-indigo-800">Student Name</th>
             `;
         
-            classAssignments.forEach(asg => {
-                const sub = appState.subjects.find(s => s.id === asg.subject_id);
-                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${sub ? sub.name : 'Subject'}</th>`;
+            classMarkLists.forEach(ml => {
+                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${ml.subject}</th>`;
             });
         
             headerHTML += `
@@ -1063,22 +1074,19 @@
             `;
             thead.innerHTML = headerHTML;
         
-            // 3. Compute student scores for all assigned subjects
+            // 3. Compute totals and averages per student
             const rosterData = classStudents.map(student => {
                 let totalScore = 0;
-                let subjectsCount = classAssignments.length;
+                let subjectsCount = classMarkLists.length;
                 const subjectScores = {};
         
-                classAssignments.forEach(asg => {
-                    const markList = appState.markLists.find(m => m.class_id === classId && m.subject_id === asg.subject_id);
+                classMarkLists.forEach(ml => {
                     let score = 0;
-        
-                    if (markList && markList.grades && markList.grades[student.id]) {
-                        const marksObj = markList.grades[student.id].marks || {};
+                    if (ml.grades && ml.grades[student.id]) {
+                        const marksObj = ml.grades[student.id].marks || {};
                         score = Object.values(marksObj).reduce((sum, v) => sum + (Number(v) || 0), 0);
                     }
-        
-                    subjectScores[asg.subject_id] = score;
+                    subjectScores[ml.id] = score;
                     totalScore += score;
                 });
         
@@ -1092,13 +1100,13 @@
                 };
             });
         
-            // 4. Sort students descending by Average / Total Score for Rank Calculation
+            // 4. Sort students descending by Average Score
             rosterData.sort((a, b) => b.average - a.average);
         
             // 5. Render rows with Rank badges
+            const totalCols = 4 + classMarkLists.length;
             tbody.innerHTML = rosterData.map((row, index) => {
                 const rank = index + 1;
-                const isTop3 = rank <= 3;
                 const rankBadgeClass = rank === 1 ? 'bg-amber-100 text-amber-800 border-amber-300' :
                                      rank === 2 ? 'bg-slate-200 text-slate-800 border-slate-300' :
                                      rank === 3 ? 'bg-orange-100 text-orange-800 border-orange-300' :
@@ -1115,9 +1123,8 @@
                     </td>
                 `;
         
-                // Render subject scores for student
-                classAssignments.forEach(asg => {
-                    const score = row.subjectScores[asg.subject_id] || 0;
+                classMarkLists.forEach(ml => {
+                    const score = row.subjectScores[ml.id] || 0;
                     rowHTML += `<td class="py-3 px-4 border-r border-slate-200 text-center font-semibold text-slate-700">${score.toFixed(1)}</td>`;
                 });
         
@@ -1134,7 +1141,7 @@
                 return `<tr class="hover:bg-slate-50 transition">${rowHTML}</tr>`;
             }).join('');
         }
-    
+
         async function handleAssignTeacherSubject(e) {
             e.preventDefault();
             const teacherId = document.getElementById('assignTeacherSelect').value;
