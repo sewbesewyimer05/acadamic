@@ -1819,7 +1819,7 @@
                             y: 0,
                             scrollX: 0,
                             scrollY: 0,
-                            windowWidth: Math.max(element.scrollWidth, 1200) // Dynamically matches full content width
+                            windowWidth: document.documentElement.offsetWidth
                         },
                         jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
                         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
