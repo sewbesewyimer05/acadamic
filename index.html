@@ -130,8 +130,9 @@
                     </div>
                 </div>
                 <!-- Class Summary & Ranking Tab -->
-                <div id="adminTabClassSummary" class="tab-content space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <!-- Class Summary & Ranking Tab -->
+                <div id="adminTabClassSummary" class="tab-content space-y-6 p-6">
+                    <div id="printableClassSummaryContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
                         <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
                             <div>
                                 <h3 class="text-lg font-bold text-slate-900">Class Performance & Student Ranks</h3>
@@ -142,17 +143,20 @@
                                 <select id="summaryClassSelect" onchange="renderClassSummaryTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <option value="">-- Choose Class --</option>
                                 </select>
+                                <button onclick="downloadClassSummaryPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center space-x-2">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <span>Download PDF</span>
+                                </button>
                             </div>
                         </div>
-                
+                        
                         <!-- Summary Table View -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
                                 <thead>
                                     <tr id="classSummaryHead" class="bg-indigo-900 text-white text-xs font-bold uppercase tracking-wider">
-                                        <th class="py-3 px-4 border-r border-indigo-800">Rank</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">Rank</th>
                                         <th class="py-3 px-4 border-r border-indigo-800">Student Name</th>
-                                        <!-- Dynamic Subject Headers will be inserted here -->
                                         <th class="py-3 px-4 border-r border-indigo-800 text-center">Total Score</th>
                                         <th class="py-3 px-4 border-r border-indigo-800 text-center">Average (%)</th>
                                         <th class="py-3 px-4 text-center">Status</th>
@@ -1799,14 +1803,31 @@
             html2pdf().set(opt).from(element).save();
         }
 
-        // function downloadStudentReportPDF() {
-        //     const element = document.getElementById('printableReportCard');
-        //     html2pdf().from(element).save('student_transcript.pdf');
-        // }
-    
-        window.onload = loadAppData;
-    </script>
+        function downloadClassSummaryPDF() {
+                    const element = document.getElementById('printableClassSummaryContainer');
+                    if (!element) return;
+        
+                    const opt = {
+                        margin:       [0.4, 0.4, 0.4, 0.4],
+                        filename:     `Class_Performance_Report.pdf`,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { 
+                            scale: 2, 
+                            useCORS: true, 
+                            logging: false,
+                            scrollY: 0,
+                            scrollX: 0,
+                            windowWidth: 1200
+                        },
+                        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                    };
+        
+                    html2pdf().set(opt).from(element).save();
+                }
 
- 
+        window.onload = loadAppData;
+        
+    </script>
 </body>
 </html>
