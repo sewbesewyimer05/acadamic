@@ -129,8 +129,6 @@
                         <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export</button>
                     </div>
                 </div>
-
-                
                 <!-- Class Summary & Ranking Tab -->
                 <div id="adminTabClassSummary" class="tab-content space-y-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -146,7 +144,7 @@
                                 </select>
                             </div>
                         </div>
-    
+                
                         <!-- Summary Table View -->
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
@@ -171,50 +169,7 @@
                         </div>
                     </div>
                 </div>
-                
-<!-- Class Summary Table in a Printable Container ID -->
-                <!-- Wrap your entire card content in this printable container -->
-                <div id="printableClassSummary" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-6">
-                    
-                    <!-- Header and Class Selector Dropdown -->
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-900">Class Performance & Student Ranks</h3>
-                            <p class="text-sm text-slate-500">View overall student scores, averages, and auto-calculated rankings per class.</p>
-                        </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="text-xs font-bold uppercase text-slate-400">Select Class:</label>
-                            <select id="summaryClassSelect" onchange="renderClassSummaryTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="">-- Choose Class --</option>
-                            </select>
-                            <!-- Download Button -->
-                            <button onclick="downloadClassSummaryPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center space-x-2">
-                                <i class="fa-solid fa-file-pdf"></i>
-                                <span>Download PDF</span>
-                            </button>
-                        </div>
-                    </div>
-                
-                    <!-- Table Container (Ensure NO overflow-hidden or max-height here) -->
-                    <div class="border border-slate-200 rounded-xl">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr id="classSummaryHead" class="bg-indigo-900 text-white text-xs font-semibold uppercase">
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">Rank</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800">Student Name</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">Total Score</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">Average (%)</th>
-                                    <th class="py-3 px-4 text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="classSummaryBody" class="divide-y divide-slate-100 text-sm">
-                                <tr><td colspan="5" class="py-8 text-center text-slate-400">Please select a class to load student rankings and subject breakdowns.</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                
-                </div>
-<!-- end         -->
+    
                 <div class="flex-1 max-w-7xl w-full mx-auto p-6">
     
                     <!-- Overview Tab -->
@@ -534,8 +489,6 @@
                             </div>
                         </div>
                     </div>
-
-
     
                     <!-- Report Cards Tab -->
                     <div id="adminTabCard" class="tab-content space-y-6">
@@ -1143,8 +1096,7 @@
             `;
         
             classMarkLists.forEach(ml => {
-                const subjectTitle = ml.subject_name || ml.subject || ml.title || 'Subject';
-                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${subjectTitle}</th>`;
+                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${ml.subject}</th>`;
             });
         
             headerHTML += `
@@ -1847,29 +1799,6 @@
             html2pdf().set(opt).from(element).save();
         }
 
-        function downloadClassSummaryPDF() {
-            const element = document.getElementById('printableClassSummary');
-            if (!element) return;
-        
-            // Temporarily remove any table borders or scroll wrappers that restrict height during render
-            const opt = {
-                margin:       [0.4, 0.4, 0.4, 0.4],
-                filename:     `Class_Performance_Report.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2,           // Sharp text rendering for PC & mobile
-                    useCORS: true, 
-                    logging: false,
-                    scrollY: 0,
-                    scrollX: 0,
-                    windowWidth: 1200   // Forces wide desktop layout view so nothing is clipped horizontally
-                },
-                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' }, // Landscape gives more room for subject columns
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-            };
-        
-            html2pdf().set(opt).from(element).save();
-        }
         // function downloadStudentReportPDF() {
         //     const element = document.getElementById('printableReportCard');
         //     html2pdf().from(element).save('student_transcript.pdf');
