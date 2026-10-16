@@ -1808,16 +1808,18 @@
                     if (!element) return;
         
                     const opt = {
-                        margin:       [0.4, 0.4, 0.4, 0.4],
+                        margin:       [0.3, 0.3, 0.3, 0.3], // slightly tighter margins to give more room horizontally
                         filename:     `Class_Performance_Report.pdf`,
                         image:        { type: 'jpeg', quality: 0.98 },
                         html2canvas:  { 
                             scale: 2, 
                             useCORS: true, 
                             logging: false,
-                            scrollY: 0,
+                            x: 0,               // Forces canvas capture to start strictly from the left edge (0)
+                            y: 0,               // Forces canvas capture to start strictly from the top edge (0)
                             scrollX: 0,
-                            windowWidth: 1200
+                            scrollY: 0,
+                            windowWidth: 1400   // Increased virtual width to prevent any responsive left-side clipping
                         },
                         jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
                         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
@@ -1825,7 +1827,7 @@
         
                     html2pdf().set(opt).from(element).save();
                 }
-
+        
         window.onload = loadAppData;
         
     </script>
