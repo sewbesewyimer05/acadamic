@@ -555,25 +555,6 @@
                                         </select>
                                     </div>
                                 </div>
-
-                                <!-- STREAMING_CHUNK:Adding academic year filter to Report Cards tab -->
-                                <div class="flex flex-wrap items-center gap-3">
-                                    <div>
-                                        <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Academic Year</label>
-                                        <select id="rcYearSelect" onchange="loadStudentReportCard()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                                            <option value="2025/2026">2025/2026 (Current)</option>
-                                            <option value="2024/2025">2024/2025 (Archived)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Select Student</label>
-                                        <select id="rcStudentSelect" onchange="loadStudentReportCard()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold">
-                                            <!-- Populated dynamically -->
-                                        </select>
-                                    </div>
-                                </div>
- <!-- ------------------------------end------------------------ -->
-                                
                             </div>
     
                             <!-- Report Card Preview Box -->
@@ -859,17 +840,15 @@
             console.log("Supabase client running in standalone fallback mode.");
         }
     
-        const appState = {
+        let appState = {
             currentUser: null,
-            currentAcademicYear: '2025/2026', // Current active school year calendar
-            availableYears: ['2024/2025', '2025/2026', '2026/2027'],
-            academicHistory: [], // Stores past archived transcripts per student/year
             classes: [],
             subjects: [],
-            teachers: [],
             students: [],
+            teachers: [],
             teachingAssignments: [],
-            markLists: []
+            markLists: [],
+            activeMarkListId: null
         };
     
         async function loadAppData() {
@@ -904,20 +883,6 @@
             if (saved) {
                 try { appState = JSON.parse(saved); } catch (e) {}
             } else {
-                appState.currentAcademicYear = '2025/2026';
-                appState.availableYears = ['2024/2025', '2025/2026'];
-                // Add sample historical archive for testing past transcripts
-                appState.academicHistory = [
-                    {
-                        id: 'hist_001',
-                        studentId: 'STU-001',
-                        academicYear: '2024/2025',
-                        className: 'Kindergarten',
-                        finalAverage: 88.5,
-                        status: 'Promoted',
-                        subjectBreakdown: { 'Math': 90, 'English': 87 }
-                    }
-                ];
                 appState.classes = [
                     { id: 'CLS-001', name: 'Grade 1' },
                     { id: 'CLS-002', name: 'Grade 2' }
@@ -955,100 +920,7 @@
                     }
                 ];
             }
-                checkAuthView();
-        }
-
-        /* STREAMING_CHUNK:Updating report card loader to support archived history */
-        function loadStudentReportCard() {
-            const studentId = document.getElementById('rcStudentSelect').value;
-            const selectedYear = document.getElementById('rcYearSelect').value;
-            const student = appState.students.find(s => s.id === studentId);
-            
-            if (!student) return;
-        
-            // Check if viewing an archived past year
-            if (selectedYear !== appState.currentAcademicYear) {
-                const historyRecord = appState.academicHistory.find(h => h.studentId === studentId && h.academicYear === selectedYear);
-                
-                if (!historyRecord) {
-                    document.getElementById('rcTableBody').innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400">No transcript records found for ${selectedYear}.</td></tr>`;
-                    return;
-                }
-        
-                // Render past archived subjects and scores
-                document.getElementById('rcStudentName').textContent = student.name;
-                document.getElementById('rcStudentId').textContent = student.studentId;
-                document.getElementById('rcStudentGrade').textContent = historyRecord.className + ` (${selectedYear})`;
-                document.getElementById('rcAverageBadge').textContent = historyRecord.finalAverage.toFixed(1) + '%';
-        
-                let html = '';
-                Object.entries(historyRecord.subjectBreakdown).forEach(([subj, score]) => {
-                    html += `
-                        <tr class="border-b border-slate-100">
-                            <td class="py-3 px-4 font-medium text-slate-800">${subj}</td>
-                            <td class="py-3 px-4 text-center">100</td>
-                            <td class="py-3 px-4 text-center font-bold text-indigo-600">${score.toFixed(1)}</td>
-                            <td class="py-3 px-4 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-bold ${score >= 50 ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${score >= 50 ? 'Pass' : 'Fail'}</span></td>
-                        </tr>
-                    `;
-                });
-                document.getElementById('rcTableBody').innerHTML = html;
-                return;
-            }
-        
-            // Otherwise, render live current year marklists...
-            // (Existing live report card rendering logic)
-        }
-        
-        /* STREAMING_CHUNK:Adding class promotion and grade archiving logic */
-        async function promoteClassToNextYear(currentClassName, nextClassName, newAcademicYear) {
-            const classStudents = appState.students.filter(s => s.grade === currentClassName);
-            
-            if (classStudents.length === 0) {
-                showNotification("No students found in " + currentClassName, "error");
-                return;
-            }
-        
-            let promotedCount = 0;
-        
-            classStudents.forEach(st => {
-                // 1. Calculate their final standing from submitted marklists of current year
-                const classMarkLists = appState.markLists.filter(ml => ml.className === currentClassName && ml.status === 'submitted');
-                let cumulativeScore = 0;
-                let subjectBreakdown = {};
-        
-                classMarkLists.forEach(ml => {
-                    const stData = ml.grades[st.id];
-                    let subScore = 0;
-                    if (stData && stData.marks) {
-                        (ml.assessments || []).forEach(a => { subScore += Number(stData.marks[a.id]) || 0; });
-                    }
-                    subjectBreakdown[ml.subject_name || ml.subject || 'Subject'] = subScore;
-                    cumulativeScore += subScore;
-                });
-        
-                const finalAverage = classMarkLists.length > 0 ? (cumulativeScore / classMarkLists.length) : 0;
-                const status = finalAverage >= 50 ? 'Promoted' : 'Needs Review';
-        
-                // 2. Save snapshot into permanent academic history archive
-                appState.academicHistory.push({
-                    id: 'hist_' + Date.now() + '_' + st.id,
-                    studentId: st.id,
-                    academicYear: appState.currentAcademicYear,
-                    className: currentClassName,
-                    finalAverage: finalAverage,
-                    status: status,
-                    subjectBreakdown: subjectBreakdown
-                });
-        
-                // 3. Promote student active profile to next class and year
-                st.grade = nextClassName;
-                st.academicYear = newAcademicYear;
-                promotedCount++;
-            });
-        
-            showNotification(`Successfully archived and promoted ${promotedCount} students to ${nextClassName}!`);
-            renderClassSummaryTable();
+            checkAuthView();
         }
     
         async function saveEntity(table, record) {
