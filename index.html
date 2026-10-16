@@ -1805,14 +1805,14 @@
 
         function downloadClassSummaryPDF() {
                     const element = document.getElementById('printableClassSummaryContainer');
-                    if (!element) return;
+                    // if (!element) return;
         
-                    // Find any scrollable table wrappers inside the container and temporarily remove overflow-x-auto
-                    const scrollContainers = element.querySelectorAll('.overflow-x-auto');
-                    scrollContainers.forEach(container => {
-                        container.classList.remove('overflow-x-auto');
-                        container.style.overflow = 'visible';
-                    });
+                    // // Find any scrollable table wrappers inside the container and temporarily remove overflow-x-auto
+                    // const scrollContainers = element.querySelectorAll('.overflow-x-auto');
+                    // scrollContainers.forEach(container => {
+                    //     container.classList.remove('overflow-x-auto');
+                    //     container.style.overflow = 'visible';
+                    // });
         
                     const opt = {
                         margin:       [0.4, 0.4, 0.4, 0.4],
@@ -1832,13 +1832,14 @@
                         pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
                     };
         
-                    html2pdf().set(opt).from(element).save().then(() => {
-                        // Restore the scrollable classes back after download triggers
-                        scrollContainers.forEach(container => {
-                            container.classList.add('overflow-x-auto');
-                            container.style.overflow = '';
-                        });
-                    });
+                    html2pdf().set(opt).from(element).save()
+                    //     .then(() => {
+                    //     // Restore the scrollable classes back after download triggers
+                    //     scrollContainers.forEach(container => {
+                    //         container.classList.add('overflow-x-auto');
+                    //         container.style.overflow = '';
+                    //     });
+                    // });
                 }
         
         window.onload = loadAppData;
