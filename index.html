@@ -173,10 +173,10 @@
                             <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
                                 <thead>
                                     <tr id="classSummaryHead" class="bg-indigo-900 text-white text-xs font-bold uppercase tracking-wider">
-                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">Rank</th>
-                                        <th class="py-3 px-4 border-r border-indigo-800">Student Name</th>
-                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">Total Score</th>
-                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">Average (%)</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">ደረጃ</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800">የተማሪው/ዋ ስም</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አጠቃላይ ውጤት</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አማካይ (%)</th>
                                         <th class="py-3 px-4 text-center">Status</th>
                                     </tr>
                                 </thead>
@@ -221,21 +221,21 @@
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
                                 <div class="bg-indigo-50 text-indigo-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-chalkboard-user"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold uppercase text-slate-400">Active Faculty</p>
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የመምህራን ቁጥር</p>
                                     <h3 class="text-2xl font-black text-slate-900" id="statFacultyCount">0</h3>
                                 </div>
                             </div>
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
                                 <div class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-user-graduate"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold uppercase text-slate-400">Total Registered Students</p>
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የተማሪዎች ቁጥር</p>
                                     <h3 class="text-2xl font-black text-slate-900" id="statStudentCount">0</h3>
                                 </div>
                             </div>
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
                                 <div class="bg-amber-50 text-amber-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-school"></i></div>
                                 <div>
-                                    <p class="text-xs font-bold uppercase text-slate-400">Classes & Sections</p>
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የክፍል ብዛት</p>
                                     <h3 class="text-2xl font-black text-slate-900" id="statClassCount">0</h3>
                                 </div>
                             </div>
@@ -353,25 +353,25 @@
                                             </select>
                                         </div>
                                         <div>
-                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ሙሉ ስም</label>
                                             <input type="text" id="regStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Solomon Abebe">
                                         </div>
                                         <div class="grid grid-cols-2 gap-3">
                                             <div>
-                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Age</label>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
                                                 <input type="number" id="regStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="7">
                                             </div>
                                             <div>
-                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Gender</label>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
                                                 <select id="regStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
+                                                    <option value="Male">ወንድ</option>
+                                                    <option value="Female">ሴት</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-emerald-100 flex items-center justify-center space-x-2">
                                             <i class="fa-solid fa-user-check"></i>
-                                            <span>Insert Student</span>
+                                            <span>መዝግብ</span>
                                         </button>
                                     </form>
                                 </div>
@@ -701,19 +701,19 @@
                     <form onsubmit="saveStudentProfileChanges(event)" class="space-y-4">
                         <input type="hidden" id="editStudentId">
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">የተማሪው/ዋ ሙሉ ስም</label>
                             <input type="text" id="editStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Age</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
                                 <input type="number" id="editStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Gender</label>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
                                 <select id="editStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                    <option value="Male">Male</option>
-                                    <option value="Female">Female</option>
+                                    <option value="Male">ወንድ</option>
+                                    <option value="Female">ሴት</option>
                                 </select>
                             </div>
                         </div>
