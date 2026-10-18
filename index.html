@@ -88,7 +88,7 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username / Email</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                                <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="admin">
+                                <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="">
                             </div>
                         </div>
     
@@ -96,7 +96,7 @@
                             <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
                             <div class="relative">
                                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
-                                <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="admin123">
+                                <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="">
                             </div>
                         </div>
     
@@ -985,11 +985,11 @@
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
             if (role === 'admin') {
-                document.getElementById('loginUsername').value = 'admin';
-                document.getElementById('loginPassword').value = 'admin123';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
             } else {
-                document.getElementById('loginUsername').value = 'aturing';
-                document.getElementById('loginPassword').value = 'password123';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
             }
         }
     
