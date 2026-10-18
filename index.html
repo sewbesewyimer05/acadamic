@@ -1002,13 +1002,13 @@
             if (role === 'admin') {
                 adminBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
                 teacherBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
-                document.getElementById('loginUsername').value = 'admin';
-                document.getElementById('loginPassword').value = 'admin123';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
             } else {
                 teacherBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
                 adminBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
-                document.getElementById('loginUsername').value = 'aturing';
-                document.getElementById('loginPassword').value = 'password123';
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
             }
         }
         async function handleLogin(e) {
