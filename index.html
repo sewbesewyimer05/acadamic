@@ -77,6 +77,7 @@
     
                     <!-- Role Selector Tabs -->
                     <!-- Role Selector Tabs -->
+                    <!-- Role Selector Tabs -->
                     <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
                         <button type="button" onclick="switchLoginRole('admin')" id="loginRoleAdmin" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">General Admin</button>
                         <button type="button" onclick="switchLoginRole('teacher')" id="loginRoleTeacher" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Teacher Portal</button>
@@ -983,17 +984,33 @@
             }
         }
     
+        // function switchLoginRole(role) {
+        //     document.getElementById('selectedRole').value = role;
+        //     if (role === 'admin') {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     } else {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     }
+        // }
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
+            const adminBtn = document.getElementById('loginRoleAdmin');
+            const teacherBtn = document.getElementById('loginRoleTeacher');
+
             if (role === 'admin') {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
+                adminBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
+                teacherBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+                document.getElementById('loginUsername').value = 'admin';
+                document.getElementById('loginPassword').value = 'admin123';
             } else {
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
+                teacherBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
+                adminBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
+                document.getElementById('loginUsername').value = 'aturing';
+                document.getElementById('loginPassword').value = 'password123';
             }
         }
-    
         async function handleLogin(e) {
             e.preventDefault();
             const role = document.getElementById('selectedRole').value;
