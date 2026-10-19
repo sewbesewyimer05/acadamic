@@ -925,41 +925,41 @@
             checkAuthView();
         }
     
-        async function saveEntity(table, record) {
-            if (useCloudDb && supabaseClient) {
-                try {
-                    const { data, error } = await supabaseClient.from(table).upsert(record);
-                    if (error) {
-                        console.error(`Supabase error saving to ${table}:`, error.message);
-                        alert(`Database Sync Warning: ${error.message}`);
-                    }
-                } catch (e) {
-                    console.error("Cloud fetch error, saving to local storage fallback.", e);
-                }
-            }
-            localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
-        }
-
         // async function saveEntity(table, record) {
-        //     if (typeof useCloudDb !== 'undefined' && useCloudDb && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        //     if (useCloudDb && supabaseClient) {
         //         try {
-        //             const { error } = await supabaseClient.from(table).upsert(record);
+        //             const { data, error } = await supabaseClient.from(table).upsert(record);
         //             if (error) {
-        //                 console.error(`Supabase sync error (${table}):`, error.message);
+        //                 console.error(`Supabase error saving to ${table}:`, error.message);
+        //                 alert(`Database Sync Warning: ${error.message}`);
         //             }
         //         } catch (e) {
-        //             console.error("Cloud DB save error:", e);
+        //             console.error("Cloud fetch error, saving to local storage fallback.", e);
         //         }
         //     }
-            
-        //     if (typeof appState !== 'undefined') {
-        //         try {
-        //             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
-        //         } catch (e) {
-        //             console.error("LocalStorage save failed:", e);
-        //         }
-        //     }
+        //     localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         // }
+
+        async function saveEntity(table, record) {
+            if (typeof useCloudDb !== 'undefined' && useCloudDb && typeof supabaseClient !== 'undefined' && supabaseClient) {
+                try {
+                    const { error } = await supabaseClient.from(table).upsert(record);
+                    if (error) {
+                        console.error(`Supabase sync error (${table}):`, error.message);
+                    }
+                } catch (e) {
+                    console.error("Cloud DB save error:", e);
+                }
+            }
+            
+            if (typeof appState !== 'undefined') {
+                try {
+                    localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
+                } catch (e) {
+                    console.error("LocalStorage save failed:", e);
+                }
+            }
+        }
     
         async function deleteEntity(table, idValue, idField = 'id') {
             if (useCloudDb && supabaseClient) {
