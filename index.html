@@ -924,26 +924,12 @@
             }
             checkAuthView();
         }
-
+    
         async function saveEntity(table, record) {
-            if (typeof useCloudDb !== 'undefined' && useCloudDb && typeof supabaseClient !== 'undefined' && supabaseClient) {
-                try {
-                    const { error } = await supabaseClient.from(table).upsert(record);
-                    if (error) {
-                        console.error(`Supabase sync error (${table}):`, error.message);
-                    }
-                } catch (e) {
-                    console.error("Cloud DB save error:", e);
-                }
+            if (useCloudDb && supabaseClient) {
+                try { await supabaseClient.from(table).upsert(record); } catch (e) { console.error(e); }
             }
-            
-            if (typeof appState !== 'undefined') {
-                try {
-                    localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
-                } catch (e) {
-                    console.error("LocalStorage save failed:", e);
-                }
-            }
+            localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
         async function deleteEntity(table, idValue, idField = 'id') {
@@ -953,21 +939,9 @@
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
-
         function generateSequentialId(prefix, existingList) {
-            if (!existingList || !Array.isArray(existingList)) return `${prefix}-001`;
-        
-            const numbers = existingList
-                .map(item => {
-                    if (!item || !item.id) return 0;
-                    const match = String(item.id).match(/\d+/);
-                    return match ? parseInt(match[0], 10) : 0;
-                })
-                .filter(n => !isNaN(n));
-        
-            const maxId = numbers.length > 0 ? Math.max(...numbers) : 0;
-            const nextNumber = maxId + 1;
-            return `${prefix}-${String(nextNumber).padStart(3, '0')}`;
+            const count = existingList.length + 1;
+            return `${prefix}-${String(count).padStart(3, '0')}`;
         }
     
         function checkAuthView() {
@@ -1009,7 +983,17 @@
                 renderTeacherMarkLists();
             }
         }
-
+    
+        // function switchLoginRole(role) {
+        //     document.getElementById('selectedRole').value = role;
+        //     if (role === 'admin') {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     } else {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     }
+        // }
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
             const adminBtn = document.getElementById('loginRoleAdmin');
@@ -1027,7 +1011,6 @@
                 document.getElementById('loginPassword').value = '';
             }
         }
-        
         async function handleLogin(e) {
             e.preventDefault();
             const role = document.getElementById('selectedRole').value;
@@ -1059,6 +1042,16 @@
             appState.currentUser = null;
             checkAuthView();
         }
+    
+        // function switchAdminTab(tabName) {
+        //     document.querySelectorAll('#adminDashboard .tab-content').forEach(el => el.classList.remove('active'));
+        //     ['Overview', 'Teachers', 'Classes', 'Subjects', 'Reports', 'Card'].forEach(t => {
+        //         const btn = document.getElementById(`adminTabBtn${t}`);
+        //         if (btn) btn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
+        //     });
+        //     document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
+        //     document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
+        // }
 
         function switchAdminTab(tabName) {
             // Hide all tabs
@@ -1293,18 +1286,10 @@
             renderAdminMarkLists();
             alert(`Successfully assigned ${sub.name} in ${cls.name} exclusively to ${tch.name}!`);
         }
-        
+    
         async function handleCreateTeacher(e) {
             e.preventDefault();
-            
-            const nameInput = document.getElementById('newTeacherName');
-            const subjectInput = document.getElementById('newTeacherSubject');
-            const usernameInput = document.getElementById('newTeacherUsername');
-            const passwordInput = document.getElementById('newTeacherPassword');
-        
-            // Generate guaranteed unique ID
-            const newId = generateUniqueId('TCH', appState.teachers);
-        
+            const newId = generateSequentialId('TCH', appState.teachers);
             const teacher = {
                 id: newId,
                 name: document.getElementById('newTeacherName').value.trim(),
@@ -1312,20 +1297,11 @@
                 username: document.getElementById('newTeacherUsername').value.trim(),
                 password: document.getElementById('newTeacherPassword').value.trim()
             };
-        
-            // Check for duplicate username before adding
-            const duplicateUser = appState.teachers.find(t => t.username.toLowerCase() === teacher.username.toLowerCase());
-            if (duplicateUser) {
-                alert("Username already exists! Please choose a different username for this faculty member.");
-                return;
-            }
             appState.teachers.push(teacher);
             await saveEntity('teachers', teacher);
             renderAdminTeachers();
             e.target.reset();
-            alert(`Faculty member "${teacher.name}" registered successfully with ID: ${teacher.id}`);
         }
-
     
         function openEditTeacherModal(id) {
             const t = appState.teachers.find(x => x.id === id);
@@ -1337,127 +1313,40 @@
             document.getElementById('editTeacherPassword').value = t.password;
             document.getElementById('editTeacherModal').classList.remove('hidden');
         }
-// --------------------------------------------------
+    
         async function saveTeacherCredentials(e) {
-            if (e && e.preventDefault) e.preventDefault();
-        
-            try {
-                // Look up all possible field names for faculty/teacher form inputs
-                const idInput = document.getElementById('teacherId') || document.getElementById('editTeacherId');
-                const nameInput = document.getElementById('teacherName') || document.getElementById('regTeacherName') || document.getElementById('editTeacherName');
-                const emailInput = document.getElementById('teacherEmail') || document.getElementById('regTeacherEmail') || document.getElementById('editTeacherUsername');
-                const subjectInput = document.getElementById('teacherSubject') || document.getElementById('regTeacherSubject') || document.getElementById('editTeacherSubject');
-                const classSelect = document.getElementById('teacherClassSelect') || document.getElementById('regTeacherClass') || document.getElementById('editTeacherClass');
-        
-                if (!nameInput) {
-                    console.error("Missing teacher name input field.");
-                    return;
-                }
-        
-                const teacherName = nameInput.value.trim();
-                if (!teacherName) {
-                    console.warn("Teacher name is required.");
-                    return;
-                }
-        
-                // Ensure state teachers array exists
-                if (!appState.teachers) appState.teachers = [];
-        
-                let teacherId = idInput ? idInput.value : '';
-                let existingIndex = -1;
-        
-                if (teacherId) {
-                    existingIndex = appState.teachers.findIndex(t => t.id === teacherId);
-                }
-        
-                // If no ID or existing record not found, create new unique ID
-                if (!teacherId || existingIndex === -1) {
-                    teacherId = generateSequentialId('TCH', appState.teachers);
-                }
-        
-                const teacherObj = {
-                    id: teacherId,
-                    name: teacherName,
-                    email: emailInput ? emailInput.value.trim() : '',
-                    subject: subjectInput ? subjectInput.value.trim() : '',
-                    class_ids: classSelect ? Array.from(classSelect.selectedOptions || []).map(opt => opt.value) : []
-                };
-        
-                if (existingIndex >= 0) {
-                    appState.teachers[existingIndex] = { ...appState.teachers[existingIndex], ...teacherObj };
-                } else {
-                    appState.teachers.push(teacherObj);
-                }
-        
-                await saveEntity('teachers', teacherObj);
-        
-                // Safe calls to UI update functions if they exist in your script
-                if (typeof renderAdminTeachersTable === 'function') {
-                    renderAdminTeachersTable();
-                }
-                if (typeof renderAdminTeachersDropdowns === 'function') {
-                    renderAdminTeachersDropdowns();
-                }
-                if (typeof renderTeachersRoster === 'function') {
-                    renderTeachersRoster();
-                }
-        
-                // Close modal if editing in a popup modal
-                const modal = document.getElementById('teacherModal') || document.getElementById('editTeacherModal');
-                if (modal) {
-                    modal.classList.add('hidden');
-                }
-        
-                if (e && e.target && typeof e.target.reset === 'function') {
-                    e.target.reset();
-                }
-            } catch (err) {
-                console.error("Error saving faculty account:", err);
+            e.preventDefault();
+            const id = document.getElementById('editTeacherId').value;
+            const t = appState.teachers.find(x => x.id === id);
+            if (!t) return;
+            t.name = document.getElementById('editTeacherName').value.trim();
+            t.subject = document.getElementById('editTeacherSubject').value.trim();
+            t.username = document.getElementById('editTeacherUsername').value.trim();
+            t.password = document.getElementById('editTeacherPassword').value.trim();
+            await saveEntity('teachers', t);
+            renderAdminTeachers();
+            document.getElementById('editTeacherModal').classList.add('hidden');
+        }
+    
+        async function deleteTeacher(id) {
+            if (confirm("Delete this faculty account?")) {
+                appState.teachers = appState.teachers.filter(t => t.id !== id);
+                await deleteEntity('teachers', id);
+                renderAdminTeachers();
             }
         }
-
-        
+    
         async function handleCreateClass(e) {
-            if (e && e.preventDefault) e.preventDefault();
-        
-            try {
-                const nameInput = document.getElementById('newClassName');
-                if (!nameInput) {
-                    console.error("Missing input element with ID 'newClassName'");
-                    return;
-                }
-        
-                const className = nameInput.value.trim();
-                if (!className) {
-                    console.warn("Class name is empty.");
-                    return;
-                }
-        
-                // Ensure state array exists
-                if (!appState.classes) appState.classes = [];
-        
-                const newId = generateSequentialId('CLS', appState.classes);
-                const cls = { id: newId, name: className };
-        
-                appState.classes.push(cls);
-                await saveEntity('classes', cls);
-        
-                // Safe call rendering functions if they exist
-                if (typeof renderAdminClassesDropdowns === 'function') {
-                    renderAdminClassesDropdowns();
-                }
-                if (typeof renderAdminClassesTable === 'function') {
-                    renderAdminClassesTable();
-                }
-        
-                if (e && e.target && typeof e.target.reset === 'function') {
-                    e.target.reset();
-                }
-            } catch (err) {
-                console.error("Error creating class:", err);
-            }
+            e.preventDefault();
+            const newId = generateSequentialId('CLS', appState.classes);
+            const cls = { id: newId, name: document.getElementById('newClassName').value.trim() };
+            appState.classes.push(cls);
+            await saveEntity('classes', cls);
+            renderAdminClassesDropdowns();
+            renderAdminClassesTable();
+            e.target.reset();
         }
-
+    
         async function editClassTitle(clsId) {
             const cls = appState.classes.find(c => c.id === clsId);
             if (!cls) return;
@@ -1466,59 +1355,25 @@
                 cls.name = newTitle.trim();
                 await saveEntity('classes', cls);
                 renderAdminClassesTable();
-                renderAdminClassesTable();
+                renderAdminClassesDropdowns();
             }
         }
-    // -------------------------------------------------
-
+    
         async function handleRegisterStudent(e) {
-            if (e && e.preventDefault) e.preventDefault();
-        
-            try {
-                const classSelect = document.getElementById('regStudentClassSelect');
-                const nameInput = document.getElementById('regStudentName');
-                const ageInput = document.getElementById('regStudentAge');
-                const genderSelect = document.getElementById('regStudentGender');
-        
-                if (!nameInput) {
-                    console.error("Missing required form input element 'regStudentName'");
-                    return;
-                }
-        
-                const studentName = nameInput.value.trim();
-                if (!studentName) {
-                    console.warn("Student name is required.");
-                    return;
-                }
-        
-                // Ensure state array exists
-                if (!appState.students) appState.students = [];
-        
-                const newId = generateSequentialId('STU', appState.students);
-                const student = {
-                    id: newId,
-                    class_id: classSelect ? classSelect.value : '',
-                    name: studentName,
-                    age: ageInput && ageInput.value ? parseInt(ageInput.value, 10) || 0 : 0,
-                    gender: genderSelect ? genderSelect.value : ''
-                };
-        
-                appState.students.push(student);
-                await saveEntity('students', student);
-        
-                if (typeof renderAdminRosterTable === 'function') {
-                    renderAdminRosterTable();
-                }
-        
-                if (e && e.target && typeof e.target.reset === 'function') {
-                    e.target.reset();
-                }
-            } catch (err) {
-                console.error("Error registering student:", err);
-            }
+            e.preventDefault();
+            const newId = generateSequentialId('STU', appState.students);
+            const student = {
+                id: newId,
+                class_id: document.getElementById('regStudentClassSelect').value,
+                name: document.getElementById('regStudentName').value.trim(),
+                age: parseInt(document.getElementById('regStudentAge').value),
+                gender: document.getElementById('regStudentGender').value
+            };
+            appState.students.push(student);
+            await saveEntity('students', student);
+            renderAdminRosterTable();
+            e.target.reset();
         }
-
-        // ----------------------------
     
         function openEditStudentModal(studentId) {
             const student = appState.students.find(s => s.id === studentId);
@@ -1535,51 +1390,22 @@
             document.getElementById('editStudentModal').classList.remove('hidden');
         }
     
-
         async function saveStudentProfileChanges(e) {
-            if (e && e.preventDefault) e.preventDefault();
-        
-            try {
-                const idInput = document.getElementById('editStudentId');
-                if (!idInput || !idInput.value) {
-                    console.error("No student ID specified for edit.");
-                    return;
-                }
-        
-                const id = idInput.value;
-                if (!appState.students) appState.students = [];
-        
-                const student = appState.students.find(s => s.id === id);
-                if (!student) {
-                    console.error(`Student with ID ${id} not found in state.`);
-                    return;
-                }
-        
-                const nameInput = document.getElementById('editStudentName');
-                const ageInput = document.getElementById('editStudentAge');
-                const genderSelect = document.getElementById('editStudentGender');
-                const classSelect = document.getElementById('editStudentClass');
-        
-                if (nameInput) student.name = nameInput.value.trim();
-                if (ageInput) student.age = parseInt(ageInput.value, 10) || 0;
-                if (genderSelect) student.gender = genderSelect.value;
-                if (classSelect) student.class_id = classSelect.value;
-        
-                await saveEntity('students', student);
-        
-                if (typeof renderAdminRosterTable === 'function') {
-                    renderAdminRosterTable();
-                }
-        
-                const modal = document.getElementById('editStudentModal');
-                if (modal) {
-                    modal.classList.add('hidden');
-                }
-            } catch (err) {
-                console.error("Error saving student profile changes:", err);
-            }
+            e.preventDefault();
+            const id = document.getElementById('editStudentId').value;
+            const student = appState.students.find(s => s.id === id);
+            if (!student) return;
+    
+            student.name = document.getElementById('editStudentName').value.trim();
+            student.age = parseInt(document.getElementById('editStudentAge').value);
+            student.gender = document.getElementById('editStudentGender').value;
+            student.class_id = document.getElementById('editStudentClass').value;
+    
+            await saveEntity('students', student);
+            renderAdminRosterTable();
+            document.getElementById('editStudentModal').classList.add('hidden');
         }
- 
+    
         async function deleteStudent(studentId) {
             if (confirm("Delete student?")) {
                 appState.students = appState.students.filter(s => s.id !== studentId);
