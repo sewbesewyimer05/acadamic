@@ -952,7 +952,7 @@
         //     return `${prefix}-${String(count).padStart(3, '0')}`;
         // }
                 // Robust ID generator that finds highest existing number and adds a timestamp fallback
-        function generateUniqueId(prefix, existingList) {
+        function generateSequentialId(prefix, existingList) {
             const numbers = existingList
                 .map(item => {
                     const match = item.id.match(/\d+/);
@@ -1349,21 +1349,10 @@
                 alert("Username already exists! Please choose a different username for this faculty member.");
                 return;
             }
-        
-            // Push new teacher to local state
             appState.teachers.push(teacher);
-        
-            // Save to database/localStorage
             await saveEntity('teachers', teacher);
-        
-            // Refresh UI
             renderAdminTeachers();
-            renderAdminOverviewStats();
-            renderAdminClassesDropdowns();
-        
-            // Reset Form Inputs
             e.target.reset();
-        
             alert(`Faculty member "${teacher.name}" registered successfully with ID: ${teacher.id}`);
         }
 
