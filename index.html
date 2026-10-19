@@ -939,6 +939,27 @@
             }
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
+
+        // async function saveEntity(table, record) {
+        //     if (typeof useCloudDb !== 'undefined' && useCloudDb && typeof supabaseClient !== 'undefined' && supabaseClient) {
+        //         try {
+        //             const { error } = await supabaseClient.from(table).upsert(record);
+        //             if (error) {
+        //                 console.error(`Supabase sync error (${table}):`, error.message);
+        //             }
+        //         } catch (e) {
+        //             console.error("Cloud DB save error:", e);
+        //         }
+        //     }
+            
+        //     if (typeof appState !== 'undefined') {
+        //         try {
+        //             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
+        //         } catch (e) {
+        //             console.error("LocalStorage save failed:", e);
+        //         }
+        //     }
+        // }
     
         async function deleteEntity(table, idValue, idField = 'id') {
             if (useCloudDb && supabaseClient) {
@@ -952,10 +973,14 @@
         //     return `${prefix}-${String(count).padStart(3, '0')}`;
         // }
                 // Robust ID generator that finds highest existing number and adds a timestamp fallback
+
         function generateSequentialId(prefix, existingList) {
+            if (!existingList || !Array.isArray(existingList)) return `${prefix}-001`;
+        
             const numbers = existingList
                 .map(item => {
-                    const match = item.id.match(/\d+/);
+                    if (!item || !item.id) return 0;
+                    const match = String(item.id).match(/\d+/);
                     return match ? parseInt(match[0], 10) : 0;
                 })
                 .filter(n => !isNaN(n));
@@ -1390,17 +1415,48 @@
             }
         }
     
+
         async function handleCreateClass(e) {
-            e.preventDefault();
-            const newId = generateSequentialId('CLS', appState.classes);
-            const cls = { id: newId, name: document.getElementById('newClassName').value.trim() };
-            appState.classes.push(cls);
-            await saveEntity('classes', cls);
-            renderAdminClassesDropdowns();
-            renderAdminClassesTable();
-            e.target.reset();
+            if (e && e.preventDefault) e.preventDefault();
+        
+            try {
+                const nameInput = document.getElementById('newClassName');
+                if (!nameInput) {
+                    console.error("Missing input element with ID 'newClassName'");
+                    return;
+                }
+        
+                const className = nameInput.value.trim();
+                if (!className) {
+                    console.warn("Class name is empty.");
+                    return;
+                }
+        
+                // Ensure state array exists
+                if (!appState.classes) appState.classes = [];
+        
+                const newId = generateSequentialId('CLS', appState.classes);
+                const cls = { id: newId, name: className };
+        
+                appState.classes.push(cls);
+                await saveEntity('classes', cls);
+        
+                // Safe call rendering functions if they exist
+                if (typeof renderAdminClassesDropdowns === 'function') {
+                    renderAdminClassesDropdowns();
+                }
+                if (typeof renderAdminClassesTable === 'function') {
+                    renderAdminClassesTable();
+                }
+        
+                if (e && e.target && typeof e.target.reset === 'function') {
+                    e.target.reset();
+                }
+            } catch (err) {
+                console.error("Error creating class:", err);
+            }
         }
-    
+
         async function editClassTitle(clsId) {
             const cls = appState.classes.find(c => c.id === clsId);
             if (!cls) return;
@@ -1409,25 +1465,59 @@
                 cls.name = newTitle.trim();
                 await saveEntity('classes', cls);
                 renderAdminClassesTable();
-                renderAdminClassesDropdowns();
+                renderAdminClassesTable();
             }
         }
-    
+    // -------------------------------------------------
+
         async function handleRegisterStudent(e) {
-            e.preventDefault();
-            const newId = generateSequentialId('STU', appState.students);
-            const student = {
-                id: newId,
-                class_id: document.getElementById('regStudentClassSelect').value,
-                name: document.getElementById('regStudentName').value.trim(),
-                age: parseInt(document.getElementById('regStudentAge').value),
-                gender: document.getElementById('regStudentGender').value
-            };
-            appState.students.push(student);
-            await saveEntity('students', student);
-            renderAdminRosterTable();
-            e.target.reset();
+            if (e && e.preventDefault) e.preventDefault();
+        
+            try {
+                const classSelect = document.getElementById('regStudentClassSelect');
+                const nameInput = document.getElementById('regStudentName');
+                const ageInput = document.getElementById('regStudentAge');
+                const genderSelect = document.getElementById('regStudentGender');
+        
+                if (!nameInput) {
+                    console.error("Missing required form input element 'regStudentName'");
+                    return;
+                }
+        
+                const studentName = nameInput.value.trim();
+                if (!studentName) {
+                    console.warn("Student name is required.");
+                    return;
+                }
+        
+                // Ensure state array exists
+                if (!appState.students) appState.students = [];
+        
+                const newId = generateSequentialId('STU', appState.students);
+                const student = {
+                    id: newId,
+                    class_id: classSelect ? classSelect.value : '',
+                    name: studentName,
+                    age: ageInput && ageInput.value ? parseInt(ageInput.value, 10) || 0 : 0,
+                    gender: genderSelect ? genderSelect.value : ''
+                };
+        
+                appState.students.push(student);
+                await saveEntity('students', student);
+        
+                if (typeof renderAdminRosterTable === 'function') {
+                    renderAdminRosterTable();
+                }
+        
+                if (e && e.target && typeof e.target.reset === 'function') {
+                    e.target.reset();
+                }
+            } catch (err) {
+                console.error("Error registering student:", err);
+            }
         }
+
+        // ----------------------------
     
         function openEditStudentModal(studentId) {
             const student = appState.students.find(s => s.id === studentId);
@@ -1444,22 +1534,51 @@
             document.getElementById('editStudentModal').classList.remove('hidden');
         }
     
+
         async function saveStudentProfileChanges(e) {
-            e.preventDefault();
-            const id = document.getElementById('editStudentId').value;
-            const student = appState.students.find(s => s.id === id);
-            if (!student) return;
-    
-            student.name = document.getElementById('editStudentName').value.trim();
-            student.age = parseInt(document.getElementById('editStudentAge').value);
-            student.gender = document.getElementById('editStudentGender').value;
-            student.class_id = document.getElementById('editStudentClass').value;
-    
-            await saveEntity('students', student);
-            renderAdminRosterTable();
-            document.getElementById('editStudentModal').classList.add('hidden');
+            if (e && e.preventDefault) e.preventDefault();
+        
+            try {
+                const idInput = document.getElementById('editStudentId');
+                if (!idInput || !idInput.value) {
+                    console.error("No student ID specified for edit.");
+                    return;
+                }
+        
+                const id = idInput.value;
+                if (!appState.students) appState.students = [];
+        
+                const student = appState.students.find(s => s.id === id);
+                if (!student) {
+                    console.error(`Student with ID ${id} not found in state.`);
+                    return;
+                }
+        
+                const nameInput = document.getElementById('editStudentName');
+                const ageInput = document.getElementById('editStudentAge');
+                const genderSelect = document.getElementById('editStudentGender');
+                const classSelect = document.getElementById('editStudentClass');
+        
+                if (nameInput) student.name = nameInput.value.trim();
+                if (ageInput) student.age = parseInt(ageInput.value, 10) || 0;
+                if (genderSelect) student.gender = genderSelect.value;
+                if (classSelect) student.class_id = classSelect.value;
+        
+                await saveEntity('students', student);
+        
+                if (typeof renderAdminRosterTable === 'function') {
+                    renderAdminRosterTable();
+                }
+        
+                const modal = document.getElementById('editStudentModal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+            } catch (err) {
+                console.error("Error saving student profile changes:", err);
+            }
         }
-    
+ 
         async function deleteStudent(studentId) {
             if (confirm("Delete student?")) {
                 appState.students = appState.students.filter(s => s.id !== studentId);
