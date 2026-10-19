@@ -36,783 +36,795 @@
     </style>
     
     
-    <!-- Navigation / Header Bar -->
-    <header id="mainHeader" class="bg-indigo-900 text-white shadow-md hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="bg-indigo-700 p-2 rounded-xl text-indigo-200">
-                    <i class="fa-solid fa-graduation-cap text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight">የፍሬ ቅዱሳን ሰንበት ትምህርት ቤት ትምህርት እና ስልጠና ክፍል</h1>
-                    <p class="text-xs text-indigo-300" id="headerRoleBadge">Department Head Portal</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-sm font-medium" id="headerUserName">Admin User</p>
-                    <p class="text-xs text-indigo-300" id="headerUserRole">Administrator</p>
-                </div>
-                <button onclick="logout()" class="bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Logout</span>
-                </button>
-            </div>
-        </div>
-    </header>
-    
-    <!-- Main Content Viewport -->
-    <main class="flex-1 flex flex-col">
-    
-        <!-- Login View -->
-        <div id="loginView" class="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 p-4">
-            <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden p-8 border border-indigo-100">
-                <div class="text-center mb-8">
-                    <div class="inline-flex bg-indigo-50 text-indigo-600 p-4 rounded-2xl mb-3 shadow-inner">
-                        <i class="fa-solid fa-school text-3xl"></i>
+        <!-- Navigation / Header Bar -->
+        <header id="mainHeader" class="bg-indigo-900 text-white shadow-md hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-indigo-700 p-2 rounded-xl text-indigo-200">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
                     </div>
-                    <h2 class="text-2xl font-bold text-slate-900">Academic Portal Login</h2>
-                    <p class="text-sm text-slate-500 mt-1">Supabase PostgreSQL Gateway (.pro.et)</p>
-                </div>
-    
-                <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
-                    <button type="button" onclick="switchLoginRole('admin')" id="loginRoleAdmin" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">General Admin</button>
-                    <button type="button" onclick="switchLoginRole('teacher')" id="loginRoleTeacher" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Teacher Portal</button>
-                </div>
-    
-                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
-                    <input type="hidden" id="selectedRole" value="admin">
-                    
                     <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username / Email</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
-                            <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="">
-                        </div>
+                        <h1 class="font-bold text-lg leading-tight">የፍሬ ቅዱሳን ሰንበት ትምህርት ቤት ትምህርት እና ስልጠና ክፍል</h1>
+                        <p class="text-xs text-indigo-300" id="headerRoleBadge">Department Head Portal</p>
                     </div>
-    
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                        <div class="relative">
-                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
-                            <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="">
-                        </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-medium" id="headerUserName">Admin User</p>
+                        <p class="text-xs text-indigo-300" id="headerUserRole">Administrator</p>
                     </div>
-    
-                    <div id="loginError" class="hidden text-red-500 text-xs bg-red-50 p-3 rounded-xl border border-red-100 flex items-center space-x-2">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                        <span id="loginErrorText">Invalid credentials. Please verify your Supabase connection.</span>
-                    </div>
-    
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center space-x-2">
-                        <span>Sign In to Cloud Database</span>
-                        <i class="fa-solid fa-arrow-right"></i>
+                    <button onclick="logout()" class="bg-indigo-800 hover:bg-indigo-700 px-3 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
                     </button>
-                </form>
+                </div>
             </div>
-        </div>
+        </header>
     
-        <!-- Admin Dashboard -->
-        <div id="adminDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
-            <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Department Head Control Panel</span>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="switchAdminTab('overview')" id="adminTabBtnOverview" class="px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition"><i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard Analytics</button>
-                    <button onclick="switchAdminTab('teachers')" id="adminTabBtnTeachers" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty Accounts</button>
-                    <button onclick="switchAdminTab('classes')" id="adminTabBtnClasses" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-school-flag mr-1.5"></i> Classes & Students</button>
-                    <button onclick="switchAdminTab('subjects')" id="adminTabBtnSubjects" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-book-bookmark mr-1.5"></i> Subjects & Assignments</button>
-                    <button onclick="switchAdminTab('reports')" id="adminTabBtnReports" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-folder-open mr-1.5"></i> Mark Lists</button>
-                    <button onclick="switchAdminTab('classSummary')" id="adminTabBtnClassSummary" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-ranking-star mr-1.5"></i> Class Roster & Ranks</button>
-                    <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export</button>
-                </div>
-            </div>
-            
-            <!-- Class Summary & Ranking Tab -->
-            <div id="adminTabClassSummary" class="tab-content space-y-6 p-6">
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Class Performance & Student Ranks</h3>
-                        <p class="text-sm text-slate-500">View overall student scores, averages, and auto-calculated rankings per class.</p>
+        <!-- Main Content Viewport -->
+        <main class="flex-1 flex flex-col">
+    
+            <!-- Login View -->
+            <div id="loginView" class="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 p-4">
+                <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden p-8 border border-indigo-100">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex bg-indigo-50 text-indigo-600 p-4 rounded-2xl mb-3 shadow-inner">
+                            <i class="fa-solid fa-school text-3xl"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900">Academic Portal Login</h2>
+                        <p class="text-sm text-slate-500 mt-1">Supabase PostgreSQL Gateway (.pro.et)</p>
                     </div>
-                    <div class="flex items-center space-x-3">
-                        <label class="text-xs font-bold uppercase text-slate-400">Select Class:</label>
-                        <select id="summaryClassSelect" onchange="renderClassSummaryTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="">-- Choose Class --</option>
-                        </select>
-                        <button onclick="downloadClassSummaryPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center space-x-2">
-                            <i class="fa-solid fa-file-pdf"></i>
-                            <span>Download PDF</span>
-                        </button>
+    
+                    <!-- Role Selector Tabs -->
+                    <!-- Role Selector Tabs -->
+                    <!-- Role Selector Tabs -->
+                    <div class="flex rounded-xl bg-slate-100 p-1 mb-6">
+                        <button type="button" onclick="switchLoginRole('admin')" id="loginRoleAdmin" class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition">General Admin</button>
+                        <button type="button" onclick="switchLoginRole('teacher')" id="loginRoleTeacher" class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">Teacher Portal</button>
                     </div>
-                </div>
-            
-                <div id="printableClassSummaryContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm space-y-6">
-                    <div class="border-b-2 border-slate-900 pb-6 flex justify-between items-start">
+    
+                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                        <input type="hidden" id="selectedRole" value="admin">
+                        
                         <div>
-                            <div class="flex items-center space-x-2 text-indigo-700 font-bold text-xl mb-1">
-                                <i class="fa-solid fa-graduation-cap"></i>
-                                <span>ፍሬ ቅዱሳን ሰንበት ትምህርት ቤት</span>
-                            </div>
-                            <h2 class="text-2xl font-bold text-slate-900">Class Performance & Student Ranks</h2>
-                            <p class="text-sm text-slate-500" id="summaryClassHeaderSubtitle">Department of Academic Records & Evaluation</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-semibold uppercase text-slate-400">Date Issued</p>
-                            <p class="text-sm font-medium text-slate-700" id="summaryIssueDate">-</p>
-                            <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Summary</span>
-                        </div>
-                    </div>
-            
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
-                            <thead>
-                                <tr id="classSummaryHead" class="bg-indigo-900 text-white text-xs font-bold uppercase tracking-wider">
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">ደረጃ</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800">የተማሪው/ዋ ስም</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">አጠቃላይ ውጤት</th>
-                                    <th class="py-3 px-4 border-r border-indigo-800 text-center">አማካይ (%)</th>
-                                    <th class="py-3 px-4 text-center">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="classSummaryBody" class="divide-y divide-slate-200 text-sm">
-                                <tr>
-                                    <td colspan="5" class="py-8 text-center text-slate-400">
-                                        Please select a class to load student rankings and subject breakdowns.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-            
-                    <div class="pt-12 mt-8 border-t border-slate-200 grid grid-cols-3 gap-6 text-center">
-                        <div class="flex flex-col items-center">
-                            <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
-                                <span class="text-xs text-slate-400 italic">ፊርማ</span>
-                            </div>
-                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የክፍሉ ተጠሪ</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
-                                <span class="text-xs text-slate-400 italic">ፊርማ</span>
-                            </div>
-                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የትምህርት ክፍሉ ተጠሪ</span>
-                        </div>
-                        <div class="flex flex-col items-center justify-center">
-                            <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase text-center p-1">
-                                ማህተም
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username / Email</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-user"></i></span>
+                                <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter username" value="">
                             </div>
                         </div>
-                    </div>
+    
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+                                <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition" placeholder="Enter password" value="">
+                            </div>
+                        </div>
+    
+                        <div id="loginError" class="hidden text-red-500 text-xs bg-red-50 p-3 rounded-xl border border-red-100 flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span id="loginErrorText">Invalid credentials. Please verify your Supabase connection.</span>
+                        </div>
+    
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-indigo-200 transition duration-200 flex items-center justify-center space-x-2">
+                            <span>Sign In to Cloud Database</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
     
-            <div class="flex-1 max-w-7xl w-full mx-auto p-6">
-    
-                <!-- Overview Tab -->
-                <div id="adminTabOverview" class="tab-content active space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                            <div class="bg-indigo-50 text-indigo-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-chalkboard-user"></i></div>
-                            <div>
-                                <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የመምህራን ቁጥር</p>
-                                <h3 class="text-2xl font-black text-slate-900" id="statFacultyCount">0</h3>
-                            </div>
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
+                <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Department Head Control Panel</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="switchAdminTab('overview')" id="adminTabBtnOverview" class="px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition"><i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard Analytics</button>
+                        <button onclick="switchAdminTab('teachers')" id="adminTabBtnTeachers" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-chalkboard-user mr-1.5"></i> Faculty Accounts</button>
+                        <button onclick="switchAdminTab('classes')" id="adminTabBtnClasses" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-school-flag mr-1.5"></i> Classes & Students</button>
+                        <button onclick="switchAdminTab('subjects')" id="adminTabBtnSubjects" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-book-bookmark mr-1.5"></i> Subjects & Assignments</button>
+                        <button onclick="switchAdminTab('reports')" id="adminTabBtnReports" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-folder-open mr-1.5"></i> Mark Lists</button>
+                        <button onclick="switchAdminTab('classSummary')" id="adminTabBtnClassSummary" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-ranking-star mr-1.5"></i> Class Roster & Ranks</button>
+                        <button onclick="switchAdminTab('card')" id="adminTabBtnCard" class="px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition"><i class="fa-solid fa-id-card mr-1.5"></i> Report Cards & Export</button>
+                    </div>
+                </div>
+                
+                <!-- Class Summary & Ranking Tab -->
+                <div id="adminTabClassSummary" class="tab-content space-y-6 p-6">
+                    <!-- Non-printable controls toolbar -->
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Class Performance & Student Ranks</h3>
+                            <p class="text-sm text-slate-500">View overall student scores, averages, and auto-calculated rankings per class.</p>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                            <div class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-user-graduate"></i></div>
-                            <div>
-                                <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የተማሪዎች ቁጥር</p>
-                                <h3 class="text-2xl font-black text-slate-900" id="statStudentCount">0</h3>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                            <div class="bg-amber-50 text-amber-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-school"></i></div>
-                            <div>
-                                <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የክፍል ብዛት</p>
-                                <h3 class="text-2xl font-black text-slate-900" id="statClassCount">0</h3>
-                            </div>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
-                            <div class="bg-purple-50 text-purple-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-award"></i></div>
-                            <div>
-                                <p class="text-xs font-bold uppercase text-slate-400">Top Scoring Student</p>
-                                <h3 class="text-sm font-bold text-slate-900 truncate max-w-[150px]" id="statTopStudent">None</h3>
-                            </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="text-xs font-bold uppercase text-slate-400">Select Class:</label>
+                            <select id="summaryClassSelect" onchange="renderClassSummaryTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Choose Class --</option>
+                            </select>
+                            <button onclick="downloadClassSummaryPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-xl text-sm shadow-md transition flex items-center space-x-2">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>Download PDF</span>
+                            </button>
                         </div>
                     </div>
-    
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">Supabase Cloud Database Status</h3>
-                        <p class="text-sm text-slate-500 mb-4">PostgreSQL Rules (`ON DELETE CASCADE`) active.</p>
-                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between">
-                            <div class="flex items-center space-x-3">
-                                <span id="syncIndicator" class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
-                                <span class="text-sm font-semibold text-slate-700" id="syncStatusText">Connected to Supabase PostgreSQL (.pro.et)</span>
+                
+                    <!-- Printable Report Container (Hidden controls, clean header & footer matching Report Cards) -->
+                    <div id="printableClassSummaryContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm space-y-6">
+                        <div class="border-b-2 border-slate-900 pb-6 flex justify-between items-start">
+                            <div>
+                                <div class="flex items-center space-x-2 text-indigo-700 font-bold text-xl mb-1">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                    <span>ፍሬ ቅዱሳን ሰንበት ትምህርት ቤት</span>
+                                </div>
+                                <h2 class="text-2xl font-bold text-slate-900">Class Performance & Student Ranks</h2>
+                                <p class="text-sm text-slate-500" id="summaryClassHeaderSubtitle">Department of Academic Records & Evaluation</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs font-semibold uppercase text-slate-400">Date Issued</p>
+                                <p class="text-sm font-medium text-slate-700" id="summaryIssueDate">-</p>
+                                <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Summary</span>
+                            </div>
+                        </div>
+                
+                        <!-- Summary Table View -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse border border-slate-200 rounded-xl overflow-hidden min-w-full">
+                                <thead>
+                                    <tr id="classSummaryHead" class="bg-indigo-900 text-white text-xs font-bold uppercase tracking-wider">
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">ደረጃ</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800">የተማሪው/ዋ ስም</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አጠቃላይ ውጤት</th>
+                                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አማካይ (%)</th>
+                                        <th class="py-3 px-4 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="classSummaryBody" class="divide-y divide-slate-200 text-sm">
+                                    <tr>
+                                        <td colspan="5" class="py-8 text-center text-slate-400">
+                                            Please select a class to load student rankings and subject breakdowns.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                
+                        <!-- Official Footer Signatures & Stamp -->
+                        <div class="pt-12 mt-8 border-t border-slate-200 grid grid-cols-3 gap-6 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
+                                    <span class="text-xs text-slate-400 italic">ፊርማ</span>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የክፍሉ ተጠሪ</span>
+                            </div>
+                            <div class="flex flex-col items-center">
+                                <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
+                                    <span class="text-xs text-slate-400 italic">ፊርማ</span>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የትምህርት ክፍሉ ተጠሪ</span>
+                            </div>
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase text-center p-1">
+                                    ማህተም
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
     
-                <!-- Faculty Accounts Tab -->
-                <div id="adminTabTeachers" class="tab-content space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                <i class="fa-solid fa-user-plus text-indigo-600"></i>
-                                <span>Register New Faculty</span>
-                            </h3>
-                            <form onsubmit="handleCreateTeacher(event)" class="space-y-4">
+                <div class="flex-1 max-w-7xl w-full mx-auto p-6">
+    
+                    <!-- Overview Tab -->
+                    <div id="adminTabOverview" class="tab-content active space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                                <div class="bg-indigo-50 text-indigo-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-chalkboard-user"></i></div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
-                                    <input type="text" id="newTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Dr. Robert Smith">
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የመምህራን ቁጥር</p>
+                                    <h3 class="text-2xl font-black text-slate-900" id="statFacultyCount">0</h3>
                                 </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                                <div class="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-user-graduate"></i></div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Department</label>
-                                    <input type="text" id="newTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Science">
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የተማሪዎች ቁጥር</p>
+                                    <h3 class="text-2xl font-black text-slate-900" id="statStudentCount">0</h3>
                                 </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                                <div class="bg-amber-50 text-amber-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-school"></i></div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
-                                    <input type="text" id="newTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. rsmith">
+                                    <p class="text-xs font-bold uppercase text-slate-400">አጠቃላይ የክፍል ብዛት</p>
+                                    <h3 class="text-2xl font-black text-slate-900" id="statClassCount">0</h3>
                                 </div>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center space-x-4">
+                                <div class="bg-purple-50 text-purple-600 p-4 rounded-xl text-2xl"><i class="fa-solid fa-award"></i></div>
                                 <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                                    <input type="text" id="newTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
+                                    <p class="text-xs font-bold uppercase text-slate-400">Top Scoring Student</p>
+                                    <h3 class="text-sm font-bold text-slate-900 truncate max-w-[150px]" id="statTopStudent">None</h3>
                                 </div>
-                                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
-                                    <i class="fa-solid fa-check"></i>
-                                    <span>Save Faculty Account</span>
-                                </button>
-                            </form>
+                            </div>
                         </div>
     
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-                            <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
-                                    <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
-                                    <span>Active Faculty Accounts & Credentials</span>
-                                </h3>
-                                <span id="teacherCountBadge" class="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-full text-xs">0 Teachers</span>
-                            </div>
-                            <div class="overflow-x-auto flex-1">
-                                <table class="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                            <th class="py-3 px-4">ID</th>
-                                            <th class="py-3 px-4">Name</th>
-                                            <th class="py-3 px-4">Department</th>
-                                            <th class="py-3 px-4">Username</th>
-                                            <th class="py-3 px-4">Password</th>
-                                            <th class="py-3 px-4 text-right">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="adminTeachersTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
-                                </table>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-2">Supabase Cloud Database Status</h3>
+                            <p class="text-sm text-slate-500 mb-4">PostgreSQL Rules (`ON DELETE CASCADE`) active.</p>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <span id="syncIndicator" class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+                                    <span class="text-sm font-semibold text-slate-700" id="syncStatusText">Connected to Supabase PostgreSQL (.pro.et)</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
     
-                <!-- Classes & Students Tab -->
-                <div id="adminTabClasses" class="tab-content space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <!-- Faculty Accounts Tab -->
+                    <div id="adminTabTeachers" class="tab-content space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 h-fit">
                                 <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                    <i class="fa-solid fa-square-plus text-indigo-600"></i>
-                                    <span>Create Class</span>
+                                    <i class="fa-solid fa-user-plus text-indigo-600"></i>
+                                    <span>Register New Faculty</span>
                                 </h3>
-                                <form onsubmit="handleCreateClass(event)" class="space-y-4">
+                                <form onsubmit="handleCreateTeacher(event)" class="space-y-4">
                                     <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Class Title</label>
-                                        <input type="text" id="newClassName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Grade 1">
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                                        <input type="text" id="newTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Dr. Robert Smith">
                                     </div>
-                                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Create Class</span>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Department</label>
+                                        <input type="text" id="newTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Science">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
+                                        <input type="text" id="newTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. rsmith">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                                        <input type="text" id="newTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password">
+                                    </div>
+                                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
+                                        <i class="fa-solid fa-check"></i>
+                                        <span>Save Faculty Account</span>
                                     </button>
                                 </form>
                             </div>
     
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                    <i class="fa-solid fa-user-plus text-emerald-600"></i>
-                                    <span>Student Registry</span>
-                                </h3>
-                                <form onsubmit="handleRegisterStudent(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Target Class</label>
-                                        <select id="regStudentClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                            <option value="">-- Choose Class --</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ሙሉ ስም</label>
-                                        <input type="text" id="regStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Solomon Abebe">
-                                    </div>
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
-                                            <input type="number" id="regStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="7">
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
-                                            <select id="regStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                                <option value="ወንድ">ወንድ</option>
-                                                <option value="ሴት">ሴት</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-emerald-100 flex items-center justify-center space-x-2">
-                                        <i class="fa-solid fa-user-check"></i>
-                                        <span>መዝግብ</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-    
-                        <div class="lg:col-span-2 space-y-6">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                                <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center space-x-2">
-                                    <i class="fa-solid fa-school-flag text-indigo-600"></i>
-                                    <span>Manage Classes</span>
-                                </h3>
-                                <div class="overflow-x-auto">
-                                    <table class="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                                <th class="py-2 px-3">ID</th>
-                                                <th class="py-2 px-3">Class Title</th>
-                                                <th class="py-2 px-3 text-right">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="adminClassesTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
-                                    </table>
-                                </div>
-                            </div>
-    
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-                                <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                <div class="flex items-center justify-between mb-4">
                                     <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
-                                        <i class="fa-solid fa-users text-indigo-600"></i>
-                                        <span>Master Student Directory</span>
+                                        <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
+                                        <span>Active Faculty Accounts & Credentials</span>
                                     </h3>
-                                    <div class="flex items-center space-x-3">
-                                        <label class="text-xs font-bold uppercase text-slate-400">Filter:</label>
-                                        <select id="adminRosterClassFilter" onchange="renderAdminRosterTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <option value="">All Classes</option>
-                                        </select>
-                                    </div>
+                                    <span id="teacherCountBadge" class="bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-full text-xs">0 Teachers</span>
                                 </div>
                                 <div class="overflow-x-auto flex-1">
                                     <table class="w-full text-left border-collapse">
                                         <thead>
                                             <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
                                                 <th class="py-3 px-4">ID</th>
-                                                <th class="py-3 px-4">ሙሉ ስም</th>
-                                                <th class="py-3 px-4">የክፍል ደረጃ</th>
-                                                <th class="py-3 px-4">እድሜ/ጾታ</th>
+                                                <th class="py-3 px-4">Name</th>
+                                                <th class="py-3 px-4">Department</th>
+                                                <th class="py-3 px-4">Username</th>
+                                                <th class="py-3 px-4">Password</th>
                                                 <th class="py-3 px-4 text-right">Actions</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="adminRosterTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                        <tbody id="adminTeachersTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
     
-                <!-- Subjects & Assignments Tab -->
-                <div id="adminTabSubjects" class="tab-content space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="space-y-6">
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                    <i class="fa-solid fa-book-open text-indigo-600"></i>
-                                    <span>Create Subject</span>
-                                </h3>
-                                <form onsubmit="handleCreateSubject(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Subject Name</label>
-                                        <input type="text" id="newSubjectName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. English">
-                                    </div>
-                                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Add Subject</span>
-                                    </button>
-                                </form>
+                    <!-- Classes & Students Tab -->
+                    <div id="adminTabClasses" class="tab-content space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="space-y-6">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-square-plus text-indigo-600"></i>
+                                        <span>Create Class</span>
+                                    </h3>
+                                    <form onsubmit="handleCreateClass(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Class Title</label>
+                                            <input type="text" id="newClassName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. Grade 1">
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Create Class</span>
+                                        </button>
+                                    </form>
+                                </div>
+    
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-user-plus text-emerald-600"></i>
+                                        <span>Student Registry</span>
+                                    </h3>
+                                    <form onsubmit="handleRegisterStudent(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Target Class</label>
+                                            <select id="regStudentClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                <option value="">-- Choose Class --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ሙሉ ስም</label>
+                                            <input type="text" id="regStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="e.g. Solomon Abebe">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
+                                                <input type="number" id="regStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="7">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
+                                                <select id="regStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                                    <option value="ወንድ">ወንድ</option>
+                                                    <option value="ሴት">ሴት</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-emerald-100 flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-user-check"></i>
+                                            <span>መዝግብ</span>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
     
-                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                    <i class="fa-solid fa-link text-indigo-600"></i>
-                                    <span>Assign Class Subject (Exclusive Teacher Enforcement)</span>
-                                </h3>
-                                <form onsubmit="handleAssignTeacherSubject(event)" class="space-y-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Teacher</label>
-                                        <select id="assignTeacherSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <option value="">-- Choose Teacher --</option>
-                                        </select>
+                            <div class="lg:col-span-2 space-y-6">
+                                <!-- Classes List Card -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center space-x-2">
+                                        <i class="fa-solid fa-school-flag text-indigo-600"></i>
+                                        <span>Manage Classes</span>
+                                    </h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                    <th class="py-2 px-3">ID</th>
+                                                    <th class="py-2 px-3">Class Title</th>
+                                                    <th class="py-2 px-3 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="adminClassesTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                        </table>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Class</label>
-                                        <select id="assignClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <option value="">-- Choose Class --</option>
-                                        </select>
+                                </div>
+    
+                                <!-- Students Directory Card -->
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                    <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+                                        <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                            <i class="fa-solid fa-users text-indigo-600"></i>
+                                            <span>Master Student Directory</span>
+                                        </h3>
+                                        <div class="flex items-center space-x-3">
+                                            <label class="text-xs font-bold uppercase text-slate-400">Filter:</label>
+                                            <select id="adminRosterClassFilter" onchange="renderAdminRosterTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">All Classes</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Subject</label>
-                                        <select id="assignSubjectSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                            <option value="">-- Choose Subject --</option>
-                                        </select>
+                                    <div class="overflow-x-auto flex-1">
+                                        <table class="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                    <th class="py-3 px-4">ID</th>
+                                                    <th class="py-3 px-4">ሙሉ ስም</th>
+                                                    <th class="py-3 px-4">የክፍል ደረጃ</th>
+                                                    <th class="py-3 px-4">እድሜ/ጾታ</th>
+                                                    <th class="py-3 px-4 text-right">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="adminRosterTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                        </table>
                                     </div>
-                                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
-                                        <i class="fa-solid fa-circle-check"></i>
-                                        <span>Create Assignment</span>
-                                    </button>
-                                </form>
+                                </div>
                             </div>
                         </div>
+                    </div>
     
-                        <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-                            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                                <i class="fa-solid fa-list-check text-indigo-600"></i>
-                                <span>Active Assignments</span>
-                            </h3>
-                            <div class="overflow-x-auto flex-1">
+                    <!-- Subjects & Assignments Tab -->
+                    <div id="adminTabSubjects" class="tab-content space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="space-y-6">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-book-open text-indigo-600"></i>
+                                        <span>Create Subject</span>
+                                    </h3>
+                                    <form onsubmit="handleCreateSubject(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Subject Name</label>
+                                            <input type="text" id="newSubjectName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="e.g. English">
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-xl transition shadow-sm flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Add Subject</span>
+                                        </button>
+                                    </form>
+                                </div>
+    
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                        <i class="fa-solid fa-link text-indigo-600"></i>
+                                        <span>Assign Class Subject (Exclusive Teacher Enforcement)</span>
+                                    </h3>
+                                    <form onsubmit="handleAssignTeacherSubject(event)" class="space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Teacher</label>
+                                            <select id="assignTeacherSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Teacher --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Class</label>
+                                            <select id="assignClassSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Class --</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Subject</label>
+                                            <select id="assignSubjectSelect" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Choose Subject --</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-indigo-100 flex items-center justify-center space-x-2">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            <span>Create Assignment</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+    
+                            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                    <i class="fa-solid fa-list-check text-indigo-600"></i>
+                                    <span>Active Assignments</span>
+                                </h3>
+                                <div class="overflow-x-auto flex-1">
+                                    <table class="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
+                                                <th class="py-3 px-4">Class</th>
+                                                <th class="py-3 px-4">Subject</th>
+                                                <th class="py-3 px-4">Assigned Teacher</th>
+                                                <th class="py-3 px-4 text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="adminAssignmentsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Mark Lists Tab -->
+                    <div id="adminTabReports" class="tab-content space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists</h3>
+                                    <p class="text-sm text-slate-500">Supervisory View: Admins can inspect and audit grading desks (Read-Only).</p>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
                                 <table class="w-full text-left border-collapse">
                                     <thead>
                                         <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                            <th class="py-3 px-4">Class</th>
-                                            <th class="py-3 px-4">Subject</th>
-                                            <th class="py-3 px-4">Assigned Teacher</th>
+                                            <th class="py-3 px-4">ክፍል</th>
+                                            <th class="py-3 px-4">የትምህርት አይነት</th>
+                                            <th class="py-3 px-4">የመምህሩ/ዋ ስም</th>
+                                            <th class="py-3 px-4">የተማሪዎች ንዛት</th>
+                                            <th class="py-3 px-4">ሁኔታ</th>
                                             <th class="py-3 px-4 text-right">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="adminAssignmentsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                    <tbody id="adminMarkListsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </div>
     
-                <!-- Mark Lists Tab -->
-                <div id="adminTabReports" class="tab-content space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
-                            <div>
-                                <h3 class="text-lg font-bold text-slate-900">Submitted Mark Lists</h3>
-                                <p class="text-sm text-slate-500">Supervisory View: Admins can inspect and audit grading desks (Read-Only).</p>
+                    <!-- Report Cards Tab -->
+                    <div id="adminTabCard" class="tab-content space-y-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-slate-900">Official Transcript & Report Card Generator</h3>
+                                    <p class="text-sm text-slate-500">Borderless, print-ready document view with dynamic class rank calculations.</p>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Class / Grade</label>
+                                        <select id="reportCardClassSelect" onchange="onClassFilterChange()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- Choose Class --</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Student</label>
+                                        <select id="reportCardStudentSelect" onchange="generateStudentReportCard()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- Choose Student --</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <!-- Report Card Preview Box -->
+                            <div id="reportCardContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm hidden">
+                                <div id="printableReportCard" class="space-y-6 bg-white p-4 border border-slate-100 rounded-xl">
+                                    <div class="border-b-2 border-slate-900 pb-6 flex justify-between items-start">
+                                        <div>
+                                            <div class="flex items-center space-x-2 text-indigo-700 font-bold text-xl mb-1">
+                                                <i class="fa-solid fa-graduation-cap"></i>
+                                                <span>ፍሬ ቅዱሳን ሰንበት ትምህርት ቤት</span>
+                                            </div>
+                                            <h2 class="text-2xl font-bold text-slate-900">Official Student Transcript</h2>
+                                            <p class="text-sm text-slate-500">Department of Academic Records & Evaluation</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-xs font-semibold uppercase text-slate-400">Date Issued</p>
+                                            <p class="text-sm font-medium text-slate-700" id="rcIssueDate">-</p>
+                                            <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Record</span>
+                                        </div>
+                                    </div>
+    
+                                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 bg-slate-50 p-4 rounded-xl text-sm border border-slate-200">
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">የተማሪው/ዋ ስም</span>
+                                            <span class="font-bold text-slate-900" id="rcStudentName">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">የክፍል ደረጃ</span>
+                                            <span class="font-bold text-indigo-700" id="rcClassName">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">አጠቃላይ የትምህርት ብዛት</span>
+                                            <span class="font-bold text-slate-900" id="rcTotalSubjects">-</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-xs font-semibold text-slate-400 uppercase">አማካይ</span>
+                                            <span class="font-bold text-indigo-600 text-base" id="rcOverallAverage">-</span>
+                                        </div>
+                                        <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2 text-center">
+                                            <span class="block text-xs font-semibold text-indigo-500 uppercase">ደረጃ</span>
+                                            <span class="font-black text-indigo-700 text-lg" id="rcClassRank">-</span>
+                                        </div>
+                                    </div>
+    
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">ዝርዝር መግለጫ</h4>
+                                        <table class="w-full text-left border-collapse border border-slate-300 rounded-xl overflow-hidden min-w-full">
+                                            <thead>
+                                                <tr class="bg-slate-100 text-xs font-bold text-slate-700 uppercase border-b border-slate-300">
+                                                    <th class="py-3 px-4 border-r border-slate-300">የትምህርት አይነት</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300">ክፍል</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300">መምህር</th>
+                                                    <th class="py-3 px-4 border-r border-slate-300 text-center">ውጤት (100)</th>
+                                                    <th class="py-3 px-4 text-center">Grade</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="rcMarksTableBody" class="divide-y divide-slate-200 text-sm"></tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="pt-12 mt-8 border-t border-slate-200 grid grid-cols-3 gap-6 text-center">
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
+                                                <span class="text-xs text-slate-400 italic">ፊርማ</span>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የክፍሉ ተጠሪ</span>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
+                                                <span class="text-xs text-slate-400 italic">ፊርማ</span>
+                                            </div>
+                                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የትምህርት ክፍሉ ተጠሪ</span>
+                                        </div>
+                                        <div class="flex flex-col items-center justify-center">
+                                            <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase text-center p-1">
+                                                ማህተም
+                                            </div>
+                                        </div>
+                                    </div>                    
+                                </div>
+    
+                                <div class="mt-8 flex justify-end space-x-3 pt-6 border-t border-slate-100">
+                                    <button onclick="downloadStudentReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-md shadow-indigo-100 transition flex items-center space-x-2">
+                                        <i class="fa-solid fa-file-pdf"></i>
+                                        <span>Download PDF Report Card</span>
+                                    </button>
+                                </div>
+                            </div>
+    
+                            <div id="reportCardEmpty" class="text-center py-12 text-slate-400">
+                                <i class="fa-solid fa-id-card text-4xl mb-3 text-slate-300"></i>
+                                <p class="text-base font-medium">Select a class and student from dropdowns above to generate transcript.</p>
                             </div>
                         </div>
-                        <div class="overflow-x-auto">
+                    </div>
+    
+                </div>
+            </div>
+    
+            <!-- Teacher Dashboard -->
+            <div id="teacherDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
+                <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Instructor Grading Desk</span>
+                    </div>
+                </div>
+    
+                <div class="flex-1 max-w-7xl w-full mx-auto p-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                                    <i class="fa-solid fa-clipboard-list text-emerald-600"></i>
+                                    <span>My Assigned Class Mark Lists</span>
+                                </h3>
+                            </div>
+                            <span id="teacherMarkListCount" class="bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full text-xs">0 Mark Lists</span>
+                        </div>
+                        <div class="overflow-x-auto flex-1">
                             <table class="w-full text-left border-collapse">
                                 <thead>
                                     <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                        <th class="py-3 px-4">ክፍል</th>
-                                        <th class="py-3 px-4">የትምህርት አይነት</th>
-                                        <th class="py-3 px-4">የመምህሩ/ዋ ስም</th>
-                                        <th class="py-3 px-4">የተማሪዎች ንዛት</th>
-                                        <th class="py-3 px-4">ሁኔታ</th>
+                                        <th class="py-3 px-4">Class</th>
+                                        <th class="py-3 px-4">Subject</th>
+                                        <th class="py-3 px-4">Students</th>
+                                        <th class="py-3 px-4">Status</th>
                                         <th class="py-3 px-4 text-right">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody id="adminMarkListsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
+                                <tbody id="teacherMarkListsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
+            </div>
     
-                <!-- Report Cards Tab -->
-                <div id="adminTabCard" class="tab-content space-y-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <!-- EDIT STUDENT PROFILE MODAL -->
+            <div id="editStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-user-pen text-indigo-600"></i>
+                        <span>Edit Student Profile</span>
+                    </h3>
+                    <form onsubmit="saveStudentProfileChanges(event)" class="space-y-4">
+                        <input type="hidden" id="editStudentId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">የተማሪው/ዋ ሙሉ ስም</label>
+                            <input type="text" id="editStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <h3 class="text-lg font-bold text-slate-900">Official Transcript & Report Card Generator</h3>
-                                <p class="text-sm text-slate-500">Borderless, print-ready document view with dynamic class rank calculations.</p>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
+                                <input type="number" id="editStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             </div>
-                            <div class="flex flex-wrap items-center gap-3">
-                                <div>
-                                    <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Class / Grade</label>
-                                    <select id="reportCardClassSelect" onchange="onClassFilterChange()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <option value="">-- Choose Class --</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold uppercase text-slate-400 mb-1">Student</label>
-                                    <select id="reportCardStudentSelect" onchange="generateStudentReportCard()" class="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <option value="">-- Choose Student --</option>
-                                    </select>
-                                </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
+                                <select id="editStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="ወንድ">ወንድ</option>
+                                    <option value="ሴት">ሴት</option>
+                                </select>
                             </div>
-                        </div>
-    
-                        <div id="reportCardContainer" class="border border-slate-200 rounded-2xl p-8 bg-white shadow-sm hidden">
-                            <div id="printableReportCard" class="space-y-6 bg-white p-4 border border-slate-100 rounded-xl">
-                                <div class="border-b-2 border-slate-900 pb-6 flex justify-between items-start">
-                                    <div>
-                                        <div class="flex items-center space-x-2 text-indigo-700 font-bold text-xl mb-1">
-                                            <i class="fa-solid fa-graduation-cap"></i>
-                                            <span>ፍሬ ቅዱሳን ሰንበት ትምህርት ቤት</span>
-                                        </div>
-                                        <h2 class="text-2xl font-bold text-slate-900">Official Student Transcript</h2>
-                                        <p class="text-sm text-slate-500">Department of Academic Records & Evaluation</p>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-xs font-semibold uppercase text-slate-400">Date Issued</p>
-                                        <p class="text-sm font-medium text-slate-700" id="rcIssueDate">-</p>
-                                        <span class="inline-block mt-2 bg-emerald-50 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full border border-emerald-200">Official Record</span>
-                                    </div>
-                                </div>
-    
-                                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 bg-slate-50 p-4 rounded-xl text-sm border border-slate-200">
-                                    <div>
-                                        <span class="block text-xs font-semibold text-slate-400 uppercase">የተማሪው/ዋ ስም</span>
-                                        <span class="font-bold text-slate-900" id="rcStudentName">-</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs font-semibold text-slate-400 uppercase">የክፍል ደረጃ</span>
-                                        <span class="font-bold text-indigo-700" id="rcClassName">-</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs font-semibold text-slate-400 uppercase">አጠቃላይ የትምህርት ብዛት</span>
-                                        <span class="font-bold text-slate-900" id="rcTotalSubjects">-</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-xs font-semibold text-slate-400 uppercase">አማካይ</span>
-                                        <span class="font-bold text-indigo-600 text-base" id="rcOverallAverage">-</span>
-                                    </div>
-                                    <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-2 text-center">
-                                        <span class="block text-xs font-semibold text-indigo-500 uppercase">ደረጃ</span>
-                                        <span class="font-black text-indigo-700 text-lg" id="rcClassRank">-</span>
-                                    </div>
-                                </div>
-    
-                                <div>
-                                    <h4 class="font-bold text-slate-900 mb-3 text-sm uppercase tracking-wider">ዝርዝር መግለጫ</h4>
-                                    <table class="w-full text-left border-collapse border border-slate-300 rounded-xl overflow-hidden min-w-full">
-                                        <thead>
-                                            <tr class="bg-slate-100 text-xs font-bold text-slate-700 uppercase border-b border-slate-300">
-                                                <th class="py-3 px-4 border-r border-slate-300">የትምህርት አይነት</th>
-                                                <th class="py-3 px-4 border-r border-slate-300">ክፍል</th>
-                                                <th class="py-3 px-4 border-r border-slate-300">መምህር</th>
-                                                <th class="py-3 px-4 border-r border-slate-300 text-center">ውጤት (100)</th>
-                                                <th class="py-3 px-4 text-center">Grade</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="rcMarksTableBody" class="divide-y divide-slate-200 text-sm"></tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="pt-12 mt-8 border-t border-slate-200 grid grid-cols-3 gap-6 text-center">
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
-                                            <span class="text-xs text-slate-400 italic">ፊርማ</span>
-                                        </div>
-                                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የክፍሉ ተጠሪ</span>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-48 border-b-2 border-slate-400 mb-2 h-12 flex items-end justify-center">
-                                            <span class="text-xs text-slate-400 italic">ፊርማ</span>
-                                        </div>
-                                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">የትምህርት ክፍሉ ተጠሪ</span>
-                                    </div>
-                                    <div class="flex flex-col items-center justify-center">
-                                        <div class="w-20 h-20 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center text-[10px] font-bold text-slate-400 uppercase text-center p-1">
-                                            ማህተም
-                                        </div>
-                                    </div>
-                                </div>                    
-                            </div>
-    
-                            <div class="mt-8 flex justify-end space-x-3 pt-6 border-t border-slate-100">
-                                <button onclick="downloadStudentReportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm shadow-md shadow-indigo-100 transition flex items-center space-x-2">
-                                    <i class="fa-solid fa-file-pdf"></i>
-                                    <span>Download PDF Report Card</span>
-                                </button>
-                            </div>
-                        </div>
-    
-                        <div id="reportCardEmpty" class="text-center py-12 text-slate-400">
-                            <i class="fa-solid fa-id-card text-4xl mb-3 text-slate-300"></i>
-                            <p class="text-base font-medium">Select a class and student from dropdowns above to generate transcript.</p>
-                        </div>
-                    </div>
-                </div>
-    
-            </div>
-        </div>
-    
-        <!-- Teacher Dashboard -->
-        <div id="teacherDashboard" class="flex-1 flex flex-col hidden bg-slate-100">
-            <div class="bg-white border-b border-slate-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Instructor Grading Desk</span>
-                </div>
-            </div>
-    
-            <div class="flex-1 max-w-7xl w-full mx-auto p-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
-                                <i class="fa-solid fa-clipboard-list text-emerald-600"></i>
-                                <span>My Assigned Class Mark Lists</span>
-                            </h3>
-                        </div>
-                        <span id="teacherMarkListCount" class="bg-emerald-50 text-emerald-700 font-semibold px-3 py-1 rounded-full text-xs">0 Mark Lists</span>
-                    </div>
-                    <div class="overflow-x-auto flex-1">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="border-b border-slate-100 text-xs font-semibold text-slate-400 uppercase">
-                                    <th class="py-3 px-4">Class</th>
-                                    <th class="py-3 px-4">Subject</th>
-                                    <th class="py-3 px-4">Students</th>
-                                    <th class="py-3 px-4">Status</th>
-                                    <th class="py-3 px-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="teacherMarkListsTableBody" class="divide-y divide-slate-100 text-sm"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    
-        <!-- EDIT STUDENT PROFILE MODAL -->
-        <div id="editStudentModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
-                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                    <i class="fa-solid fa-user-pen text-indigo-600"></i>
-                    <span>Edit Student Profile</span>
-                </h3>
-                <form onsubmit="saveStudentProfileChanges(event)" class="space-y-4">
-                    <input type="hidden" id="editStudentId">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">የተማሪው/ዋ ሙሉ ስም</label>
-                        <input type="text" id="editStudentName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">እድሜ</label>
-                            <input type="number" id="editStudentAge" required min="3" max="30" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">ጾታ</label>
-                            <select id="editStudentGender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                <option value="ወንድ">ወንድ</option>
-                                <option value="ሴት">ሴት</option>
-                            </select>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assigned Class</label>
+                            <select id="editStudentClass" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+                        </div>
+                        <div class="flex justify-end space-x-2 pt-2">
+                            <button type="button" onclick="document.getElementById('editStudentModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    
+            <!-- EDIT TEACHER CREDENTIALS MODAL -->
+            <div id="editTeacherModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
+                    <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                        <i class="fa-solid fa-key text-indigo-600"></i>
+                        <span>Edit Faculty Credentials</span>
+                    </h3>
+                    <form onsubmit="saveTeacherCredentials(event)" class="space-y-4">
+                        <input type="hidden" id="editTeacherId">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                            <input type="text" id="editTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Department</label>
+                            <input type="text" id="editTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
+                            <input type="text" id="editTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
+                            <input type="text" id="editTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="flex justify-end space-x-2 pt-2">
+                            <button type="button" onclick="document.getElementById('editTeacherModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
+                            <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Update Credentials</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    
+            <!-- MARK LIST DETAILS MODAL -->
+            <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
+                    <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
+                        <div>
+                            <span id="modalSubjectBadge" class="bg-indigo-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 inline-block">Subject</span>
+                            <h3 id="modalMarkListTitle" class="text-xl font-bold">Mark List</h3>
+                        </div>
+                        <button onclick="closeMarkListModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition"><i class="fa-solid fa-xmark text-xl"></i></button>
+                    </div>
+    
+                    <div class="p-6 flex-1 overflow-y-auto space-y-6">
+                        <!-- Assessment Weighting Section (Hidden / Disabled for Admin) -->
+                        <div id="assessmentSectionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
+                                    <i class="fa-solid fa-sliders text-emerald-600"></i>
+                                    <span>Continuous Assessment Score Weighting</span>
+                                </h4>
+                                <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Manage Assessments</span>
+                            </div>
+                            <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3"></div>
+                            
+                            <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assessment Name</label>
+                                        <input type="text" id="newAssessTitle" required placeholder="e.g. Quiz / Mid-Term / Final" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Max Score Weight (Max 100)</label>
+                                        <input type="number" id="newAssessMax" required min="1" max="100" placeholder="30" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                    </div>
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition">Add Assessment Weight</button>
+                                </div>
+                            </form>
+                        </div>
+    
+                        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr id="modalStudentsTableHeader" class="bg-slate-100 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase"></tr>
+                                </thead>
+                                <tbody id="modalStudentsTableBody" class="divide-y divide-slate-100 text-sm bg-white"></tbody>
+                            </table>
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assigned Class</label>
-                        <select id="editStudentClass" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
-                    </div>
-                    <div class="flex justify-end space-x-2 pt-2">
-                        <button type="button" onclick="document.getElementById('editStudentModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Save Changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     
-        <!-- EDIT TEACHER CREDENTIALS MODAL -->
-        <div id="editTeacherModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-200 p-6">
-                <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
-                    <i class="fa-solid fa-key text-indigo-600"></i>
-                    <span>Edit Faculty Credentials</span>
-                </h3>
-                <form onsubmit="saveTeacherCredentials(event)" class="space-y-4">
-                    <input type="hidden" id="editTeacherId">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
-                        <input type="text" id="editTeacherName" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Department</label>
-                        <input type="text" id="editTeacherSubject" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Username</label>
-                        <input type="text" id="editTeacherUsername" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Password</label>
-                        <input type="text" id="editTeacherPassword" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div class="flex justify-end space-x-2 pt-2">
-                        <button type="button" onclick="document.getElementById('editTeacherModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition">Cancel</button>
-                        <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition shadow-md">Update Credentials</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    
-        <!-- MARK LIST DETAILS MODAL -->
-        <div id="markListDetailModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] flex flex-col overflow-hidden border border-slate-200">
-                <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
-                    <div>
-                        <span id="modalSubjectBadge" class="bg-indigo-500 text-white px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-1 inline-block">Subject</span>
-                        <h3 id="modalMarkListTitle" class="text-xl font-bold">Mark List</h3>
-                    </div>
-                    <button onclick="closeMarkListModal()" class="text-slate-400 hover:text-white p-2 rounded-lg transition"><i class="fa-solid fa-xmark text-xl"></i></button>
-                </div>
-    
-                <div class="p-6 flex-1 overflow-y-auto space-y-6">
-                    <div id="assessmentSectionContainer" class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div class="flex items-center justify-between mb-3">
-                            <h4 class="text-sm font-bold text-slate-800 flex items-center space-x-2">
-                                <i class="fa-solid fa-sliders text-emerald-600"></i>
-                                <span>Continuous Assessment Score Weighting</span>
-                            </h4>
-                            <span id="assessmentsTotalWeightBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">Manage Assessments</span>
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+                        <span id="modalReportStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700">Draft</span>
+                        <div class="flex items-center space-x-3">
+                            <button id="modalReportBtn" onclick="toggleReportMarkList()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Submit Report</button>
                         </div>
-                        <div id="assessmentsChipsContainer" class="flex flex-wrap gap-2 mb-3"></div>
-                        
-                        <form id="addAssessmentForm" onsubmit="handleAddAssessment(event)" class="space-y-3 pt-2 border-t border-slate-200">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Assessment Name</label>
-                                    <input type="text" id="newAssessTitle" required placeholder="e.g. Quiz / Mid-Term / Final" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Max Score Weight (Max 100)</label>
-                                    <input type="number" id="newAssessMax" required min="1" max="100" placeholder="30" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                                </div>
-                            </div>
-                            <div class="flex justify-end">
-                                <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition">Add Assessment Weight</button>
-                            </div>
-                        </form>
-                    </div>
-    
-                    <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr id="modalStudentsTableHeader" class="bg-slate-100 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase"></tr>
-                            </thead>
-                            <tbody id="modalStudentsTableBody" class="divide-y divide-slate-100 text-sm bg-white"></tbody>
-                        </table>
-                    </div>
-                </div>
-    
-                <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-                    <span id="modalReportStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-50 text-amber-700">Draft</span>
-                    <div class="flex items-center space-x-3">
-                        <button id="modalReportBtn" onclick="toggleReportMarkList()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition">Submit Report</button>
                     </div>
                 </div>
             </div>
-        </div>
     
-    </main>
+        </main>
+    </div>
     
     <script>
         const SUPABASE_URL = 'https://ycecgudcwtitgbvcbkfd.supabase.co';
@@ -927,6 +939,11 @@
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
+        function generateSequentialId(prefix, existingList) {
+            const count = existingList.length + 1;
+            return `${prefix}-${String(count).padStart(3, '0')}`;
+        }
+    
         function checkAuthView() {
             const loginView = document.getElementById('loginView');
             const mainHeader = document.getElementById('mainHeader');
@@ -967,11 +984,21 @@
             }
         }
     
+        // function switchLoginRole(role) {
+        //     document.getElementById('selectedRole').value = role;
+        //     if (role === 'admin') {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     } else {
+        //         document.getElementById('loginUsername').value = '';
+        //         document.getElementById('loginPassword').value = '';
+        //     }
+        // }
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
             const adminBtn = document.getElementById('loginRoleAdmin');
             const teacherBtn = document.getElementById('loginRoleTeacher');
-    
+
             if (role === 'admin') {
                 adminBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg bg-white text-indigo-600 shadow-sm transition";
                 teacherBtn.className = "flex-1 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition";
@@ -984,7 +1011,6 @@
                 document.getElementById('loginPassword').value = '';
             }
         }
-    
         async function handleLogin(e) {
             e.preventDefault();
             const role = document.getElementById('selectedRole').value;
@@ -1017,44 +1043,65 @@
             checkAuthView();
         }
     
+        // function switchAdminTab(tabName) {
+        //     document.querySelectorAll('#adminDashboard .tab-content').forEach(el => el.classList.remove('active'));
+        //     ['Overview', 'Teachers', 'Classes', 'Subjects', 'Reports', 'Card'].forEach(t => {
+        //         const btn = document.getElementById(`adminTabBtn${t}`);
+        //         if (btn) btn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
+        //     });
+        //     document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
+        //     document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
+        // }
+
         function switchAdminTab(tabName) {
+            // Hide all tabs
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             
+            // Reset active button styles
             const tabButtons = ['Overview', 'Teachers', 'Classes', 'Subjects', 'Reports', 'Card', 'ClassSummary'];
             tabButtons.forEach(btn => {
                 const el = document.getElementById(`adminTabBtn${btn}`);
                 if (el) el.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
             });
         
+            // Activate selected tab & style button
             const activeTab = document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
             const activeBtn = document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`);
             
             if (activeTab) activeTab.classList.add('active');
             if (activeBtn) activeBtn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
         
+            // Trigger calculation when class summary tab opens
             if (tabName === 'classSummary') {
                 populateSummaryClassDropdown();
             }
         }
-    
+
+        // Populate the summary class dropdown options with actual Class Names
         function populateSummaryClassDropdown() {
             const select = document.getElementById('summaryClassSelect');
             if (!select) return;
         
+            // 1. Gather all unique class names or objects from appState
+            // If your app has an appState.classes array (e.g. [{id: 'c_1', name: 'Grade 10 Section A'}, ...])
             let classList = [];
+            
             if (appState.classes && appState.classes.length > 0) {
                 classList = appState.classes.map(c => ({
                     id: c.id,
                     name: c.name || c.className || c.grade || c.id
                 }));
             } else {
+                // Fallback: extract from markLists and students
                 const rawClasses = new Set();
+                
                 if (appState.markLists) {
                     appState.markLists.forEach(ml => {
                         if (ml.className) rawClasses.add(ml.className);
                         if (ml.class_id) rawClasses.add(ml.class_id);
                     });
                 }
+                
                 if (appState.students) {
                     appState.students.forEach(s => {
                         if (s.className) rawClasses.add(s.className);
@@ -1062,121 +1109,133 @@
                         if (s.class_id) rawClasses.add(s.class_id);
                     });
                 }
+        
                 classList = Array.from(rawClasses).map(cName => ({
                     id: cName,
                     name: cName
                 }));
             }
         
+            // 2. Render options showing the friendly name, while keeping the ID/Name as value
             select.innerHTML = '<option value="">-- Choose Class --</option>' + 
                 classList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         }
-    
+        
+        // Calculate and render student totals, averages, and rankings
+
         function renderClassSummaryTable() {
-            const classVal = document.getElementById('summaryClassSelect').value;
-            const thead = document.getElementById('classSummaryHead');
-            const tbody = document.getElementById('classSummaryBody');
-            
-            document.getElementById('summaryIssueDate').textContent = new Date().toLocaleDateString();
-            const selectedOpt = document.getElementById('summaryClassSelect').options[document.getElementById('summaryClassSelect').selectedIndex];
-            document.getElementById('summaryClassHeaderSubtitle').textContent = classVal ? `Class: ${selectedOpt.text}` : 'Department of Academic Records & Evaluation';
-    
-            if (!classVal) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">Please select a class to load student rankings.</td></tr>`;
-                return;
-            }
-    
-            const classStudents = appState.students.filter(s => 
-                String(s.grade) === String(classVal) || 
-                String(s.className) === String(classVal) || 
-                String(s.class_id) === String(classVal)
-            );
-            
-            if (classStudents.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No students registered in this class.</td></tr>`;
-                return;
-            }
-    
-            const classMarkLists = appState.markLists.filter(ml => 
-                String(ml.className) === String(classVal) || 
-                String(ml.class_id) === String(classVal)
-            );
-    
-            let headerHTML = `
-                <th class="py-3 px-4 border-r border-indigo-800 text-center">ደረጃ</th>
-                <th class="py-3 px-4 border-r border-indigo-800">የተማሪው/ዋ ስም</th>
-            `;
-    
-            classMarkLists.forEach(ml => {
-                const subName = ml.subject_name || ml.subject || 'Subject';
-                headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${subName}</th>`;
-            });
-    
-            headerHTML += `
-                <th class="py-3 px-4 border-r border-indigo-800 text-center">አጠቃላይ ውጤት</th>
-                <th class="py-3 px-4 border-r border-indigo-800 text-center">አማካይ (%)</th>
-                <th class="py-3 px-4 text-center">Status</th>
-            `;
-            thead.innerHTML = headerHTML;
-    
-            const rosterData = classStudents.map(student => {
-                let totalScore = 0;
-                let subjectsCount = classMarkLists.length;
-                const subjectScores = {};
-    
-                classMarkLists.forEach(ml => {
-                    let score = 0;
-                    if (ml.grades && ml.grades[student.id]) {
-                        const marksObj = ml.grades[student.id].marks || {};
-                        score = Object.values(marksObj).reduce((sum, v) => sum + (Number(v) || 0), 0);
+                    const classVal = document.getElementById('summaryClassSelect').value;
+                    const thead = document.getElementById('classSummaryHead');
+                    const tbody = document.getElementById('classSummaryBody');
+                    
+                    // Set date and subtitle class info
+                    document.getElementById('summaryIssueDate').textContent = new Date().toLocaleDateString();
+                    const selectedOpt = document.getElementById('summaryClassSelect').options[document.getElementById('summaryClassSelect').selectedIndex];
+                    document.getElementById('summaryClassHeaderSubtitle').textContent = classVal ? `Class: ${selectedOpt.text}` : 'Department of Academic Records & Evaluation';
+        
+                    if (!classVal) {
+                        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">Please select a class to load student rankings.</td></tr>`;
+                        return;
                     }
-                    subjectScores[ml.id] = score;
-                    totalScore += score;
-                });
-    
-                const average = subjectsCount > 0 ? (totalScore / subjectsCount) : 0;
-                return { student, subjectScores, totalScore, average };
-            });
-    
-            rosterData.sort((a, b) => b.average - a.average);
-    
-            tbody.innerHTML = rosterData.map((row, index) => {
-                const rank = index + 1;
-                const rankBadgeClass = rank === 1 ? 'bg-amber-100 text-amber-800 border-amber-300' :
-                                     rank === 2 ? 'bg-slate-200 text-slate-800 border-slate-300' :
-                                     rank === 3 ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                                                  'bg-slate-100 text-slate-600 border-slate-200';
-    
-                let rowHTML = `
-                    <td class="py-3 px-4 border-r border-slate-200 text-center">
-                        <span class="inline-block px-2.5 py-1 rounded-full text-xs font-black border ${rankBadgeClass}">
-                            #${rank}
-                        </span>
-                    </td>
-                    <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-900">
-                        ${row.student.name}
-                    </td>
-                `;
-    
-                classMarkLists.forEach(ml => {
-                    const score = row.subjectScores[ml.id] || 0;
-                    rowHTML += `<td class="py-3 px-4 border-r border-slate-200 text-center font-semibold text-slate-700">${score.toFixed(1)}</td>`;
-                });
-    
-                rowHTML += `
-                    <td class="py-3 px-4 border-r border-slate-200 text-center font-black text-indigo-700">${row.totalScore.toFixed(1)}</td>
-                    <td class="py-3 px-4 border-r border-slate-200 text-center font-black text-emerald-600">${row.average.toFixed(1)}%</td>
-                    <td class="py-3 px-4 text-center">
-                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${row.average >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
-                            ${row.average >= 50 ? 'Pass' : 'Needs Help'}
-                        </span>
-                    </td>
-                `;
-    
-                return `<tr class="hover:bg-slate-50 transition">${rowHTML}</tr>`;
-            }).join('');
-        }
-    
+        
+                    const classStudents = appState.students.filter(s => 
+                        String(s.grade) === String(classVal) || 
+                        String(s.className) === String(classVal) || 
+                        String(s.class_id) === String(classVal)
+                    );
+                    
+                    if (classStudents.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No students registered in this class.</td></tr>`;
+                        return;
+                    }
+        
+                    const classMarkLists = appState.markLists.filter(ml => 
+                        String(ml.className) === String(classVal) || 
+                        String(ml.class_id) === String(classVal)
+                    );
+        
+                    let headerHTML = `
+                        <th class="py-3 px-4 border-r border-indigo-800 text-center">ደረጃ</th>
+                        <th class="py-3 px-4 border-r border-indigo-800">የተማሪው/ዋ ስም</th>
+                    `;
+        
+                    classMarkLists.forEach(ml => {
+                        const subName = ml.subject_name || ml.subject || 'Subject';
+                        headerHTML += `<th class="py-3 px-4 border-r border-indigo-800 text-center">${subName}</th>`;
+                    });
+        
+                    headerHTML += `
+                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አጤቃላይ ውጤት</th>
+                        <th class="py-3 px-4 border-r border-indigo-800 text-center">አማካይ (%)</th>
+                        <th class="py-3 px-4 text-center">Status</th>
+                    `;
+                    thead.innerHTML = headerHTML;
+        
+                    const rosterData = classStudents.map(student => {
+                        let totalScore = 0;
+                        let subjectsCount = classMarkLists.length;
+                        const subjectScores = {};
+        
+                        classMarkLists.forEach(ml => {
+                            let score = 0;
+                            if (ml.grades && ml.grades[student.id]) {
+                                const marksObj = ml.grades[student.id].marks || {};
+                                score = Object.values(marksObj).reduce((sum, v) => sum + (Number(v) || 0), 0);
+                            }
+                            subjectScores[ml.id] = score;
+                            totalScore += score;
+                        });
+        
+                        const average = subjectsCount > 0 ? (totalScore / subjectsCount) : 0;
+        
+                        return {
+                            student,
+                            subjectScores,
+                            totalScore,
+                            average
+                        };
+                    });
+        
+                    rosterData.sort((a, b) => b.average - a.average);
+        
+                    tbody.innerHTML = rosterData.map((row, index) => {
+                        const rank = index + 1;
+                        const rankBadgeClass = rank === 1 ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                                             rank === 2 ? 'bg-slate-200 text-slate-800 border-slate-300' :
+                                             rank === 3 ? 'bg-orange-100 text-orange-800 border-orange-300' :
+                                                          'bg-slate-100 text-slate-600 border-slate-200';
+        
+                        let rowHTML = `
+                            <td class="py-3 px-4 border-r border-slate-200 text-center">
+                                <span class="inline-block px-2.5 py-1 rounded-full text-xs font-black border ${rankBadgeClass}">
+                                    #${rank}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 border-r border-slate-200 font-bold text-slate-900">
+                                ${row.student.name}
+                            </td>
+                        `;
+        
+                        classMarkLists.forEach(ml => {
+                            const score = row.subjectScores[ml.id] || 0;
+                            rowHTML += `<td class="py-3 px-4 border-r border-slate-200 text-center font-semibold text-slate-700">${score.toFixed(1)}</td>`;
+                        });
+        
+                        rowHTML += `
+                            <td class="py-3 px-4 border-r border-slate-200 text-center font-black text-indigo-700">${row.totalScore.toFixed(1)}</td>
+                            <td class="py-3 px-4 border-r border-slate-200 text-center font-black text-emerald-600">${row.average.toFixed(1)}%</td>
+                            <td class="py-3 px-4 text-center">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${row.average >= 50 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                                    ${row.average >= 50 ? 'Pass' : 'Needs Help'}
+                                </span>
+                            </td>
+                        `;
+        
+                        return `<tr class="hover:bg-slate-50 transition">${rowHTML}</tr>`;
+                    }).join('');
+                }        
+
+        
         async function handleAssignTeacherSubject(e) {
             e.preventDefault();
             const teacherId = document.getElementById('assignTeacherSelect').value;
@@ -1230,8 +1289,7 @@
     
         async function handleCreateTeacher(e) {
             e.preventDefault();
-            // FIX APPLIED HERE: Use timestamp-based unique ID generation instead of fragile list-length calculation
-            const newId = 'tch_' + Date.now();
+            const newId = generateSequentialId('TCH', appState.teachers);
             const teacher = {
                 id: newId,
                 name: document.getElementById('newTeacherName').value.trim(),
@@ -1280,7 +1338,7 @@
     
         async function handleCreateClass(e) {
             e.preventDefault();
-            const newId = 'cls_' + Date.now();
+            const newId = generateSequentialId('CLS', appState.classes);
             const cls = { id: newId, name: document.getElementById('newClassName').value.trim() };
             appState.classes.push(cls);
             await saveEntity('classes', cls);
@@ -1303,7 +1361,7 @@
     
         async function handleRegisterStudent(e) {
             e.preventDefault();
-            const newId = 'stu_' + Date.now();
+            const newId = generateSequentialId('STU', appState.students);
             const student = {
                 id: newId,
                 class_id: document.getElementById('regStudentClassSelect').value,
@@ -1507,6 +1565,8 @@
             document.getElementById('modalMarkListTitle').textContent = `${ml.subject_name} (${ml.teacher_name})`;
             
             const isAdmin = appState.currentUser.role === 'admin';
+            
+            // Hide assessment weight creation tools and submit report buttons for admin
             const assessSection = document.getElementById('assessmentSectionContainer');
             const modalReportBtn = document.getElementById('modalReportBtn');
             const modalReportStatusBadge = document.getElementById('modalReportStatusBadge');
@@ -1553,6 +1613,7 @@
             }
     
             ml.assessments = ml.assessments.filter(a => a.id !== assessId);
+            
             if (ml.grades) {
                 Object.keys(ml.grades).forEach(stId => {
                     if (ml.grades[stId].marks) {
@@ -1714,7 +1775,8 @@
             document.getElementById('reportCardContainer').classList.add('hidden');
             document.getElementById('reportCardEmpty').classList.remove('hidden');
         }
-    
+
+
         function generateStudentReportCard() {
             const classId = document.getElementById('reportCardClassSelect').value;
             const studentId = document.getElementById('reportCardStudentSelect').value;
@@ -1744,14 +1806,15 @@
                 const scoreObj = calculateStudentScore(studentId, ml);
                 totalPercentageSum += scoreObj.mark;
                 const teacher = appState.teachers.find(t => t.id === ml.teacher_id);
-    
+    // --------------------------------------------------
+    //     -------------------------------------
                 return `
                     <tr class="border-b border-slate-200">
                         <td class="py-3 px-4 border-r border-slate-200 font-semibold text-slate-800">${ml.subject_name}</td>
-                        <td class="py-3 px-4 border-r border-slate-200 text-slate-600">${targetClass ? targetClass.name : '-'}</td>
-                        <td class="py-3 px-4 border-r border-slate-200 text-slate-600">${teacher ? teacher.name : ml.teacher_name}</td>
-                        <td class="py-3 px-4 border-r border-slate-200 text-center font-bold text-indigo-700">${scoreObj.mark} / 100</td>
-                        <td class="py-3 px-4 text-center font-black text-slate-800">${scoreObj.customGrade}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 font-semibold text-slate-600">${targetClass ? targetClass.name : '-'}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 font-semibold text-slate-600">${teacher ? teacher.name : ml.teacher_name}</td>
+                        <td class="py-3 px-4 border-r border-slate-200 font-semibold text-center font-bold text-indigo-700">${scoreObj.mark} / 100</td>
+                        <td class="py-3 px-4 text-center font-black font-semibold text-slate-800">${scoreObj.customGrade}</td>
                     </tr>
                 `;
             }).join('');
@@ -1770,37 +1833,120 @@
     
             const studentRankIndex = rankedStudents.findIndex(s => s.id === studentId);
             const rank = studentRankIndex !== -1 ? studentRankIndex + 1 : '-';
+            
             document.getElementById('rcClassRank').textContent = `#${rank} of ${classStudents.length}`;
     
             container.classList.remove('hidden');
             emptyState.classList.add('hidden');
         }
+        
+        // function generateStudentReportCard() {
+        //     const classId = document.getElementById('reportCardClassSelect',).value;
+        //     const studentId = document.getElementById('reportCardStudentSelect').value;
+        //     const container = document.getElementById('reportCardContainer');
+        //     const emptyState = document.getElementById('reportCardEmpty');
     
+        //     if (!classId || !studentId) {
+        //         container.classList.add('hidden');
+        //         emptyState.classList.remove('hidden');
+        //         return;
+        //     }
+    
+        //     const targetStudent = appState.students.find(s => s.id === studentId);
+        //     const targetClass = appState.classes.find(c => c.id === classId);
+        //     const classMarkLists = appState.markLists.filter(ml => ml.class_id === classId);
+    
+        //     document.getElementById('rcIssueDate').textContent = new Date().toLocaleDateString();
+        //     document.getElementById('rcStudentName').textContent = targetStudent.name;
+        //     document.getElementById('rcClassName').textContent = targetClass.name;
+        //     document.getElementById('rcTotalSubjects').textContent = classMarkLists.length;
+    
+        //     let totalMarksSum = 0;
+        //     const tbody = document.getElementById('rcMarksTableBody');
+        //     tbody.innerHTML = '';
+    
+        //     classMarkLists.forEach(ml => {
+        //         const scoreObj = calculateStudentScore(studentId, ml);
+        //         totalMarksSum += scoreObj.mark;
+        //         tbody.innerHTML += `
+        //             <tr class="border-b border-slate-200">
+        //                 <td class="py-3 px-4 border-r border-slate-200 font-semibold">${ml.subject_name}</td>
+        //                 <td class="py-3 px-4 border-r border-slate-200">${targetClass.name}</td>
+        //                 <td class="py-3 px-4 border-r border-slate-200">${ml.teacher_name}</td>
+        //                 <td class="py-3 px-4 border-r border-slate-200 text-center font-bold text-indigo-600">${scoreObj.mark}</td>
+        //                 <td class="py-3 px-4 text-center font-bold">${scoreObj.customGrade}</td>
+        //             </tr>
+        //         `;
+        //     });
+    
+        //     const avg = classMarkLists.length > 0 ? (totalMarksSum / classMarkLists.length).toFixed(1) : 0;
+        //     document.getElementById('rcOverallAverage').textContent = overallAvg.toFixed(1) + '%';
+    
+        //     const studentsInClass = appState.students.filter(s => s.class_id === classId);
+        //     const studentTotals = studentsInClass.map(stu => {
+        //         let stuTotal = 0;
+        //         classMarkLists.forEach(ml => {
+        //             const sScore = calculateStudentScore(stu.id, ml);
+        //             stuTotal += sScore.mark;
+        //         });
+        //         return { id: stu.id, total: stuTotal };
+        //     });
+    
+        //     studentTotals.sort((a, b) => b.total - a.total);
+        //     const rankIndex = studentTotals.findIndex(s => s.id === studentId);
+        //     const classRank = rankIndex !== -1 ? rankIndex + 1 : 1;
+    
+        //     document.getElementById('rcClassRank').textContent = `#${rank} of ${classStudents.length}`;
+    
+        //     container.classList.remove('hidden');
+        //     emptyState.classList.add('hidden');
+        // }
+        
         function downloadStudentReportPDF() {
             const element = document.getElementById('printableReportCard');
+            // Configuration optimized for both mobile and high-resolution PC displays
             const opt = {
-                margin: 0.5,
-                filename: 'Student_Report_Card.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                margin:       [0.4, 0.4, 0.4, 0.4],
+                filename:     `Student_Transcript_${document.getElementById('rcStudentName').textContent.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: document.documentElement.offsetWidth
+                },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
             };
-            html2pdf().from(element).set(opt).save();
+        
+            html2pdf().set(opt).from(element).save();
         }
-    
+
         function downloadClassSummaryPDF() {
-            const element = document.getElementById('printableClassSummaryContainer');
-            const opt = {
-                margin: 0.5,
-                filename: 'Class_Performance_Summary.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-            };
-            html2pdf().from(element).set(opt).save();
-        }
-    
+                    const element = document.getElementById('printableClassSummaryContainer');
+                    const opt = {
+                        margin:       [0.4, 0.4, 0.4, 0.4],
+                        filename:     `Class_Performance_Report.pdf`,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { 
+                            scale: 2, 
+                            useCORS: true, 
+                            logging: false,
+                            x: 0,
+                            y: 0,
+                            scrollX: 0,
+                            scrollY: 0,
+                            windowWidth: 950 // Optimized width for landscape A4 proportions
+                        },
+                        jsPDF:        { unit: 'in', format: 'a4', orientation: 'landscape' },
+                        pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                    };
+                    html2pdf().set(opt).from(element).save()
+                }
         window.onload = loadAppData;
+        
     </script>
 </body>
 </html>
