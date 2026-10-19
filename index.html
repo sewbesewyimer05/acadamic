@@ -939,9 +939,25 @@
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
+        // function generateSequentialId(prefix, existingList) {
+        //     const count = existingList.length + 1;
+        //     return `${prefix}-${String(count).padStart(3, '0')}`;
+        // }
+                // Robust ID generator that finds highest existing number and adds a timestamp fallback
         function generateSequentialId(prefix, existingList) {
-            const count = existingList.length + 1;
-            return `${prefix}-${String(count).padStart(3, '0')}`;
+            let maxNum = 0;
+            existingList.forEach(item => {
+                if (item && item.id) {
+                    const match = item.id.match(/\d+/);
+                    if (match) {
+                        const num = parseInt(match[0], 10);
+                        if (num > maxNum) maxNum = num;
+                    }
+                }
+            });
+            const nextNum = maxNum + 1;
+            const uniqueSuffix = Date.now().toString().slice(-4);
+            return `${prefix}-${String(nextNum).padStart(3, '0')}-${uniqueSuffix}`;
         }
     
         function checkAuthView() {
@@ -1287,19 +1303,46 @@
             alert(`Successfully assigned ${sub.name} in ${cls.name} exclusively to ${tch.name}!`);
         }
     
-        async function handleCreateTeacher(e) {
+        // async function handleCreateTeacher(e) {
+        //     e.preventDefault();
+        //     const newId = generateSequentialId('TCH', appState.teachers);
+        //     const teacher = {
+        //         id: newId,
+        //         name: document.getElementById('newTeacherName').value.trim(),
+        //         subject: document.getElementById('newTeacherSubject').value.trim(),
+        //         username: document.getElementById('newTeacherUsername').value.trim(),
+        //         password: document.getElementById('newTeacherPassword').value.trim()
+        //     };
+        //     appState.teachers.push(teacher);
+        //     await saveEntity('teachers', teacher);
+        //     renderAdminTeachers();
+        //     e.target.reset();
+        // }
+        async function handleRegisterTeacher(e) {
             e.preventDefault();
+            
+            const name = document.getElementById('newTeacherName').value.trim();
+            const subject = document.getElementById('newTeacherSubject').value.trim();
+            const username = document.getElementById('newTeacherUsername').value.trim();
+            const password = document.getElementById('newTeacherPassword').value.trim();
+
+            if (!name || !username) return;
+
             const newId = generateSequentialId('TCH', appState.teachers);
+            
             const teacher = {
                 id: newId,
-                name: document.getElementById('newTeacherName').value.trim(),
-                subject: document.getElementById('newTeacherSubject').value.trim(),
-                username: document.getElementById('newTeacherUsername').value.trim(),
-                password: document.getElementById('newTeacherPassword').value.trim()
+                name: name,
+                subject: subject || 'General',
+                username: username,
+                password: password || 'pass123',
+                role: 'teacher'
             };
+
             appState.teachers.push(teacher);
-            await saveEntity('teachers', teacher);
-            renderAdminTeachers();
+            renderTeachersTable();
+            updateDashboardStats();
+            
             e.target.reset();
         }
     
