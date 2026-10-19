@@ -927,7 +927,15 @@
     
         async function saveEntity(table, record) {
             if (useCloudDb && supabaseClient) {
-                try { await supabaseClient.from(table).upsert(record); } catch (e) { console.error(e); }
+                try {
+                    const { data, error } = await supabaseClient.from(table).upsert(record);
+                    if (error) {
+                        console.error(`Supabase error saving to ${table}:`, error.message);
+                        alert(`Database Sync Warning: ${error.message}`);
+                    }
+                } catch (e) {
+                    console.error("Cloud fetch error, saving to local storage fallback.", e);
+                }
             }
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
@@ -944,20 +952,17 @@
         //     return `${prefix}-${String(count).padStart(3, '0')}`;
         // }
                 // Robust ID generator that finds highest existing number and adds a timestamp fallback
-        function generateSequentialId(prefix, existingList) {
-            let maxNum = 0;
-            existingList.forEach(item => {
-                if (item && item.id) {
+        function generateUniqueId(prefix, existingList) {
+            const numbers = existingList
+                .map(item => {
                     const match = item.id.match(/\d+/);
-                    if (match) {
-                        const num = parseInt(match[0], 10);
-                        if (num > maxNum) maxNum = num;
-                    }
-                }
-            });
-            const nextNum = maxNum + 1;
-            const uniqueSuffix = Date.now().toString().slice(-4);
-            return `${prefix}-${String(nextNum).padStart(3, '0')}-${uniqueSuffix}`;
+                    return match ? parseInt(match[0], 10) : 0;
+                })
+                .filter(n => !isNaN(n));
+        
+            const maxId = numbers.length > 0 ? Math.max(...numbers) : 0;
+            const nextNumber = maxId + 1;
+            return `${prefix}-${String(nextNumber).padStart(3, '0')}`;
         }
     
         function checkAuthView() {
@@ -1318,33 +1323,50 @@
         //     renderAdminTeachers();
         //     e.target.reset();
         // }
-        async function handleRegisterTeacher(e) {
+        
+        async function handleCreateTeacher(e) {
             e.preventDefault();
             
-            const name = document.getElementById('newTeacherName').value.trim();
-            const subject = document.getElementById('newTeacherSubject').value.trim();
-            const username = document.getElementById('newTeacherUsername').value.trim();
-            const password = document.getElementById('newTeacherPassword').value.trim();
-
-            if (!name || !username) return;
-
-            const newId = generateSequentialId('TCH', appState.teachers);
-            
+            const nameInput = document.getElementById('newTeacherName');
+            const subjectInput = document.getElementById('newTeacherSubject');
+            const usernameInput = document.getElementById('newTeacherUsername');
+            const passwordInput = document.getElementById('newTeacherPassword');
+        
+            // Generate guaranteed unique ID
+            const newId = generateUniqueId('TCH', appState.teachers);
+        
             const teacher = {
                 id: newId,
-                name: name,
-                subject: subject || 'General',
-                username: username,
-                password: password || 'pass123',
-                role: 'teacher'
+                name: document.getElementById('newTeacherName').value.trim(),
+                subject: document.getElementById('newTeacherSubject').value.trim(),
+                username: document.getElementById('newTeacherUsername').value.trim(),
+                password: document.getElementById('newTeacherPassword').value.trim()
             };
-
+        
+            // Check for duplicate username before adding
+            const duplicateUser = appState.teachers.find(t => t.username.toLowerCase() === teacher.username.toLowerCase());
+            if (duplicateUser) {
+                alert("Username already exists! Please choose a different username for this faculty member.");
+                return;
+            }
+        
+            // Push new teacher to local state
             appState.teachers.push(teacher);
-            renderTeachersTable();
-            updateDashboardStats();
-            
+        
+            // Save to database/localStorage
+            await saveEntity('teachers', teacher);
+        
+            // Refresh UI
+            renderAdminTeachers();
+            renderAdminOverviewStats();
+            renderAdminClassesDropdowns();
+        
+            // Reset Form Inputs
             e.target.reset();
+        
+            alert(`Faculty member "${teacher.name}" registered successfully with ID: ${teacher.id}`);
         }
+
     
         function openEditTeacherModal(id) {
             const t = appState.teachers.find(x => x.id === id);
