@@ -924,21 +924,6 @@
             }
             checkAuthView();
         }
-    
-        // async function saveEntity(table, record) {
-        //     if (useCloudDb && supabaseClient) {
-        //         try {
-        //             const { data, error } = await supabaseClient.from(table).upsert(record);
-        //             if (error) {
-        //                 console.error(`Supabase error saving to ${table}:`, error.message);
-        //                 alert(`Database Sync Warning: ${error.message}`);
-        //             }
-        //         } catch (e) {
-        //             console.error("Cloud fetch error, saving to local storage fallback.", e);
-        //         }
-        //     }
-        //     localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
-        // }
 
         async function saveEntity(table, record) {
             if (typeof useCloudDb !== 'undefined' && useCloudDb && typeof supabaseClient !== 'undefined' && supabaseClient) {
@@ -968,11 +953,6 @@
             localStorage.setItem('academic_sims_state_v4', JSON.stringify(appState));
         }
     
-        // function generateSequentialId(prefix, existingList) {
-        //     const count = existingList.length + 1;
-        //     return `${prefix}-${String(count).padStart(3, '0')}`;
-        // }
-                // Robust ID generator that finds highest existing number and adds a timestamp fallback
 
         function generateSequentialId(prefix, existingList) {
             if (!existingList || !Array.isArray(existingList)) return `${prefix}-001`;
@@ -1029,17 +1009,7 @@
                 renderTeacherMarkLists();
             }
         }
-    
-        // function switchLoginRole(role) {
-        //     document.getElementById('selectedRole').value = role;
-        //     if (role === 'admin') {
-        //         document.getElementById('loginUsername').value = '';
-        //         document.getElementById('loginPassword').value = '';
-        //     } else {
-        //         document.getElementById('loginUsername').value = '';
-        //         document.getElementById('loginPassword').value = '';
-        //     }
-        // }
+
         function switchLoginRole(role) {
             document.getElementById('selectedRole').value = role;
             const adminBtn = document.getElementById('loginRoleAdmin');
@@ -1057,6 +1027,7 @@
                 document.getElementById('loginPassword').value = '';
             }
         }
+        
         async function handleLogin(e) {
             e.preventDefault();
             const role = document.getElementById('selectedRole').value;
@@ -1088,16 +1059,6 @@
             appState.currentUser = null;
             checkAuthView();
         }
-    
-        // function switchAdminTab(tabName) {
-        //     document.querySelectorAll('#adminDashboard .tab-content').forEach(el => el.classList.remove('active'));
-        //     ['Overview', 'Teachers', 'Classes', 'Subjects', 'Reports', 'Card'].forEach(t => {
-        //         const btn = document.getElementById(`adminTabBtn${t}`);
-        //         if (btn) btn.className = "px-3.5 py-2 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-50 transition";
-        //     });
-        //     document.getElementById(`adminTabBtn${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).className = "px-3.5 py-2 text-sm font-semibold rounded-lg bg-indigo-50 text-indigo-700 transition";
-        //     document.getElementById(`adminTab${tabName.charAt(0).toUpperCase() + tabName.slice(1)}`).classList.add('active');
-        // }
 
         function switchAdminTab(tabName) {
             // Hide all tabs
@@ -1332,22 +1293,6 @@
             renderAdminMarkLists();
             alert(`Successfully assigned ${sub.name} in ${cls.name} exclusively to ${tch.name}!`);
         }
-    
-        // async function handleCreateTeacher(e) {
-        //     e.preventDefault();
-        //     const newId = generateSequentialId('TCH', appState.teachers);
-        //     const teacher = {
-        //         id: newId,
-        //         name: document.getElementById('newTeacherName').value.trim(),
-        //         subject: document.getElementById('newTeacherSubject').value.trim(),
-        //         username: document.getElementById('newTeacherUsername').value.trim(),
-        //         password: document.getElementById('newTeacherPassword').value.trim()
-        //     };
-        //     appState.teachers.push(teacher);
-        //     await saveEntity('teachers', teacher);
-        //     renderAdminTeachers();
-        //     e.target.reset();
-        // }
         
         async function handleCreateTeacher(e) {
             e.preventDefault();
@@ -1392,30 +1337,86 @@
             document.getElementById('editTeacherPassword').value = t.password;
             document.getElementById('editTeacherModal').classList.remove('hidden');
         }
-    
+// --------------------------------------------------
         async function saveTeacherCredentials(e) {
-            e.preventDefault();
-            const id = document.getElementById('editTeacherId').value;
-            const t = appState.teachers.find(x => x.id === id);
-            if (!t) return;
-            t.name = document.getElementById('editTeacherName').value.trim();
-            t.subject = document.getElementById('editTeacherSubject').value.trim();
-            t.username = document.getElementById('editTeacherUsername').value.trim();
-            t.password = document.getElementById('editTeacherPassword').value.trim();
-            await saveEntity('teachers', t);
-            renderAdminTeachers();
-            document.getElementById('editTeacherModal').classList.add('hidden');
-        }
-    
-        async function deleteTeacher(id) {
-            if (confirm("Delete this faculty account?")) {
-                appState.teachers = appState.teachers.filter(t => t.id !== id);
-                await deleteEntity('teachers', id);
-                renderAdminTeachers();
+            if (e && e.preventDefault) e.preventDefault();
+        
+            try {
+                // Look up all possible field names for faculty/teacher form inputs
+                const idInput = document.getElementById('teacherId') || document.getElementById('editTeacherId');
+                const nameInput = document.getElementById('teacherName') || document.getElementById('regTeacherName') || document.getElementById('editTeacherName');
+                const emailInput = document.getElementById('teacherEmail') || document.getElementById('regTeacherEmail') || document.getElementById('editTeacherUsername');
+                const subjectInput = document.getElementById('teacherSubject') || document.getElementById('regTeacherSubject') || document.getElementById('editTeacherSubject');
+                const classSelect = document.getElementById('teacherClassSelect') || document.getElementById('regTeacherClass') || document.getElementById('editTeacherClass');
+        
+                if (!nameInput) {
+                    console.error("Missing teacher name input field.");
+                    return;
+                }
+        
+                const teacherName = nameInput.value.trim();
+                if (!teacherName) {
+                    console.warn("Teacher name is required.");
+                    return;
+                }
+        
+                // Ensure state teachers array exists
+                if (!appState.teachers) appState.teachers = [];
+        
+                let teacherId = idInput ? idInput.value : '';
+                let existingIndex = -1;
+        
+                if (teacherId) {
+                    existingIndex = appState.teachers.findIndex(t => t.id === teacherId);
+                }
+        
+                // If no ID or existing record not found, create new unique ID
+                if (!teacherId || existingIndex === -1) {
+                    teacherId = generateSequentialId('TCH', appState.teachers);
+                }
+        
+                const teacherObj = {
+                    id: teacherId,
+                    name: teacherName,
+                    email: emailInput ? emailInput.value.trim() : '',
+                    subject: subjectInput ? subjectInput.value.trim() : '',
+                    class_ids: classSelect ? Array.from(classSelect.selectedOptions || []).map(opt => opt.value) : []
+                };
+        
+                if (existingIndex >= 0) {
+                    appState.teachers[existingIndex] = { ...appState.teachers[existingIndex], ...teacherObj };
+                } else {
+                    appState.teachers.push(teacherObj);
+                }
+        
+                await saveEntity('teachers', teacherObj);
+        
+                // Safe calls to UI update functions if they exist in your script
+                if (typeof renderAdminTeachersTable === 'function') {
+                    renderAdminTeachersTable();
+                }
+                if (typeof renderAdminTeachersDropdowns === 'function') {
+                    renderAdminTeachersDropdowns();
+                }
+                if (typeof renderTeachersRoster === 'function') {
+                    renderTeachersRoster();
+                }
+        
+                // Close modal if editing in a popup modal
+                const modal = document.getElementById('teacherModal') || document.getElementById('editTeacherModal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                }
+        
+                if (e && e.target && typeof e.target.reset === 'function') {
+                    e.target.reset();
+                }
+            } catch (err) {
+                console.error("Error saving faculty account:", err);
             }
         }
-    
 
+        
         async function handleCreateClass(e) {
             if (e && e.preventDefault) e.preventDefault();
         
